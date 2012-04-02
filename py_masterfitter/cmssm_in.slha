@@ -1,0 +1,17 @@
+# MASTER CODE STEERING FOR SOFTSUSY
+BLOCK MODSEL # Select model
+        1                  1 # CMSSM (default)
+BLOCK SMINPUTS # Standard Model Input
+        1     0.12790895E+03 # a_em^(-1)(MZ) SM MSbar
+        2     0.11663900E-04 # G_Fermi
+        3     0.11870000E+00 # alpha_s(MZ)MSbar
+        4     0.91187599E+02 # MZ(pole)
+        5     0.42000000E+01 # mb(mb)
+        6     0.17300064E+03 # Mtop(pole)
+        7     0.17770300E+01 # Mtau(pole)
+BLOCK MINPAR # Input parameters
+        1     0.73394643E+03 # m0
+        2     0.57581086E+03 # m1/2
+        3     0.38559799E+02 # tan(beta)
+        4                  1 # sign(mu)
+        5     0.24017578E+04 # A0

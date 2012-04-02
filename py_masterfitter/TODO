@@ -1,0 +1,10 @@
+ * Makefile ALL of the scripts becuase this is getting stupid
+    - if there is a neat way around copypasta from fortran for variables then I
+      should try and find it!
+Libaries
+ * DarkSUSY
+ * Micromegas
+ * SUSY-POPE
+ * superiso
+
+Once they're done, er.... not sure now lol - run it?
