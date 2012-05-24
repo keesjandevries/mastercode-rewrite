@@ -13,9 +13,16 @@ class ss_DoubleVector(object):
         return SPlib.DoubleVector_display( self.obj, i )
     def __setitem__( self, index, value ) :
         SPlib.DoubleVector_set( self.obj, index, c_double(value) )
-        
 
+class ss_MssmSoftsusy(object):
+    def __init__(self) :
+        self.obj = SPlib.MssmSoftsusy_new()
+
+# test the DV
 test = ss_DoubleVector(3)
 print test[1]
 test[1] = 5
 print test[1]
+
+# test the MSs obj
+test_mm = ss_MssmSoftsusy()
