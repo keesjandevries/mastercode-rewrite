@@ -1,0 +1,4 @@
+#SLHA
+
+* decide on base representation and move away from the abomination that is Rtypes.h: less ROOT dependency the better!
+
