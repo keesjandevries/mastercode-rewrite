@@ -12,39 +12,36 @@ void (*boundaryCondition( int cond ))( MssmSoftsusy &, const DoubleVector &) {
         case 0 :
             retval = &sugraBcs;
             break;
-//            case 1 :
-//                retval = &extendedSugraBcs;
-//                break;
-//            case 2 :
-//                retval = &extendedSugraBcs2;
-//                break;
-//            case 3 :
-//                retval = &generalBcs;
-//                break;
-//            case 4 :
-//                retval = &generalBcs2;
-//                break;
-//            case 5 :
-//                retval = &amsbBcs;
-//                break;
-//            case 6 :
-//                retval = &gmsbBcs;
-//                break;
-//            case 7 :
-//                retval = &splitGmsb;
-//                break;
-//            case 8 :
-//                retval = &lvsBcs;
-//                break;
-//            case 9 :
-//                retval = &nonUniGauginos;
-//                break;
-//            case 10 :
-//                retval = &userDefinedBcs;
-//                break;
-//            case 11 :
-//                retval = &nonUniGauginos;
-//                break;
+        case 1 :
+            retval = &extendedSugraBcs;
+            break;
+        case 2 :
+            retval = &generalBcs;
+            break;
+        case 3 :
+            retval = &generalBcs2;
+            break;
+        case 4 :
+            retval = &amsbBcs;
+            break;
+        case 5 :
+            retval = &gmsbBcs;
+            break;
+        case 6 :
+            retval = &splitGmsb;
+            break;
+        case 7 :
+            retval = &lvsBcs;
+            break;
+        case 8 :
+            retval = &nonUniGauginos;
+            break;
+        case 9 :
+            retval = &userDefinedBcs;
+            break;
+        case 10 :
+            retval = &nonUniGauginos;
+            break;
         default : 
             std::cout << "Defaulting to sugra boundary conditions" << 
                 std::endl;

@@ -5,10 +5,10 @@ from ctypes import cdll, c_int, c_double, c_char_p
 SPlib = cdll.LoadLibrary('./libmcsoftsusy.so')
 # set our return types
 SPlib.DoubleVector_display.restype = c_double
-boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "extendedSugraBcs2",
-                       "generalBcs", "generalBcs2", "amsbBcs", "gmsbBcs",
-                       "splitGmsb", "lvsBcs", "nonUniGauginos", 
-                       "userDefinedBcs", "nonUniGauginos", ]
+boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "generalBcs",
+                       "generalBcs2", "amsbBcs", "gmsbBcs", "splitGmsb",
+                       "lvsBcs", "nonUniGauginos", "userDefinedBcs",
+                       "nonUniGauginos", ]
 
 class DoubleVector(object) :
     def __init__(self, size = 0) :
