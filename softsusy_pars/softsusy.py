@@ -10,7 +10,7 @@ boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "extendedSugraBcs2",
                        "splitGmsb", "lvsBcs", "nonUniGauginos", 
                        "userDefinedBcs", "nonUniGauginos", ]
 
-class ss_DoubleVector(object) :
+class DoubleVector(object) :
     def __init__(self, size = 0) :
         self.obj = SPlib.DoubleVector_new( size )
     def __getitem__( self, i ) :
@@ -18,7 +18,7 @@ class ss_DoubleVector(object) :
     def __setitem__( self, index, value ) :
         SPlib.DoubleVector_set( self.obj, index, c_double(value) )
  
-class ss_MssmSoftsusy(object) :
+class MssmSoftsusy(object) :
     def __init__(self) :
         self.obj = SPlib.MssmSoftsusy_new()
     def lowOrg(self, bCond, mxGuess, dv_pars, sgnMu, tanb, qq_oneset,
@@ -39,7 +39,7 @@ class ss_MssmSoftsusy(object) :
                                                    sgnMu, tanb, qMax, numPoints,
                                                    mgut, altEwsb )
 
-class ss_QedQcd(object) :
+class QedQcd(object) :
     def __init__(self) :
         self.obj = SPlib.QedQcd_new()
     def setPoleMt(self,  mt) :
