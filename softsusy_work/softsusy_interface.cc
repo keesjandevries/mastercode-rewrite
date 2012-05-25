@@ -57,12 +57,14 @@ extern "C"
         return new MssmSoftsusy();
     }
 
-//    void MssmSoftsusy_lowOrg( void (*boundaryCondition) 
-//                                   (MssmSoftsusy &, const DoubleVector &),
-//                              double mxGuess,
-//                              const DoubleVector & pars, int sgnMu, double tanb,
-//                              const QedQcd & oneset, bool gaugeUnification,
-//                              bool ewsbBCscale = false) {
-//
-//    }
+    void MssmSoftsusy_lowOrg( MssmSoftsusy* mss,
+                              void (*boundaryCondition) 
+                                   (MssmSoftsusy &, const DoubleVector &),
+                              double mxGuess,
+                              const DoubleVector & pars, int sgnMu, double tanb,
+                              const QedQcd & oneset, bool gaugeUnification,
+                              bool ewsbBCscale = false) {
+        mss->lowOrg(boundaryCondition, mxGuess, pars, sgnMu, tanb, oneset, 
+                    gaugeUnification, ewsbBCscale);
+    }
 } 
