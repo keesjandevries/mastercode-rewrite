@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from ctypes import cdll, c_int, c_double
+from ctypes import cdll, c_int, c_double, write_callback_prototype
 
 SPlib = cdll.LoadLibrary('./libmcsoftsusy.so')
 # set our return types
@@ -13,10 +13,12 @@ class ss_DoubleVector(object) :
         return SPlib.DoubleVector_display( self.obj, i )
     def __setitem__( self, index, value ) :
         SPlib.DoubleVector_set( self.obj, index, c_double(value) )
-
+ 
 class ss_MssmSoftsusy(object) :
     def __init__(self) :
         self.obj = SPlib.MssmSoftsusy_new()
+    def lowOrg(self) : # fuck
+        pass
 
 class ss_QedQcd(object) :
     def __init__(self) :
