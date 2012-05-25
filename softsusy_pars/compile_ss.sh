@@ -1,6 +1,9 @@
 MAINDIR=`pwd`  
 
 if [[ ! -h softsusy-3.3.1/.libs/libsoft.so ]]; then
+    if [[ ! -f softsusy-3.3.1.tar.gz ]]; then
+        wget http://www.hepforge.org/archive/softsusy/softsusy-3.3.1.tar.gz
+    fi
     if [[ ! -d softsusy-3.3.1 ]]; then
         tar zxf softsusy-3.3.1.tar.gz
     fi
