@@ -10,6 +10,10 @@ boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "generalBcs",
                        "lvsBcs", "nonUniGauginos", "userDefinedBcs",
                        "nonUniGauginos", ]
 
+SPSLHAlib = cdll.LoadLibrary('./libs/libmcsoftsusyslha.so')
+
+from interfaces.slha import SLHAfile
+
 class DoubleVector(object) :
     def __init__(self, size = 0) :
         self.obj = SPlib.DoubleVector_new( size )
@@ -38,6 +42,16 @@ class MssmSoftsusy(object) :
         SPlib.MssmSoftsusy_lesHouchesAccordOutput( self.obj, model, dv_pars.obj,
                                                    sgnMu, tanb, qMax, numPoints,
                                                    mgut, altEwsb )
+    def lesHouchesAccordOutputStream( self, model, dv_pars, sgnMu, tanb, qMax, 
+                                      numPoints, mgut, altEwsb, slhafile ) :
+        tanb = c_double(tanb)
+        qMax = c_double(qMax)
+        mgut = c_double(mgut)
+        model = c_char_p( model )
+        SPSLHAlib.MssmSoftsusy_lesHouchesAccordOutputStream( 
+            self.obj, model, dv_pars.obj, sgnMu, tanb, qMax, numPoints,
+            mgut, altEwsb, slhafile )
+
 
 class QedQcd(object) :
     def __init__(self) :

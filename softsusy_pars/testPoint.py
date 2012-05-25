@@ -1,4 +1,5 @@
 from interfaces.softsusy import (DoubleVector, MssmSoftsusy, QedQcd)
+from interfaces.slha import SLHAfile
 
 #! /usr/bin/env python
 # DoubleVector
@@ -18,4 +19,7 @@ oneset = QedQcd()
 oneset.setPoleMt(173.2)
 oneset.setMass(3,173.2)
 r.lowOrg( "sugraBcs", mgut, inputs, sgnMu, tanb, oneset, False )
-r.lesHouchesAccordOutput( "sugra", inputs, sgnMu, tanb, 91.1875,  1, mgut, False )
+#r.lesHouchesAccordOutput( "sugra", inputs, sgnMu, tanb, 91.1875,  1, mgut, False )
+
+slhafile = SLHAfile()
+r.lesHouchesAccordOutputStream( "sugra", inputs, sgnMu, tanb, 91.1875,  1, mgut, False, slhafile.obj )

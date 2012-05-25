@@ -31,8 +31,7 @@ bool SLHAfile::ReadFile( std::string mFileName, bool mVerbose ) {
 }
 
 bool SLHAfile::ReadStream(std::istream& myfile, bool mVerbose) {
-
-  this->clear(); //make sure when Reading a file that all existing info is erased
+  //this->clear(); //make sure when Reading a file that all existing info is erased
   
   std::string lLine; //this variable will contain the contents of a line
   

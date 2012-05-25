@@ -107,15 +107,15 @@ extern "C"
                               DoubleVector *pars, int sgnMu, double tanb,
                               QedQcd *oneset, bool gaugeUnification,
                               bool ewsbBCscale = false) {
-        void (*bC)( MssmSoftsusy &, const DoubleVector &) = boundaryCondition( bCond );
+        void (*bC)( MssmSoftsusy &, const DoubleVector &) = 
+            boundaryCondition( bCond );
         mss->lowOrg(bC, mxGuess, *pars, sgnMu, tanb, *oneset, 
                     gaugeUnification, ewsbBCscale);
     }
 
     void MssmSoftsusy_lesHouchesAccordOutput( MssmSoftsusy* mss, const char model[], 
 					  DoubleVector *pars, int sgnMu, double tanb, double qMax, 
-					  int numPoints, double mgut, bool altEwsb) {
-        //ostream & out
+					  int numPoints, double mgut, bool altEwsb ) {
         mss->lesHouchesAccordOutput( std::cout, model, *pars, sgnMu, tanb, qMax,
                                      numPoints, mgut, altEwsb );
     }

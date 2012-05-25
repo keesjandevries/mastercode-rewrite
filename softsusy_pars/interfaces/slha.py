@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from ctypes import cdll
-SLHAlib = cdll.LoadLibrary('./libs/libslhafile.so')
+SLHAlib = cdll.LoadLibrary('./libs/libmcslha.so')
 
 class SLHAfile(object):
     def __init__(self) :
