@@ -41,10 +41,13 @@ extern "C"
         qq->setMass(mno,m);
     } 
     void QedQcd_setAlpha(QedQcd *qq, leGauge ai, double ap) {
-        a(QedQcd *qq, ai) = ap; 
+        //  typedef enum {mUp=1, mCharm, mTop, mDown, mStrange, mBottom, mElectron,
+        //            mMuon, mTau} mass;
+        //  typedef enum {ALPHA=1, ALPHAS} leGauge;
+        qq->setAlpha(ai, ap);
     } 
     void QedQcd_set(QedQcd *qq, DoubleVector *dv) {
-        qq->set(&dv);
+        qq->set(*dv);
     }
         
     /*--------------*/
@@ -54,12 +57,12 @@ extern "C"
         return new MssmSoftsusy();
     }
 
-    void MssmSoftsusy_lowOrg( void (*boundaryCondition) 
-                                   (MssmSoftsusy &, const DoubleVector &),
-                              double mxGuess,
-                              const DoubleVector & pars, int sgnMu, double tanb,
-                              const QedQcd & oneset, bool gaugeUnification,
-                              bool ewsbBCscale = false) {
-
-    }
+//    void MssmSoftsusy_lowOrg( void (*boundaryCondition) 
+//                                   (MssmSoftsusy &, const DoubleVector &),
+//                              double mxGuess,
+//                              const DoubleVector & pars, int sgnMu, double tanb,
+//                              const QedQcd & oneset, bool gaugeUnification,
+//                              bool ewsbBCscale = false) {
+//
+//    }
 } 
