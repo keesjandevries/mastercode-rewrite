@@ -1,4 +1,4 @@
-from softsusy import (DoubleVector, MssmSoftsusy, QedQcd)
+from interfaces.softsusy import (DoubleVector, MssmSoftsusy, QedQcd)
 
 #! /usr/bin/env python
 # DoubleVector
