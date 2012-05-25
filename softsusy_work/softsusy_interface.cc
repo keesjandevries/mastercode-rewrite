@@ -18,23 +18,35 @@ extern "C"
         std::cout << pos << "," << val<< std::endl;
         (*dv)(pos) = val;
     }
+
     /*--------*/
     /* QedQcd */
     /*--------*/
     QedQcd* QedQcd_new() {
         return new QedQcd();
     }
-    void setPoleMt(double mt) { mtPole = mt; }; ///< set pole top mass
-    void setPoleMb(double mb) { mbPole = mb; }; ///< set pole bottom mass
-    void setPoleMtau(double mtau) { mtauPole = mtau; }; ///< set pole tau mass
-    void setMbMb(double mb)   { mbMb = mb;   }; ///< set mb(mb)
-    /// sets a running quark mass
-    void setMass(mass mno, double m) { mf(mno) = m; }; 
-    /// sets QED or QCD structure constant
-    void setAlpha(leGauge ai, double ap) { a(ai) = ap; }; 
-    /// For exporting beta functions to Runge-Kutta
-    void set(const DoubleVector &); 
-
+    void QedQcd_setPoleMt(QedQcd *qq, double mt) { 
+        qq->setPoleMt(mt); 
+    }
+    void QedQcd_setPoleMb(QedQcd *qq, double mb) {
+        qq->setPoleMb(mb); 
+    }
+    void QedQcd_setPoleMtau(QedQcd *qq, double mtau) {
+        qq->setPoleMtau(mtau); 
+    }
+    void QedQcd_setMbMb(QedQcd *qq, double mb)   {
+        qq->setMbMb(mb);   
+    }
+    void QedQcd_setMass(QedQcd *qq, mass mno, double m) {
+        qq->setMass(mno,m);
+    } 
+    void QedQcd_setAlpha(QedQcd *qq, leGauge ai, double ap) {
+        a(QedQcd *qq, ai) = ap; 
+    } 
+    void QedQcd_set(QedQcd *qq, DoubleVector *dv) {
+        qq->set(&dv);
+    }
+        
     /*--------------*/
     /* MssmSoftsusy */
     /*--------------*/
