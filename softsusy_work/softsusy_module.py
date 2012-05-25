@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from ctypes import cdll, c_int, c_double
+from ctypes import cdll, c_int, c_double, c_char_p
 
 SPlib = cdll.LoadLibrary('./libmcsoftsusy.so')
 # set our return types
@@ -21,14 +21,24 @@ class ss_DoubleVector(object) :
 class ss_MssmSoftsusy(object) :
     def __init__(self) :
         self.obj = SPlib.MssmSoftsusy_new()
-    def lowOrg(self, bCond, mxGuess, dv_pars, sgnMu, tanb, qq_oneset, gaugeUnification,
-               ewsbBCscale = False ) :
+    def lowOrg(self, bCond, mxGuess, dv_pars, sgnMu, tanb, qq_oneset,
+               gaugeUnification, ewsbBCscale = False ) :
         mxGuess = c_double(mxGuess)
         tanb = c_double(tanb)
         bC = boundaryConditions.index( bCond )
         SPlib.MssmSoftsusy_lowOrg( self.obj, bC, mxGuess, dv_pars.obj, sgnMu,
                                    tanb, qq_oneset.obj, gaugeUnification,
                                    ewsbBCscale )
+    def lesHouchesAccordOutput( self, model, dv_pars, sgnMu, tanb, qMax, 
+                                numPoints, mgut, altEwsb ) :
+        tanb = c_double(tanb)
+        qMax = c_double(qMax)
+        mgut = c_double(mgut)
+        model = c_char_p( model )
+        SPlib.MssmSoftsusy_lesHouchesAccordOutput( self.obj, model, dv_pars.obj,
+                                                   sgnMu, tanb, qMax, numPoints,
+                                                   mgut, altEwsb )
+            
 
 class ss_QedQcd(object) :
     def __init__(self) :
@@ -56,8 +66,10 @@ test = ss_DoubleVector(3)
 test[0] = 100.
 test[1] = 200.
 test[2] = 0.
+# other inputs
 tanb = 10.
 sgnMu = 1
+mgut = 2e16
 
 # setup MssmSoftusy object
 test_mm = ss_MssmSoftsusy()
@@ -66,4 +78,5 @@ test_mm = ss_MssmSoftsusy()
 test_qq = ss_QedQcd()
 test_qq.setPoleMt(173.2)
 test_qq.setMass(3,173.2)
-test_mm.lowOrg( "sugraBcs", 2e16, test, sgnMu, tanb, test_qq, False )
+test_mm.lowOrg( "sugraBcs", mgut, test, sgnMu, tanb, test_qq, False )
+test_mm.lesHouchesAccordOutput( "sugra", test, sgnMu, tanb, 91.1875,  1, mgut, False )

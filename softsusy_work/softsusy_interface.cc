@@ -121,4 +121,12 @@ extern "C"
         mss->lowOrg(bC, mxGuess, *pars, sgnMu, tanb, *oneset, 
                     gaugeUnification, ewsbBCscale);
     }
+
+    void MssmSoftsusy_lesHouchesAccordOutput( MssmSoftsusy* mss, const char model[], 
+					  DoubleVector *pars, int sgnMu, double tanb, double qMax, 
+					  int numPoints, double mgut, bool altEwsb) {
+        //ostream & out
+        mss->lesHouchesAccordOutput( std::cout, model, *pars, sgnMu, tanb, qMax,
+                                     numPoints, mgut, altEwsb );
+    }
 } 
