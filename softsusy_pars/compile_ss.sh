@@ -13,6 +13,7 @@ if [[ ! -h softsusy-3.3.1/.libs/libsoft.so ]]; then
     cd ${MAINDIR}
 fi
 
+
 # softsusy
 g++ -c -fPIC -o obj/softsusy.o interfaces/softsusy.cc \
     -I${MAINDIR}/softsusy-3.3.1/ -L${MAINDIR}/softsusy-3.3.1/.libs -lsoft
@@ -20,9 +21,11 @@ g++ -shared -Wl,-soname,libmcsoftsusy.so \
     -Wl,-rpath,${MAINDIR}/softsusy-3.3.1/.libs -o libs/libmcsoftsusy.so \
    obj/softsusy.o -L${MAINDIR}/softsusy-3.3.1/.libs -lsoft
 
+RFLAGS=`root-config --cflags --libs`
 # slha file
 g++ -c -fPIC -o obj/slha.o interfaces/slha.cc \
-    -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile
+    -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
+    ${RFLAGS}
 g++ -shared -Wl,-soname,libmcslha.so \
-    obj/slha.o -L${MAINDIR}/SLHA/libs -lSLHAfile
-    
+    obj/slha.o -L${MAINDIR}/SLHA/libs -lSLHAfile \
+    ${RFLAGS}
