@@ -12,11 +12,10 @@ extern "C"
         return new DoubleVector(sz);
     }
     double DoubleVector_display( DoubleVector* dv, int pos )  { 
-        return dv->display(pos); 
+        return dv->display(pos+1); 
     }
     void DoubleVector_set( DoubleVector* dv, int pos, double val )  { 
-        std::cout << pos << "," << val<< std::endl;
-        (*dv)(pos) = val;
+        (*dv)(pos+1) = val;
     }
 
     /*--------*/
@@ -59,39 +58,39 @@ extern "C"
             case 0 :
                 retval = &sugraBcs;
                 break;
-            case 1 :
-                retval = &extendedSugraBcs;
-                break;
-            case 2 :
-                retval = &extendedSugraBcs2;
-                break;
-            case 3 :
-                retval = &generalBcs;
-                break;
-            case 4 :
-                retval = &generalBcs2;
-                break;
-            case 5 :
-                retval = &amsbBcs;
-                break;
-            case 6 :
-                retval = &gmsbBcs;
-                break;
-            case 7 :
-                retval = &splitGmsb;
-                break;
-            case 8 :
-                retval = &lvsBcs;
-                break;
-            case 9 :
-                retval = &nonUniGauginos;
-                break;
-            case 10 :
-                retval = &userDefinedBcs;
-                break;
-            case 11 :
-                retval = &nonUniGauginos;
-                break;
+//            case 1 :
+//                retval = &extendedSugraBcs;
+//                break;
+//            case 2 :
+//                retval = &extendedSugraBcs2;
+//                break;
+//            case 3 :
+//                retval = &generalBcs;
+//                break;
+//            case 4 :
+//                retval = &generalBcs2;
+//                break;
+//            case 5 :
+//                retval = &amsbBcs;
+//                break;
+//            case 6 :
+//                retval = &gmsbBcs;
+//                break;
+//            case 7 :
+//                retval = &splitGmsb;
+//                break;
+//            case 8 :
+//                retval = &lvsBcs;
+//                break;
+//            case 9 :
+//                retval = &nonUniGauginos;
+//                break;
+//            case 10 :
+//                retval = &userDefinedBcs;
+//                break;
+//            case 11 :
+//                retval = &nonUniGauginos;
+//                break;
             default : 
                 std::cout << "Defaulting to sugra boundary conditions" << 
                     std::endl;
@@ -111,10 +110,17 @@ extern "C"
                               void (*boundaryCondition) 
                                    (MssmSoftsusy &, const DoubleVector &),
                               double mxGuess,
-                              const DoubleVector & pars, int sgnMu, double tanb,
-                              const QedQcd & oneset, bool gaugeUnification,
+                              DoubleVector *pars, int sgnMu, double tanb,
+                              QedQcd *oneset, bool gaugeUnification,
                               bool ewsbBCscale = false) {
-        mss->lowOrg(boundaryCondition, mxGuess, pars, sgnMu, tanb, oneset, 
+        std::cout << "mxGuess: " <<  mxGuess << std::endl; 
+        std::cout << "pars: " <<pars->display() << std::endl;
+        std::cout << "sgnMu: " <<sgnMu << std::endl; 
+        std::cout << "tanb: " <<tanb << std::endl; 
+        std::cout << "oneset: " <<oneset->display() << std::endl; 
+        std::cout << "gaugeUni: " <<gaugeUnification << std::endl; 
+        std::cout << "ewsbBCscale: " <<ewsbBCscale << std::endl; 
+        mss->lowOrg(boundaryCondition, mxGuess, *pars, sgnMu, tanb, *oneset, 
                     gaugeUnification, ewsbBCscale);
     }
 } 

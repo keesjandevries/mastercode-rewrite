@@ -24,13 +24,14 @@ class ss_MssmSoftsusy(object) :
         self.obj = SPlib.MssmSoftsusy_new()
     def setBoundaryCondition( self, bCond ) :
         self.boundaryCondition = SPlib.boundaryCondition( boundaryConditions.index( bCond ) )
-#    def lowOrg(self, mxGuess, dv_pars, sgnMu, tanb, qq_oneset, gaugeUnification,
-#               ewsbBCscale = False,  bCond = None) :
-#        mxGuess = c_double(mxGuess)
-#        tanb = c_double(tanb)
-#        if bCond is not None : self.setBoundaryCondition( bCond )
-#        SPlib.MssmSoftsusy_lowOrg( self.obj, self.boundaryCondition, mxGuess, 
-#                                   dv_pars.obj, sgnMu, tanb, qq_oneset.obj )
+    def lowOrg(self, mxGuess, dv_pars, sgnMu, tanb, qq_oneset, gaugeUnification,
+               ewsbBCscale = False,  bCond = None) :
+        mxGuess = c_double(mxGuess)
+        tanb = c_double(tanb)
+        if bCond is not None : self.setBoundaryCondition( bCond )
+        SPlib.MssmSoftsusy_lowOrg( self.obj, self.boundaryCondition, mxGuess, 
+                                   dv_pars.obj, sgnMu, tanb, qq_oneset.obj,
+                                   gaugeUnification, ewsbBCscale )
 
 class ss_QedQcd(object) :
     def __init__(self) :
@@ -55,12 +56,16 @@ class ss_QedQcd(object) :
 
 # test the DV
 test = ss_DoubleVector(3)
-print test[1]
-test[1] = 5
-print test[1]
+test[0] = 100.
+test[1] = 200.
+test[2] = 0.
+tanb = 10.
+sgnMu = 1
 
 # test the MSs obj
 test_mm = ss_MssmSoftsusy()
 test_qq = ss_QedQcd()
 test_qq.setPoleMt(173.2)
 test_qq.setMass(3,173.2)
+test_mm.setBoundaryCondition( "sugraBcs" )
+test_mm.lowOrg( 2e16, test, sgnMu, tanb, test_qq, False )
