@@ -1,4 +1,4 @@
-#include "SLHAFile.hh"
+#include "SLHAfile.hh"
 
 extern "C" {
     SLHAfile* SLHAfile_new(){ 
