@@ -13,7 +13,6 @@ if [[ ! -h softsusy-3.3.1/.libs/libsoft.so ]]; then
     cd ${MAINDIR}
 fi
 
-
 # softsusy
 g++ -c -fPIC -o obj/softsusy.o interfaces/softsusy.cc \
     -I${MAINDIR}/softsusy-3.3.1/ -L${MAINDIR}/softsusy-3.3.1/.libs -lsoft
