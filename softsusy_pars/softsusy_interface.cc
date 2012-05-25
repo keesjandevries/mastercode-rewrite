@@ -110,13 +110,6 @@ extern "C"
                               DoubleVector *pars, int sgnMu, double tanb,
                               QedQcd *oneset, bool gaugeUnification,
                               bool ewsbBCscale = false) {
-        std::cout << "mxGuess: " <<  mxGuess << std::endl; 
-        std::cout << "pars: " <<pars->display() << std::endl;
-        std::cout << "sgnMu: " <<sgnMu << std::endl; 
-        std::cout << "tanb: " <<tanb << std::endl; 
-        std::cout << "oneset: " <<oneset->display() << std::endl; 
-        std::cout << "gaugeUni: " <<gaugeUnification << std::endl; 
-        std::cout << "ewsbBCscale: " <<ewsbBCscale << std::endl; 
         void (*bC)( MssmSoftsusy &, const DoubleVector &) = boundaryCondition( bCond );
         mss->lowOrg(bC, mxGuess, *pars, sgnMu, tanb, *oneset, 
                     gaugeUnification, ewsbBCscale);
