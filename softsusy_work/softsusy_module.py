@@ -1,10 +1,15 @@
 #! /usr/bin/env python
 
-from ctypes import cdll, c_int, c_double, write_callback_prototype
+from ctypes import cdll, c_int, c_double
 
 SPlib = cdll.LoadLibrary('./libmcsoftsusy.so')
 # set our return types
 SPlib.DoubleVector_display.restype = c_double
+
+boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "extendedSugraBcs2",
+                       "generalBcs", "generalBcs2", "amsbBcs", "gmsbBcs",
+                       "splitGmsb", "lvsBcs", "nonUniGauginos", 
+                       "userDefinedBcs", "nonUniGauginos", ]
 
 class ss_DoubleVector(object) :
     def __init__(self, size = 0) :
@@ -17,8 +22,15 @@ class ss_DoubleVector(object) :
 class ss_MssmSoftsusy(object) :
     def __init__(self) :
         self.obj = SPlib.MssmSoftsusy_new()
-    def lowOrg(self) : # fuck
-        pass
+    def setBoundaryCondition( self, bCond ) :
+        self.boundaryCondition = SPlib.boundaryCondition( boundaryConditions.index( bCond ) )
+#    def lowOrg(self, mxGuess, dv_pars, sgnMu, tanb, qq_oneset, gaugeUnification,
+#               ewsbBCscale = False,  bCond = None) :
+#        mxGuess = c_double(mxGuess)
+#        tanb = c_double(tanb)
+#        if bCond is not None : self.setBoundaryCondition( bCond )
+#        SPlib.MssmSoftsusy_lowOrg( self.obj, self.boundaryCondition, mxGuess, 
+#                                   dv_pars.obj, sgnMu, tanb, qq_oneset.obj )
 
 class ss_QedQcd(object) :
     def __init__(self) :
