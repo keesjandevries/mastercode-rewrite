@@ -27,5 +27,6 @@ g++ -c -fPIC -o obj/slha.o interfaces/slha.cc \
     -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
     ${RFLAGS}
 g++ -shared -Wl,-soname,libmcslha.so \
+    -Wl,-rpath,${MAINDIR}/SLHA/libs -o libs/libmcslha.so \
     obj/slha.o -L${MAINDIR}/SLHA/libs -lSLHAfile \
     ${RFLAGS}
