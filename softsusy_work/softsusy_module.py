@@ -5,7 +5,6 @@ from ctypes import cdll, c_int, c_double
 SPlib = cdll.LoadLibrary('./libmcsoftsusy.so')
 # set our return types
 SPlib.DoubleVector_display.restype = c_double
-
 boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "extendedSugraBcs2",
                        "generalBcs", "generalBcs2", "amsbBcs", "gmsbBcs",
                        "splitGmsb", "lvsBcs", "nonUniGauginos", 
@@ -22,16 +21,14 @@ class ss_DoubleVector(object) :
 class ss_MssmSoftsusy(object) :
     def __init__(self) :
         self.obj = SPlib.MssmSoftsusy_new()
-    def setBoundaryCondition( self, bCond ) :
-        self.boundaryCondition = SPlib.boundaryCondition( boundaryConditions.index( bCond ) )
-    def lowOrg(self, mxGuess, dv_pars, sgnMu, tanb, qq_oneset, gaugeUnification,
-               ewsbBCscale = False,  bCond = None) :
+    def lowOrg(self, bCond, mxGuess, dv_pars, sgnMu, tanb, qq_oneset, gaugeUnification,
+               ewsbBCscale = False ) :
         mxGuess = c_double(mxGuess)
         tanb = c_double(tanb)
-        if bCond is not None : self.setBoundaryCondition( bCond )
-        SPlib.MssmSoftsusy_lowOrg( self.obj, self.boundaryCondition, mxGuess, 
-                                   dv_pars.obj, sgnMu, tanb, qq_oneset.obj,
-                                   gaugeUnification, ewsbBCscale )
+        bC = boundaryConditions.index( bCond )
+        SPlib.MssmSoftsusy_lowOrg( self.obj, bC, mxGuess, dv_pars.obj, sgnMu,
+                                   tanb, qq_oneset.obj, gaugeUnification,
+                                   ewsbBCscale )
 
 class ss_QedQcd(object) :
     def __init__(self) :
@@ -54,7 +51,7 @@ class ss_QedQcd(object) :
     def set( self, dv ) :
         SPlib.QedQcd_set( dv )
 
-# test the DV
+# DoubleVector
 test = ss_DoubleVector(3)
 test[0] = 100.
 test[1] = 200.
@@ -62,10 +59,11 @@ test[2] = 0.
 tanb = 10.
 sgnMu = 1
 
-# test the MSs obj
+# setup MssmSoftusy object
 test_mm = ss_MssmSoftsusy()
+
+# QedQcd object
 test_qq = ss_QedQcd()
 test_qq.setPoleMt(173.2)
 test_qq.setMass(3,173.2)
-test_mm.setBoundaryCondition( "sugraBcs" )
-test_mm.lowOrg( 2e16, test, sgnMu, tanb, test_qq, False )
+test_mm.lowOrg( "sugraBcs", 2e16, test, sgnMu, tanb, test_qq, False )

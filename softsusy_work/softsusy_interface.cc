@@ -3,6 +3,56 @@
 #include "softsusy-3.3.1/lowe.h"
 #include <iostream>
 
+/*--------------------*/
+/* BoundaryConditions */
+/*--------------------*/
+void (*boundaryCondition( int cond ))( MssmSoftsusy &, const DoubleVector &) {
+    void (*retval)(MssmSoftsusy &, const DoubleVector &);
+    switch (cond) {
+        case 0 :
+            retval = &sugraBcs;
+            break;
+//            case 1 :
+//                retval = &extendedSugraBcs;
+//                break;
+//            case 2 :
+//                retval = &extendedSugraBcs2;
+//                break;
+//            case 3 :
+//                retval = &generalBcs;
+//                break;
+//            case 4 :
+//                retval = &generalBcs2;
+//                break;
+//            case 5 :
+//                retval = &amsbBcs;
+//                break;
+//            case 6 :
+//                retval = &gmsbBcs;
+//                break;
+//            case 7 :
+//                retval = &splitGmsb;
+//                break;
+//            case 8 :
+//                retval = &lvsBcs;
+//                break;
+//            case 9 :
+//                retval = &nonUniGauginos;
+//                break;
+//            case 10 :
+//                retval = &userDefinedBcs;
+//                break;
+//            case 11 :
+//                retval = &nonUniGauginos;
+//                break;
+        default : 
+            std::cout << "Defaulting to sugra boundary conditions" << 
+                std::endl;
+            retval = &sugraBcs;
+    }
+    return retval;
+}
+
 extern "C" 
 {
     /*--------------*/
@@ -49,56 +99,6 @@ extern "C"
         qq->set(*dv);
     }
 
-    /*--------------------*/
-    /* BoundaryConditions */
-    /*--------------------*/
-    void (*boundaryCondition( int cond ))( MssmSoftsusy &, const DoubleVector &) {
-        void (*retval)(MssmSoftsusy &, const DoubleVector &);
-        switch (cond) {
-            case 0 :
-                retval = &sugraBcs;
-                break;
-//            case 1 :
-//                retval = &extendedSugraBcs;
-//                break;
-//            case 2 :
-//                retval = &extendedSugraBcs2;
-//                break;
-//            case 3 :
-//                retval = &generalBcs;
-//                break;
-//            case 4 :
-//                retval = &generalBcs2;
-//                break;
-//            case 5 :
-//                retval = &amsbBcs;
-//                break;
-//            case 6 :
-//                retval = &gmsbBcs;
-//                break;
-//            case 7 :
-//                retval = &splitGmsb;
-//                break;
-//            case 8 :
-//                retval = &lvsBcs;
-//                break;
-//            case 9 :
-//                retval = &nonUniGauginos;
-//                break;
-//            case 10 :
-//                retval = &userDefinedBcs;
-//                break;
-//            case 11 :
-//                retval = &nonUniGauginos;
-//                break;
-            default : 
-                std::cout << "Defaulting to sugra boundary conditions" << 
-                    std::endl;
-                retval = &sugraBcs;
-        }
-        return retval;
-    }
-
     /*--------------*/
     /* MssmSoftsusy */
     /*--------------*/
@@ -106,10 +106,7 @@ extern "C"
         return new MssmSoftsusy();
     }
 
-    void MssmSoftsusy_lowOrg( MssmSoftsusy* mss,
-                              void (*boundaryCondition) 
-                                   (MssmSoftsusy &, const DoubleVector &),
-                              double mxGuess,
+    void MssmSoftsusy_lowOrg( MssmSoftsusy* mss, int bCond, double mxGuess,
                               DoubleVector *pars, int sgnMu, double tanb,
                               QedQcd *oneset, bool gaugeUnification,
                               bool ewsbBCscale = false) {
@@ -120,7 +117,8 @@ extern "C"
         std::cout << "oneset: " <<oneset->display() << std::endl; 
         std::cout << "gaugeUni: " <<gaugeUnification << std::endl; 
         std::cout << "ewsbBCscale: " <<ewsbBCscale << std::endl; 
-        mss->lowOrg(boundaryCondition, mxGuess, *pars, sgnMu, tanb, *oneset, 
+        void (*bC)( MssmSoftsusy &, const DoubleVector &) = boundaryCondition( bCond );
+        mss->lowOrg(bC, mxGuess, *pars, sgnMu, tanb, *oneset, 
                     gaugeUnification, ewsbBCscale);
     }
 } 
