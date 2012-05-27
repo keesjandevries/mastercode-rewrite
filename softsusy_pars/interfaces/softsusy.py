@@ -2,13 +2,17 @@
 
 from ctypes import cdll, c_int, c_double, c_char_p
 
-SPlib = cdll.LoadLibrary('./libmcsoftsusy.so')
+SPlib = cdll.LoadLibrary('./libs/libmcsoftsusy.so')
 # set our return types
 SPlib.DoubleVector_display.restype = c_double
 boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "generalBcs",
                        "generalBcs2", "amsbBcs", "gmsbBcs", "splitGmsb",
                        "lvsBcs", "nonUniGauginos", "userDefinedBcs",
                        "nonUniGauginos", ]
+
+SPSLHAlib = cdll.LoadLibrary('./libs/libmcsoftsusyslha.so')
+
+from interfaces.slha import SLHAfile
 
 class DoubleVector(object) :
     def __init__(self, size = 0) :
@@ -38,6 +42,16 @@ class MssmSoftsusy(object) :
         SPlib.MssmSoftsusy_lesHouchesAccordOutput( self.obj, model, dv_pars.obj,
                                                    sgnMu, tanb, qMax, numPoints,
                                                    mgut, altEwsb )
+    def lesHouchesAccordOutputStream( self, model, dv_pars, sgnMu, tanb, qMax, 
+                                      numPoints, mgut, altEwsb, slhafile ) :
+        tanb = c_double(tanb)
+        qMax = c_double(qMax)
+        mgut = c_double(mgut)
+        model = c_char_p( model )
+        SPSLHAlib.MssmSoftsusy_lesHouchesAccordOutputStream( 
+            self.obj, model, dv_pars.obj, sgnMu, tanb, qMax, numPoints,
+            mgut, altEwsb, slhafile )
+
 
 class QedQcd(object) :
     def __init__(self) :
