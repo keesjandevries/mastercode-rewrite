@@ -22,4 +22,6 @@ r.lowOrg( "sugraBcs", mgut, inputs, sgnMu, tanb, oneset, False )
 #r.lesHouchesAccordOutput( "sugra", inputs, sgnMu, tanb, 91.1875,  1, mgut, False )
 
 slhafile = SLHAfile()
+slhafile.ReadFile("")
 r.lesHouchesAccordOutputStream( "sugra", inputs, sgnMu, tanb, 91.1875,  1, mgut, False, slhafile.obj )
+print slhafile
