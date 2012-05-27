@@ -25,7 +25,7 @@ bool SLHAfile::ReadFile( std::string mFileName, bool mVerbose ) {
         mFileStream.close();
     }
     else { 
-        std::cout << "Unable to open file"; 
+        std::cout << "Unable to open file" << std::endl;
     }
     return state;
 }
