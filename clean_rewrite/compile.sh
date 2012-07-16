@@ -54,6 +54,13 @@ function compile_feynhiggs {
     echo "Done"
 }
 
+function compile_feynhiggs_interfaces {
+    g++ -c -fPIC -o obj/feynhiggs.o interfaces/feynhiggs.cc \
+        -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH
+    #g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfenyhiggs.so \
+        #obj/fenyhiggs.o -L${MAINDIR}/packages/lib64 -lFH
+}
+
 
 function compile_softsusy_interfaces {
     g++ -c -fPIC -o obj/softsusy.o interfaces/softsusy.cc \
@@ -90,9 +97,10 @@ function compile_joint_interfaces {
 }
 
 
-compile_softsusy
-compile_softsusy_interfaces
-compile_slha_interfaces
-compile_joint_interfaces
+#compile_softsusy
+#compile_softsusy_interfaces
+#compile_slha_interfaces
+#compile_joint_interfaces
 
-compile_feynhiggs
+#compile_feynhiggs
+compile_feynhiggs_interfaces
