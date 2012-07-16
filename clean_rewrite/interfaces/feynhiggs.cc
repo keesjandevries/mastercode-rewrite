@@ -4,8 +4,11 @@
 #include "CSLHA.h"
 
 extern "C" {
-    void foo(){
-        bool bar = true;
-        std::cout << "LUL" << std::endl;
+    void new_COMPLEX(double re, double im) {
+       return new COMPLEX(re,im); 
     }
+
+    void slharead(int *error, COMPLEX *slhadata, const char *filename, const int abort){
+        SLHARead(error,slhadata,filename,abort)
+    {
 }
