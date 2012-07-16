@@ -1,16 +1,16 @@
-
 #! /usr/bin/env python
 
 from ctypes import cdll, c_double, c_char_p, c_int, byref, POINTER
+from array import array
 FHlib = cdll.LoadLibrary('./libs/libFH.so')
 #FHlib = cdll.LoadLibrary('./libtest.so')
 
 # constant stolen from FeynHiggs... fortran wow...
-nslhadata = c_int(5426)
+nslhadata = c_int(5558)
 
 def slharead( filename ) :
     filename = "post_ss.slha"
-    
+
     error = c_int(0)
     slhadata = (c_double*nslhadata.value)()
     f_filename = c_char_p(filename)
