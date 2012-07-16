@@ -1,0 +1,23 @@
+--- /home/hyper/ftypes.h	2012-07-16 14:22:37.313464046 +0100
++++ src/include/ftypes.h	2012-07-16 14:22:50.226798126 +0100
+@@ -81,7 +81,7 @@
+ #define Re(x) std::real(x)
+ #define Im(x) std::imag(x)
+ 
+-#elseif __STDC_VERSION__ >= 199901L
++#elif __STDC_VERSION__ >= 199901L
+ 
+ #include <complex.h>
+ typedef Real complex Complex;
+--- /home/hyper/CFeynHiggs.h.in	2012-07-16 14:20:39.380123878 +0100
++++ src/include/CFeynHiggs.h.in	2012-07-16 14:30:48.606825847 +0100
+@@ -627,7 +627,8 @@
+ 
+ static inline void FHLoadTable(int *error, const char *inputfile)
+ {
+-  FORTRAN(fhloadtable)(error, inputfile, (int[]){0}, strlen(inputfile));
++  int fh_tint [] = {0};
++  FORTRAN(fhloadtable)(error, inputfile, fh_tint, strlen(inputfile));
+ }
+ 
+ 
