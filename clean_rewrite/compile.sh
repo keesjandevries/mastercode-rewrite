@@ -102,5 +102,5 @@ function compile_joint_interfaces {
 #compile_slha_interfaces
 #compile_joint_interfaces
 
-#compile_feynhiggs
+compile_feynhiggs
 compile_feynhiggs_interfaces
