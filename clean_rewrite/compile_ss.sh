@@ -2,8 +2,8 @@
 
 function compile_softsusy {
     if [[ ! -h packages/lib/libsoft.so ]]; then
-        if [[ ! -f ${SOFTSUSY_BASE}.tar.gz ]]; then
-            wget ${SOFTUSY_TARGET}
+        if [[ ! -f tars/${SOFTSUSY_BASE}.tar.gz ]]; then
+            wget -P tars/ ${SOFTUSY_TARGET}
         fi
         if [[ ! -d ${SOFTSUSY_BASE} ]]; then
             tar zxf ${SOFTSUSY_BASE}.tar.gz
