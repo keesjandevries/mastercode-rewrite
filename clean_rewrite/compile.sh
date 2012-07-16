@@ -57,8 +57,8 @@ function compile_feynhiggs {
 function compile_feynhiggs_interfaces {
     g++ -c -fPIC -o obj/feynhiggs.o interfaces/feynhiggs.cc \
         -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH
-    #g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfenyhiggs.so \
-        #obj/fenyhiggs.o -L${MAINDIR}/packages/lib64 -lFH
+    g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfeynhiggs.so \
+        obj/feynhiggs.o -L${MAINDIR}/packages/lib64 -lFH
 }
 
 
