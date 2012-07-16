@@ -20,7 +20,7 @@ function compile_softsusy_interfaces {
     g++ -c -fPIC -o obj/softsusy.o interfaces/softsusy.cc \
         -I${MAINDIR}/packages/include/softsusy/ -L${MAINDIR}/packages/lib -lsoft
     g++ -shared -Wl,-soname,libmcsoftsusy.so \
-        -Wl,-rpath,${MAINDIR}/packages/libs -o libs/libmcsoftsusy.so \
+        -Wl,-rpath,${MAINDIR}/packages/lib -o libs/libmcsoftsusy.so \
        obj/softsusy.o -L${MAINDIR}/packages/lib -lsoft
 }
 
