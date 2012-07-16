@@ -50,9 +50,9 @@ function compile_joint_interfaces {
 
 MAINDIR=`pwd`  
 SOFTSUSY_VERSION="3.3.1"
-SOFTSUSY_TARGET="http://www.hepforge.org/archive/softsusy/\
-                 softsusy-${SOFTSUSY_VERSION}.tar.gz"
 SOFTSUSY_BASE="softsusy-${SOFTSUSY_VERSION}"
+SOFTSUSY_TARGET="http://www.hepforge.org/archive/softsusy/\
+                 ${SOFTSUSY_BASE}.tar.gz"
 RFLAGS=`root-config --cflags --libs`
 
 compile_softsusy
