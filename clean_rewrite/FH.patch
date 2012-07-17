@@ -1,6 +1,18 @@
+diff -rwupN FeynHiggs-2.9.1_2/makefile.in FeynHiggs-2.9.1/makefile.in
+--- FeynHiggs-2.9.1_2/makefile.in	2012-07-17 10:38:38.003419900 +0100
++++ FeynHiggs-2.9.1/makefile.in	2012-07-17 11:33:46.413611608 +0100
+@@ -13,7 +13,7 @@ ARGS = $(PARALLEL) \
+   NOUNDERSCORE="$(NOUNDERSCORE)" \
+   EXE="$(EXE)" \
+   FC="$(FC)" \
+-  FFLAGS="$(FFLAGS) $(DEF)GM2FULL=$(GM2FULL) $(DEF)SLHAPARA=$(SLHAPARA) $(DEF)VT100=$(VT100)" \
++  FFLAGS="$(FFLAGS) $(DEF)GM2FULL=$(GM2FULL) $(DEF)SLHAPARA=$(SLHAPARA) $(DEF)VT100=$(VT100) -fPIC" \
+   CC="$(CC)" \
+   CFLAGS="$(CFLAGS) -DNOUNDERSCORE=$(NOUNDERSCORE) -DVT100=$(VT100)" \
+   CXX="$(CXX)" \
 diff -rwupN FeynHiggs-2.9.1_2/src/include/CFeynHiggs.h.in FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in
 --- FeynHiggs-2.9.1_2/src/include/CFeynHiggs.h.in	2012-07-17 10:38:38.006753232 +0100
-+++ FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in	2012-07-17 10:38:59.310087798 +0100
++++ FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in	2012-07-17 11:37:03.930289719 +0100
 @@ -2,7 +2,7 @@
  	CFeynHiggs.h
  		C/C++ wrapper functions for the FH subroutines
@@ -22,7 +34,7 @@ diff -rwupN FeynHiggs-2.9.1_2/src/include/CFeynHiggs.h.in FeynHiggs-2.9.1/src/in
  
 diff -rwupN FeynHiggs-2.9.1_2/src/include/ftypes.h FeynHiggs-2.9.1/src/include/ftypes.h
 --- FeynHiggs-2.9.1_2/src/include/ftypes.h	2012-07-17 10:38:38.006753232 +0100
-+++ FeynHiggs-2.9.1/src/include/ftypes.h	2012-07-17 10:39:12.966755256 +0100
++++ FeynHiggs-2.9.1/src/include/ftypes.h	2012-07-17 11:37:03.930289719 +0100
 @@ -81,7 +81,7 @@ typedef std::complex<Real> Complex;
  #define Re(x) std::real(x)
  #define Im(x) std::imag(x)
