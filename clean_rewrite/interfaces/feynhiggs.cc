@@ -1,6 +1,7 @@
 #include <iostream>
 #include <complex>
 #include <string>
+#include <fstream>
 
 #include "CFeynHiggs.h"
 #include "CSLHA.h"
@@ -12,15 +13,24 @@ extern "C" {
             int tanbren, int higgsmix, int p2approx, int looplevel,
             int tl_running_mt, int tl_bot_resum) {
 
+        //std::ifstream myfile(slhafilename);
+        //std::string line;
+        //while(myfile.good()){
+            //getline(myfile,line);
+        //}
+
         COMPLEX slhadata[fh_interface_nslhadata]; // stupid typedefs: not a true constructor
         int error;
         const int abort(0);
         FHSetDebug(0);
 
+        std::cout << "FHSetFlags" << std::endl;
         FHSetFlags(&error, mssmpart, fieldren, tanbren, higgsmix, p2approx, looplevel,
                 tl_running_mt, tl_bot_resum, 0);
 
+        std::cout << "SLHARead " << slhafilename << std::endl;
         SLHARead(&error, slhadata, slhafilename, abort);
+        std::cout << "FHSetSLHA" << std::endl;
         FHSetSLHA(&error, slhadata);
 
         //for(int p=0; p<fh_interface_nslhadata; ++p) {
