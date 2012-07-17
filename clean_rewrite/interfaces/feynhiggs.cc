@@ -12,16 +12,18 @@ extern "C" {
         // Check new interfaces in 2.9.1
         //COMPLEX slhadata();
 
-        COMPLEX slhadata; // stupid typedefs: not a true constructor
+        COMPLEX* slhadata = new COMPLEX[5558]; // stupid typedefs: not a true constructor
         int error;
         const int abort(0);
         std::cout << slhafilename << std::endl;
+        slhafilename = "post_ss.slha";
+        std::cout << slhafilename << std::endl;
 
-        std::string sfn(slhafilename);
-        const char* lol = sfn.c_str();
+        //std::string sfn(slhafilename);
+        //const char* lol = sfn.c_str();
 
-        std::cout << lol << std::endl;
-        SLHARead( &error, &slhadata, lol, abort);
+        //std::cout << lol << std::endl;
+        SLHARead( &error, slhadata, slhafilename, abort);
     }
 
 }
