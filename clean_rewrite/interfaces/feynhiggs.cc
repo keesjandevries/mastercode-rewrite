@@ -6,10 +6,9 @@
 #include "CSLHA.h"
 
 extern "C" {
-    void initFH(const char slhafilename [], int* mssmpart, int fieldren,
+    void initFH(const char slhafilename [], int mssmpart, int fieldren,
             int tanbren, int higgsmix, int p2approx, int looplevel,
             int tl_running_mt, int tl_bot_resum) {
-        std::cout << mssmpart << std::endl;
 
         COMPLEX slhadata[5558]; // stupid typedefs: not a true constructor
         int error;
