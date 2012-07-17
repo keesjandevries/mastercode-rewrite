@@ -1,24 +1,27 @@
 #include <iostream>
 #include <complex>
+#include <string>
 
 #include "CFeynHiggs.h"
 #include "CSLHA.h"
 
 extern "C" {
-    // this needs to be a c-interface that hides all of the implementation from python
-    // which sucks, can't pass out from the .a file so this is literally just
-    // going to have to be a "RUN", "GET VALUES" where it copies out hte values
-    // to we don't get relocate errors
+    void initFH(const char slhafilename []) {
+        // FHSetDebug(0)
+        // FHSetFlags / FHSetFlagString
+        // Check new interfaces in 2.9.1
+        //COMPLEX slhadata();
 
-    //std::complex<double>* COMPLEX_new(double re, double im) {
-       //return new std::complex<double>(re,im);
-    //}
+        COMPLEX slhadata; // stupid typedefs: not a true constructor
+        int error;
+        const int abort(0);
+        std::cout << slhafilename << std::endl;
 
-    //void slharead(int error, COMPLEX slhadata, const char filename,
-            //const int abort){
-        //SLHARead(&error,&slhadata,&filename,abort);
-    //}
+        std::string sfn(slhafilename);
+        const char* lol = sfn.c_str();
 
-    void initFH(std::string slhafilename) {
+        std::cout << lol << std::endl;
+        SLHARead( &error, &slhadata, lol, abort);
     }
+
 }
