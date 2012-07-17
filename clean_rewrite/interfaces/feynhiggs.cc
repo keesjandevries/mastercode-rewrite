@@ -5,43 +5,43 @@
 #include "CFeynHiggs.h"
 #include "CSLHA.h"
 
+const int fh_interface_nslhadata = 5558;
+
 extern "C" {
-    void initFH(const char slhafilename [], int mssmpart, int fieldren,
+    void run_feynhiggs(const char slhafilename [], int mssmpart, int fieldren,
             int tanbren, int higgsmix, int p2approx, int looplevel,
             int tl_running_mt, int tl_bot_resum) {
 
-        COMPLEX slhadata[5558]; // stupid typedefs: not a true constructor
+        COMPLEX slhadata[fh_interface_nslhadata]; // stupid typedefs: not a true constructor
         int error;
         const int abort(0);
         FHSetDebug(0);
 
-        //CALL FHSETFLAGS( ERROR, MSSMPART_IN, FIELDREN_IN, TANBREN_IN,
-        //&     HIGGSMIX_IN, P2APPROX_IN, LOOPLEVEL_IN, TL_RUNNING_MT_IN, 
-        //&     TL_BOT_RESUM_IN, 0 )
         FHSetFlags(&error, mssmpart, fieldren, tanbren, higgsmix, p2approx, looplevel,
                 tl_running_mt, tl_bot_resum, 0);
 
-        //CALL SLHAREAD(ERROR, SLHADATA, SLHAFILENAME, 1)
         SLHARead(&error, slhadata, slhafilename, abort);
-
-        //call FHSetSLHA( error, slhadata )
         FHSetSLHA(&error, slhadata);
 
-        //call FHHiggsCorr(error, MHiggs, SAeff, UHiggs, ZHiggs)
+        //for(int p=0; p<fh_interface_nslhadata; ++p) {
+            //if(slhadata[p].re != -999) {
+                //std::cout << slhadata[p].re << ", " << slhadata[p].im <<
+                    //std::endl;
+            //}
+        //}
+
         double mhiggs[4];
         Complex SAeff;
         Complex UHiggs[3][3];
         Complex ZHiggs[3][3];
         FHHiggsCorr(&error, mhiggs, &SAeff, UHiggs, ZHiggs);
 
-        //SPECTRUM(31) = Mass_Mh0
-        //SPECTRUM(32) = Mass_MHH
-        //SPECTRUM(33) = Mass_MA0
-        //SPECTRUM(34) = Mass_MHp
-        
-        //CALL FHConstraints(error, gm2, Deltarho, MWMSSM, MWSM, SW2MSSM, 
-        //&     SW2SM, edmeTh, edmn, edmHg )
-        //FHConstraints(...);
+        double gm2, Deltarho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn,
+               edmHg;
+        int ccb;
+        FHConstraints(&error, &gm2, &Deltarho, &MWMSSM, &MWSM, &SW2MSSM,
+                &SW2SM, &edmeTh, &edmn, &edmHg, &ccb);
+        std::cout << gm2 << std::endl;
         
         if(error != 0) {
             // FH has failed
