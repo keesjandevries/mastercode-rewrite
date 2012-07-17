@@ -1,6 +1,29 @@
---- /home/hyper/ftypes.h	2012-07-16 14:22:37.313464046 +0100
-+++ src/include/ftypes.h	2012-07-16 14:22:50.226798126 +0100
-@@ -81,7 +81,7 @@
+diff -rwupN FeynHiggs-2.9.1_2/src/include/CFeynHiggs.h.in FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in
+--- FeynHiggs-2.9.1_2/src/include/CFeynHiggs.h.in	2012-07-17 10:38:38.006753232 +0100
++++ FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in	2012-07-17 10:38:59.310087798 +0100
+@@ -2,7 +2,7 @@
+ 	CFeynHiggs.h
+ 		C/C++ wrapper functions for the FH subroutines
+ 		this file is part of FeynHiggs
+-		last modified 26 Jun 12 th
++		last modified 16 Jul 12 th
+ */
+ 
+ 
+@@ -627,7 +627,8 @@ static inline void FHRetrieveRecord(int
+ 
+ static inline void FHLoadTable(int *error, const char *inputfile)
+ {
+-  FORTRAN(fhloadtable)(error, inputfile, (int[]){0}, strlen(inputfile));
++  int inputunit = 5;
++  FORTRAN(fhloadtable)(error, inputfile, &inputunit, strlen(inputfile));
+ }
+ 
+ 
+diff -rwupN FeynHiggs-2.9.1_2/src/include/ftypes.h FeynHiggs-2.9.1/src/include/ftypes.h
+--- FeynHiggs-2.9.1_2/src/include/ftypes.h	2012-07-17 10:38:38.006753232 +0100
++++ FeynHiggs-2.9.1/src/include/ftypes.h	2012-07-17 10:39:12.966755256 +0100
+@@ -81,7 +81,7 @@ typedef std::complex<Real> Complex;
  #define Re(x) std::real(x)
  #define Im(x) std::imag(x)
  
@@ -9,15 +32,3 @@
  
  #include <complex.h>
  typedef Real complex Complex;
---- /home/hyper/CFeynHiggs.h.in	2012-07-16 14:20:39.380123878 +0100
-+++ src/include/CFeynHiggs.h.in	2012-07-16 14:30:48.606825847 +0100
-@@ -627,7 +627,8 @@
- 
- static inline void FHLoadTable(int *error, const char *inputfile)
- {
--  FORTRAN(fhloadtable)(error, inputfile, (int[]){0}, strlen(inputfile));
-+  int fh_tint [] = {0};
-+  FORTRAN(fhloadtable)(error, inputfile, fh_tint, strlen(inputfile));
- }
- 
- 
