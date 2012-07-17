@@ -60,7 +60,15 @@ def testPoint() :
             softsusy(m0=100, m12=200, A0=0., tanb=10., sgnMu=1, mgut=2e16,
                     outputfile=pipe_name)
         else:
-# this code does get executed but FH seems to die (imagine related to pipes)
+            import sys
+            so = open("fh.stdout", 'w', 0)
+            se = open("fh.stderr", 'w', 0)
+            sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+            sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', 0)
+            os.dup2(so.fileno(), sys.stdout.fileno())
+            os.dup2(se.fileno(), sys.stderr.fileno())
+
+            # this code does get executed but FH seems to die (imagine related to pipes)
             run_feynhiggs(pipe_name)
 
         os.unlink(pipe_name)
