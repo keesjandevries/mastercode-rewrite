@@ -21,36 +21,34 @@ class DoubleVector(object) :
         return SPlib.DoubleVector_display( self.obj, i )
     def __setitem__( self, index, value ) :
         SPlib.DoubleVector_set( self.obj, index, c_double(value) )
- 
+
 class MssmSoftsusy(object) :
     def __init__(self) :
         self.obj = SPlib.MssmSoftsusy_new()
     def lowOrg(self, bCond, mxGuess, dv_pars, sgnMu, tanb, qq_oneset,
-               gaugeUnification, ewsbBCscale = False ) :
+            gaugeUnification, ewsbBCscale = False ) :
         mxGuess = c_double(mxGuess)
         tanb = c_double(tanb)
         bC = boundaryConditions.index( bCond )
         SPlib.MssmSoftsusy_lowOrg( self.obj, bC, mxGuess, dv_pars.obj, sgnMu,
-                                   tanb, qq_oneset.obj, gaugeUnification,
-                                   ewsbBCscale )
-    def lesHouchesAccordOutput( self, model, dv_pars, sgnMu, tanb, qMax, 
-                                numPoints, mgut, altEwsb ) :
+                tanb, qq_oneset.obj, gaugeUnification, ewsbBCscale )
+    def lesHouchesAccordOutput( self, model, dv_pars, sgnMu, tanb, qMax,
+            numPoints, mgut, altEwsb ) :
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
         model = c_char_p( model )
-        SPlib.MssmSoftsusy_lesHouchesAccordOutput( self.obj, model, dv_pars.obj,
-                                                   sgnMu, tanb, qMax, numPoints,
-                                                   mgut, altEwsb )
-    def lesHouchesAccordOutputStream( self, model, dv_pars, sgnMu, tanb, qMax, 
-                                      numPoints, mgut, altEwsb, slhafile ) :
+        SPlib.MssmSoftsusy_lesHouchesAccordOutput( self.obj, model,
+                dv_pars.obj, sgnMu, tanb, qMax, numPoints, mgut, altEwsb )
+    def lesHouchesAccordOutputStream( self, model, dv_pars, sgnMu, tanb, qMax,
+            numPoints, mgut, altEwsb, slhafile ) :
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
         model = c_char_p( model )
-        SPSLHAlib.MssmSoftsusy_lesHouchesAccordOutputStream( 
-            self.obj, model, dv_pars.obj, sgnMu, tanb, qMax, numPoints,
-            mgut, altEwsb, slhafile )
+        SPSLHAlib.MssmSoftsusy_lesHouchesAccordOutputStream( self.obj, model,
+                dv_pars.obj, sgnMu, tanb, qMax, numPoints, mgut, altEwsb,
+                slhafile )
 
 
 class QedQcd(object) :
