@@ -35,7 +35,7 @@ def main( argv=None ) :
     feynhiggs_module.FHlib.fhsetdebug_(byref(y))
     feynhiggs_module.slharead( pipe_name )
     print "lololol3"
-    
+
 
     return 0
 
