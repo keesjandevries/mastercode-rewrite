@@ -13,24 +13,15 @@ extern "C" {
             int tanbren, int higgsmix, int p2approx, int looplevel,
             int tl_running_mt, int tl_bot_resum) {
 
-        //std::ifstream myfile(slhafilename);
-        //std::string line;
-        //while(myfile.good()){
-            //getline(myfile,line);
-        //}
-
         COMPLEX slhadata[fh_interface_nslhadata]; // stupid typedefs: not a true constructor
         int error;
         const int abort(0);
         FHSetDebug(0);
 
-        std::cout << "FHSetFlags" << std::endl;
         FHSetFlags(&error, mssmpart, fieldren, tanbren, higgsmix, p2approx, looplevel,
                 tl_running_mt, tl_bot_resum, 0);
 
-        std::cout << "SLHARead " << slhafilename << std::endl;
         SLHARead(&error, slhadata, slhafilename, abort);
-        std::cout << "FHSetSLHA" << std::endl;
         FHSetSLHA(&error, slhadata);
 
         //for(int p=0; p<fh_interface_nslhadata; ++p) {
@@ -54,11 +45,17 @@ extern "C" {
         std::cout << "(g-2)_mu = " <<  gm2 << std::endl;
         
         if(error != 0) {
+            std::cout << "FH FAILED" << std::endl;
             // FH has failed
+        }
+        else {
+            std::cout << "FH SUCCESS" << std::endl;
         }
 
         const char lulz[] = "feyn_out.slha";
+        std::cout << "Writing FH SLHA" << std::endl;
         SLHAWrite(&error, slhadata, lulz);
+        std::cout << "Wrote FH SLHA" << std::endl;
     }
 
 }

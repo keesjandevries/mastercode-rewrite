@@ -44,6 +44,7 @@ def softsusy(m0, m12, A0, tanb, sgnMu, mgut, outputfile=None):
 def feynhiggs(filename):
     mcoutput.header('feynhiggs')
     run_feynhiggs(filename)
+    return
 
 
 def testPoint() :
@@ -74,6 +75,7 @@ def testPoint() :
 
         # this code does get executed but FH seems to die (imagine related to pipes)
         feynhiggs(pipe_name)
+        print "IM LOLLING"
         os.exit(0)
 
 

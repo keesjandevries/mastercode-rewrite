@@ -18,6 +18,7 @@ tl_bot_resum = 1
 def run_feynhiggs(filename) :
     FHlib.run_feynhiggs(filename, mssmpart, fieldren, tanbren, higgsmix,
             p2approx, looplevel, Tl_mt, tl_bot_resum)
+    return
 
 if __name__=='__main__':
     run_feynhiggs('post_ss.slha')
