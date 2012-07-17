@@ -6,13 +6,12 @@
 #include "CSLHA.h"
 
 extern "C" {
-    void initFH(const char slhafilename []) {
-        // FHSetDebug(0)
-        // FHSetFlags / FHSetFlagString
-        // Check new interfaces in 2.9.1
-        //COMPLEX slhadata();
+    void initFH(const char slhafilename [], int* mssmpart, int fieldren,
+            int tanbren, int higgsmix, int p2approx, int looplevel,
+            int tl_running_mt, int tl_bot_resum) {
+        std::cout << mssmpart << std::endl;
 
-        COMPLEX* slhadata = new COMPLEX[5558]; // stupid typedefs: not a true constructor
+        COMPLEX slhadata[5558]; // stupid typedefs: not a true constructor
         int error;
         const int abort(0);
         FHSetDebug(0);
@@ -20,20 +19,8 @@ extern "C" {
         //CALL FHSETFLAGS( ERROR, MSSMPART_IN, FIELDREN_IN, TANBREN_IN,
         //&     HIGGSMIX_IN, P2APPROX_IN, LOOPLEVEL_IN, TL_RUNNING_MT_IN, 
         //&     TL_BOT_RESUM_IN, 0 )
-        FHSetFlags(); // update as below [master_predict_new2.F]
-
-        /* from masterfitter/utils.F */
-        //OPEN(UNIT=UNIT_TO_USE,file='steer_parameter.txt')
-        //PRINT*,'FILE OPENED PARA'
-        //READ(UNIT_TO_USE,'(a)') DUMMY
-        //READ(UNIT_TO_USE,*) mssmpart_in 
-        //READ(UNIT_TO_USE,*) fieldren_in
-        //READ(UNIT_TO_USE,*) tanbren_in
-        //READ(UNIT_TO_USE,*) higgsmix_in
-        //READ(UNIT_TO_USE,*) p2approx_in
-        //READ(UNIT_TO_USE,*) looplevel_in
-        //READ(UNIT_TO_USE,*) tl_running_mt_in
-        //READ(UNIT_TO_USE,*) tl_bot_resum_in
+        FHSetFlags(&error, mssmpart, fieldren, tanbren, higgsmix, p2approx, looplevel,
+                tl_running_mt, tl_bot_resum, 0);
 
         //CALL SLHAREAD(ERROR, SLHADATA, SLHAFILENAME, 1)
         SLHARead(&error, slhadata, slhafilename, abort);
@@ -42,7 +29,11 @@ extern "C" {
         FHSetSLHA(&error, slhadata);
 
         //call FHHiggsCorr(error, MHiggs, SAeff, UHiggs, ZHiggs)
-        FHHiggsCorr(error, ...);
+        double mhiggs[4];
+        Complex SAeff;
+        Complex UHiggs[3][3];
+        Complex ZHiggs[3][3];
+        FHHiggsCorr(&error, mhiggs, &SAeff, UHiggs, ZHiggs);
 
         //SPECTRUM(31) = Mass_Mh0
         //SPECTRUM(32) = Mass_MHH
@@ -51,13 +42,14 @@ extern "C" {
         
         //CALL FHConstraints(error, gm2, Deltarho, MWMSSM, MWSM, SW2MSSM, 
         //&     SW2SM, edmeTh, edmn, edmHg )
-        FHConstraints(...);
+        //FHConstraints(...);
         
         if(error != 0) {
             // FH has failed
         }
 
-        SLHAWrite( error, slhadata, slhafile )
+        const char lulz[] = "feyn_out.slha";
+        SLHAWrite(&error, slhadata, lulz);
     }
 
 }
