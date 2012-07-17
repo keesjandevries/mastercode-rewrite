@@ -48,7 +48,7 @@ def feynhiggs(filename):
 
 def testPoint() :
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
-    pipe_name = "/tmp/.mc-{host}-{pid}-{time}".format(host=gethostname(),
+    pipe_name = "/tmp/mc-{host}-{pid}-{time}".format(host=gethostname(),
             pid=os.getpid(), time=t_now)
     try:
         os.mkfifo(pipe_name)
@@ -60,10 +60,10 @@ def testPoint() :
             softsusy(m0=100, m12=200, A0=0., tanb=10., sgnMu=1, mgut=2e16,
                     outputfile=pipe_name)
         else:
+# this code does get executed but FH seems to die (imagine related to pipes)
             run_feynhiggs(pipe_name)
-        #lol = open(pipe_name,'r').read()
-        #print lol
-        #run_feynhiggs('post_ss.slha')
+
+        os.unlink(pipe_name)
 
 if __name__=="__main__" :
     testPoint()
