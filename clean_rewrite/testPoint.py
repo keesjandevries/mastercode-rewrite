@@ -54,24 +54,28 @@ def testPoint() :
         os.mkfifo(pipe_name)
     except OSError, e:
         print "Failed to create FIFO: %s" % e
-    else:
-        pid = os.fork()
-        if pid != 0:
-            softsusy(m0=100, m12=200, A0=0., tanb=10., sgnMu=1, mgut=2e16,
-                    outputfile=pipe_name)
-        else:
-            import sys
-            so = open("fh.stdout", 'w', 0)
-            se = open("fh.stderr", 'w', 0)
-            sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
-            sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', 0)
-            os.dup2(so.fileno(), sys.stdout.fileno())
-            os.dup2(se.fileno(), sys.stderr.fileno())
+        exit()
 
-            # this code does get executed but FH seems to die (imagine related to pipes)
-            feynhiggs(pipe_name)
-        x = os.wait()
+    child_pid = os.fork()
+    if child_pid != 0:
+        softsusy(m0=100, m12=200, A0=0., tanb=10., sgnMu=1, mgut=2e16,
+                outputfile=pipe_name)
+        p_pid,status = os.waitpid(child_pid,0)
+        print p_pid,status
         os.unlink(pipe_name)
+    else:
+        import sys
+        so = open("fh.stdout", 'w', 0)
+        se = open("fh.stderr", 'w', 0)
+        sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+        sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', 0)
+        os.dup2(so.fileno(), sys.stdout.fileno())
+        os.dup2(se.fileno(), sys.stderr.fileno())
+
+        # this code does get executed but FH seems to die (imagine related to pipes)
+        feynhiggs(pipe_name)
+        os.exit(0)
+
 
 if __name__=="__main__" :
     testPoint()
