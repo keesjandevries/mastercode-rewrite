@@ -61,16 +61,19 @@ function compile_feynhiggs_interfaces {
     echo "Compiling FH Interfaces"
     echo "======================="
     g++ -c -fPIC -o obj/feynhiggs.o interfaces/feynhiggs.cc \
-        -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH
+        -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH \
+         -lgfortran
     g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfeynhiggs.so \
-        obj/feynhiggs.o -L${MAINDIR}/packages/lib64 -lFH
+        obj/feynhiggs.o -L${MAINDIR}/packages/lib64 -lFH \
+        -lgfortran
     echo "Done"
 }
 
 
 function compile_softsusy_interfaces {
     g++ -c -fPIC -o obj/softsusy.o interfaces/softsusy.cc \
-        -I${MAINDIR}/packages/include/softsusy/ -L${MAINDIR}/packages/lib -lsoft
+        -I${MAINDIR}/packages/include/softsusy/ \
+        -L${MAINDIR}/packages/lib -lsoft
     g++ -shared -Wl,-soname,libmcsoftsusy.so \
         -Wl,-rpath,${MAINDIR}/packages/lib -o libs/libmcsoftsusy.so \
        obj/softsusy.o -L${MAINDIR}/packages/lib -lsoft
@@ -92,7 +95,8 @@ function compile_joint_interfaces {
     # softsusy & slha join interface
     g++ -c -fPIC -o obj/softsusy_slha.o interfaces/softsusy_slha.cc \
         -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
-        -I${MAINDIR}/packages/include/softsusy -L${MAINDIR}/packages/lib -lsoft \
+        -I${MAINDIR}/packages/include/softsusy \
+        -L${MAINDIR}/packages/lib -lsoft \
         ${RFLAGS}
 
     g++ -shared -Wl,-soname,libmcsoftsusyslha.so \
@@ -108,5 +112,5 @@ function compile_joint_interfaces {
 #compile_slha_interfaces
 #compile_joint_interfaces
 
-compile_feynhiggs
+#compile_feynhiggs
 compile_feynhiggs_interfaces
