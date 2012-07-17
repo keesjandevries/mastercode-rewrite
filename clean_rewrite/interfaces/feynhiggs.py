@@ -5,6 +5,10 @@ from ctypes import cdll, c_int, c_double, c_char_p, byref
 FHlib = cdll.LoadLibrary('./libs/libmcfeynhiggs.so')
 # const from FeynHiggs FIXME (src/inclue/SLHADefs.h)
 
+FH_parameters = { 'mssmpart_in': 5, # etc.
+        }
+
+
 def slharead(filename) :
 
     print "lulz interface"
