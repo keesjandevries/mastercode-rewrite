@@ -36,7 +36,9 @@ function compile_softsusy {
 
 
 function compile_feynhiggs {
-    echo -n "Compiling feynhiggs... "
+    echo "==================="
+    echo "Compiling feynhiggs"
+    echo "==================="
     if [[ ! -h ${FEYNHIGGS_LIB} ]] || \
        [[ `strings ${FEYNHIGGS_LIB} | grep "${FEYNHIGGS_VERSION}"` ]]; then
         if [[ ! -f tars/${FEYNHIGGS_BASE}.tar.gz ]]; then
@@ -55,10 +57,14 @@ function compile_feynhiggs {
 }
 
 function compile_feynhiggs_interfaces {
+    echo "======================="
+    echo "Compiling FH Interfaces"
+    echo "======================="
     g++ -c -fPIC -o obj/feynhiggs.o interfaces/feynhiggs.cc \
         -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH
     g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfeynhiggs.so \
         obj/feynhiggs.o -L${MAINDIR}/packages/lib64 -lFH
+    echo "Done"
 }
 
 
