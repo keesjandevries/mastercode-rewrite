@@ -41,7 +41,7 @@ extern "C" {
         int ccb;
         FHConstraints(&error, &gm2, &Deltarho, &MWMSSM, &MWSM, &SW2MSSM,
                 &SW2SM, &edmeTh, &edmn, &edmHg, &ccb);
-        std::cout << gm2 << std::endl;
+        std::cout << "(g-2)_mu = " <<  gm2 << std::endl;
         
         if(error != 0) {
             // FH has failed
