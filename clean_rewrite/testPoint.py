@@ -69,8 +69,8 @@ def testPoint() :
             os.dup2(se.fileno(), sys.stderr.fileno())
 
             # this code does get executed but FH seems to die (imagine related to pipes)
-            run_feynhiggs(pipe_name)
-
+            feynhiggs(pipe_name)
+        x = os.wait()
         os.unlink(pipe_name)
 
 if __name__=="__main__" :
