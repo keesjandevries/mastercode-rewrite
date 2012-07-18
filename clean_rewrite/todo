@@ -1,7 +1,12 @@
-#General
+# BUGS
+
+* os.waitpid() hanging as child process not exiting: expect no control return from c-interface
+* FH not correctly reading pipe: eols? (check it can be read in python, then c-interface, then base fortran)
+
+# General
 
 * start writing a makefile
 
-#SLHA
+# SLHA
 
 * decide on base representation and move away from the abomination that is Rtypes.h: less ROOT dependency the better!
