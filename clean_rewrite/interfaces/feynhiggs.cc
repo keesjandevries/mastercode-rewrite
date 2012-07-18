@@ -50,7 +50,6 @@ extern "C" {
         SLHAWrite(&error, slhadata, lulz);
         std::cout << "Wrote FH SLHA" << std::endl;
     }
-
 }
      /* PREDICTIONS FROM  FEYN HIGGS */
       //PREDICT(7)  = gm2         ! FeynHiggs
