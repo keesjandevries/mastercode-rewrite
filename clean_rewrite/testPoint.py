@@ -28,10 +28,6 @@ def softsusy(m0, m12, A0, tanb, sgnMu, mgut):
     slhafile = SLHAfile()
     slhafile.ReadFile("")
 
-    #print "Printing to stdout"
-    #r.lesHouchesAccordOutput( "sugra", inputs, sgnMu, tanb, 91.1875, 1,
-            #mgut, False )
-
     r.lesHouchesAccordOutputStream( "sugra", inputs, sgnMu, tanb, 91.1875,
             1, mgut, False, slhafile.obj )
 
