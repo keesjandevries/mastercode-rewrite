@@ -17,4 +17,6 @@ def pipe_to_function(pipe_name, obj, function):
         pipeout = os.open(pipe_name, os.O_WRONLY)
         os.write(pipeout, str(obj))
         os.close(pipeout)
+        os.unlink(pipe_name)
+        print "CLOSED PIPE"
         os.waitpid(child_pid,0)
