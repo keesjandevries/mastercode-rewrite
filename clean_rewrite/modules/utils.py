@@ -16,4 +16,5 @@ def pipe_to_function(pipe_name, obj, function):
     # parent process
         pipeout = os.open(pipe_name, os.O_WRONLY)
         os.write(pipeout, str(obj))
-    os.waitpid(child_pid,0)
+        os.close(pipeout)
+        os.waitpid(child_pid,0)
