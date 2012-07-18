@@ -24,13 +24,6 @@ extern "C" {
         SLHARead(&error, slhadata, slhafilename, abort);
         FHSetSLHA(&error, slhadata);
 
-        //for(int p=0; p<fh_interface_nslhadata; ++p) {
-            //if(slhadata[p].re != -999) {
-                //std::cout << slhadata[p].re << ", " << slhadata[p].im <<
-                    //std::endl;
-            //}
-        //}
-
         double mhiggs[4];
         Complex SAeff;
         Complex UHiggs[3][3];
