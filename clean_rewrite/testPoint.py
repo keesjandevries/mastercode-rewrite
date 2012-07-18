@@ -36,7 +36,6 @@ def softsusy(m0, m12, A0, tanb, sgnMu, mgut):
 
 def feynhiggs(filename):
     mcoutput.header('feynhiggs')
-    print "Fh looking for", filename
     run_feynhiggs(filename)
     return
 
