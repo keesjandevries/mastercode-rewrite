@@ -1,4 +1,5 @@
 import os
+import time
 
 def pipe_to_function(pipe_name, obj, function, debug=True):
     try:
@@ -23,4 +24,11 @@ def pipe_to_function(pipe_name, obj, function, debug=True):
             os.dup2(so.fileno(), sys.stdout.fileno())
             os.dup2(se.fileno(), sys.stderr.fileno())
         function()
+        #pipein = open(pipe_name, 'r')
+        #line = pipein.read()
+        #print 'Parent %d got "%s" at %s' % (os.getpid(), line, time.time())
+        #pipein.close()
+        os.unlink(pipe_name)
         os._exit(0)
+    print "LOLOLOL"
+
