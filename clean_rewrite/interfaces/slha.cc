@@ -15,7 +15,14 @@ extern "C" {
         return sf->ReadFile(s);
     }
 
-    void SLHAfile_print(SLHAfile* sf) { 
-        std::cout << (*sf);
+    int SLHAfile_getstr(SLHAfile* sf, char* buf, int len) {
+        std::stringstream ss_out( std::stringstream::in |
+                                  std::stringstream::out );
+        ss_out << (*sf);
+        std::string sf_str = ss_out.str();
+        const char* lol_str = sf_str.c_str();
+        strncpy(buf,lol_str,len-1);
+        buf[len-1]=0;
+        return strlen(buf);
     }
 }
