@@ -1,7 +1,7 @@
 import os
 import time
 
-def pipe_to_function(pipe_name, obj, function, debug=True):
+def pipe_to_function(pipe_name, obj, function):
     try:
         os.mkfifo(pipe_name)
     except OSError, e:
@@ -9,26 +9,11 @@ def pipe_to_function(pipe_name, obj, function, debug=True):
         exit()
 
     child_pid = os.fork()
-    if child_pid != 0 :
-        f = open(pipe_name,'w')
-        f.write(str(obj))
-        f.close()
-        os.waitpid(child_pid,0)
-    else:
-        if debug:
-            import sys
-            so = open("fh.stdout", 'w', 0)
-            se = open("fh.stderr", 'w', 0)
-            sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
-            sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', 0)
-            os.dup2(so.fileno(), sys.stdout.fileno())
-            os.dup2(se.fileno(), sys.stderr.fileno())
+    if child_pid == 0 :
+    # child process
         function()
-        #pipein = open(pipe_name, 'r')
-        #line = pipein.read()
-        #print 'Parent %d got "%s" at %s' % (os.getpid(), line, time.time())
-        #pipein.close()
-        os.unlink(pipe_name)
-        os._exit(0)
-    print "LOLOLOL"
-
+    else:
+    # parent process
+        pipeout = os.open(pipe_name, os.O_WRONLY)
+        os.write(pipeout, str(obj))
+    os.waitpid(child_pid,0)
