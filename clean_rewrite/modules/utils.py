@@ -23,3 +23,4 @@ def pipe_to_function(pipe_name, obj, function, debug=True):
             os.dup2(se.fileno(), sys.stderr.fileno())
         function()
         os._exit(0)
+    os.waitpid(child_pid,0)
