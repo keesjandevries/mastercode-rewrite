@@ -46,6 +46,7 @@ function compile_feynhiggs {
         fi
         if [[ ! -d ${FEYNHIGGS_BASE} ]]; then
             tar zxf tars/${FEYNHIGGS_BASE}.tar.gz
+            patch -p1 < patches/FH.patch
         fi
         cd ${FEYNHIGGS_BASE}
         ./configure --prefix=${MAINDIR}/packages
