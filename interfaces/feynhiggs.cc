@@ -35,7 +35,6 @@ extern "C" {
         int ccb;
         FHConstraints(&error, &gm2, &Deltarho, &MWMSSM, &MWSM, &SW2MSSM,
                 &SW2SM, &edmeTh, &edmn, &edmHg, &ccb);
-        std::cout << "(g-2)_mu = " <<  gm2 << std::endl;
         
         if(error != 0) {
             std::cout << "FH FAILED" << std::endl;
@@ -43,12 +42,12 @@ extern "C" {
         }
         else {
             std::cout << "FH SUCCESS" << std::endl;
+            std::cout << "(g-2)_mu = " <<  gm2 << std::endl;
+            const char lulz[] = "feyn_out.slha";
+            std::cout << "Writing FH SLHA" << std::endl;
+            SLHAWrite(&error, slhadata, lulz);
+            std::cout << "Wrote FH SLHA" << std::endl;
         }
-
-        const char lulz[] = "feyn_out.slha";
-        std::cout << "Writing FH SLHA" << std::endl;
-        SLHAWrite(&error, slhadata, lulz);
-        std::cout << "Wrote FH SLHA" << std::endl;
     }
 }
      /* PREDICTIONS FROM  FEYN HIGGS */
