@@ -10,20 +10,18 @@ from interfaces.feynhiggs import run_feynhiggs
 from modules import mcoutput
 from modules import utils
 
-def softsusy(m0, m12, A0, tanb, sgnMu, mgut):
+def softsusy(tanb, sgnMu, mgut, mt, boundary_condition, vars):
     mcoutput.header('softsusy')
-    inputs = DoubleVector(3)
-    inputs[0] = m0
-    inputs[1] = m12
-    inputs[2] = A0
-
+    inputs = DoubleVector(len(vars))
+    for pos in range(len(vars)):
+        inputs[pos] = vars[pos]
     r = MssmSoftsusy()
 
     oneset = QedQcd()
-    oneset.setPoleMt(173.2)
-    oneset.setMass(3,173.2)
+    oneset.setPoleMt(mt)
+    oneset.setMass(3,mt)
 
-    r.lowOrg( "sugraBcs", mgut, inputs, sgnMu, tanb, oneset, False )
+    r.lowOrg( boundary_condition, mgut, inputs, sgnMu, tanb, oneset, False )
 
     slhafile = SLHAfile()
     slhafile.ReadFile("")
@@ -40,8 +38,8 @@ def feynhiggs(filename):
     return
 
 
-def testPoint() :
-    slhafile = softsusy(m0=100, m12=200, A0=0., tanb=10., sgnMu=1, mgut=2e16)
+def run_point(tanb, sgnMu, mgut, mt, boundary_condition, vars) :
+    slhafile = softsusy(tanb, sgnMu, mgut, mt, boundary_condition, vars)
 
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
     pipe_name = "/tmp/mc-{host}-{pid}-{time}".format(host=gethostname(),
@@ -51,4 +49,7 @@ def testPoint() :
 
 
 if __name__=="__main__" :
-    testPoint()
+    vars = [ 100, 200, 0 ]
+    boundary_condition = "sugraBcs"
+    run_point(tanb=10., sgnMu=1, mgut=2e16, mt=173.2,
+            boundary_condition=boundary_condition, vars=vars)
