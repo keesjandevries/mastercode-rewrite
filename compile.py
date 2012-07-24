@@ -31,13 +31,10 @@ OPTIONS = {
 
 root_flags = subprocess.check_output(['root-config','--cflags','--libs'])
 
-def get_predictor_source(predictor):
-    target = predictor['source_url_fmt'].format(predictor['source_filename'])
+def fetch_url(target, local_path):
     try:
         f = urllib2.urlopen(target)
         print("Downloading {0} ...".format(target))
-        filename = predictor['source_filename']
-        local_path = '{dir}/{file}'.format(dir=tar_dir, file=filename)
         local_file = open(local_path,'wb')
         local_file.write(f.read())
         local_file.close()
@@ -47,9 +44,20 @@ def get_predictor_source(predictor):
     except urllib2.URLError, e:
         print("URL Error:", e.reason, target)
 
+def get_predictors(predictors):
+    for predictor in predictors:
+        filename = predictor['source_filename']
+        local_path = '{dir}/{file}'.format(dir=tar_dir, file=filename)
+        try:
+            with open(local_path) as f: pass
+        except IOError as e:
+            # file didn't exist better get it
+            fn = predictor['source_filename']
+            target = predictor['source_url_fmt'].format(fn)
+            fetch_url(target, local_path)
+
 def main():
-    for predictor in OPTIONS['predictors']:
-        get_predictor_source(predictor)
+    get_predictors(OPTIONS['predictors'])
 
 if __name__=='__main__':
     main()
