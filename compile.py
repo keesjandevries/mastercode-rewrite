@@ -22,7 +22,6 @@ feynhiggs = {
                           'newversion/{0}',
         'source_filename': 'FeynHiggs-2.9.1.tar.gz',
         'library': 'lib64/libFH.a',
-        'config_cd': True,
         }
 
 OPTIONS = {
@@ -68,8 +67,7 @@ def compile_predictors(predictors, base_dir):
             print("Configuring {0} ...".format(predictor['name']))
             prefix_str = '--prefix={bd}/{pd}'.format(bd=base_dir,
                 pd=prefix_dir)
-            if predictor.get('config_cd',False):
-                os.chdir(conf_dir)
+            os.chdir(conf_dir)
             subprocess.check_output([conf_file, prefix_str],
                     stderr=subprocess.STDOUT)
             os.chdir(base_dir)
