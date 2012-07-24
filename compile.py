@@ -33,7 +33,7 @@ OPTIONS = {
 root_flags = subprocess.check_output(['root-config','--cflags','--libs'])
 
 
-def get_predictors(predictors):
+def fetch_predictors(predictors):
     for predictor in predictors:
         filename = predictor['source_filename']
         local_path = '{dir}/{file}'.format(dir=tar_dir, file=filename)
@@ -58,7 +58,8 @@ def extract_predictors_source(predictors):
             predictor['source_dir'] = extract_tarfile(predictor['tar'],
                     predictor_dir)
 
-def compile_predictors(predictors, base_dir):
+
+def configure_predictors(predictors, base_dir):
     for predictor in predictors:
         try:
             conf_dir = '{bd}/{pd}/'.format(bd=base_dir,
@@ -76,11 +77,21 @@ def compile_predictors(predictors, base_dir):
         except IOError as e:
             print("No config file present for {0}".format(predictor['name']))
 
+def compile_predictors(predictors, base_dir):
+    for predictor in predictors:
+        os.chdir('{bd}/{pd}'.format(bd=base_dir, pd=predictor['source_dir']))
+        print("Making {0} ...".format(predictor['name']))
+        subprocess.check_output(['make'], stderr=subprocess.STDOUT)
+        subprocess.check_output(['make', 'install'], stderr=subprocess.STDOUT)
+        os.chdir(base_dir)
+        print("  --> Done")
+
 def main():
     predictors = OPTIONS['predictors']
     base_dir = OPTIONS['basedir']
-    get_predictors(predictors)
+    fetch_predictors(predictors)
     extract_predictors_source(predictors)
+    configure_predictors(predictors, base_dir)
     compile_predictors(predictors, base_dir)
 
 if __name__=='__main__':
