@@ -16,7 +16,8 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, vars) :
     pipe_name = "/tmp/mc-{host}-{pid}-{time}".format(host=gethostname(),
             pid=os.getpid(), time=t_now)
 
-    utils.pipe_to_function(pipe_name, slhafile, lambda: feynhiggs.run(pipe_name))
+    utils.pipe_to_function(pipe_name, slhafile,
+            lambda: feynhiggs.run(pipe_name))
 
 
 if __name__=="__main__" :
