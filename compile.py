@@ -19,7 +19,7 @@ feynhiggs = {
         'name': 'FeynHiggs',
         'version': '2.9.1',
         'source_url_fmt': 'http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/'
-                          'newversion/{0}',
+            'newversion/{0}',
         'source_filename': 'FeynHiggs-2.9.1.tar.gz',
         'library': 'lib64/libFH.a',
         }
@@ -55,7 +55,8 @@ def get_predictors(predictors):
 def extract_predictors_source(predictors):
     for predictor in predictors:
         if predictor['tar'] is not None:
-            predictor['source_dir'] = extract_tarfile(predictor['tar'], predictor_dir)
+            predictor['source_dir'] = extract_tarfile(predictor['tar'],
+                    predictor_dir)
 
 def compile_predictors(predictors, base_dir):
     for predictor in predictors:
