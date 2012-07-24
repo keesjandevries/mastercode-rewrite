@@ -1,10 +1,11 @@
 #! /usr/bin/env python
 import os
 import subprocess
-import urllib2
+from modules.utils import fetch_url, extract_tarfile
 
 prefix_dir = 'packages'
 tar_dir = 'tars'
+predictor_dir = 'predictors'
 
 softsusy = {
         'version': '3.3.1',
@@ -21,8 +22,6 @@ feynhiggs = {
         'library': 'lib64/libFH.a'
         }
 
-interfaces = {}
-
 OPTIONS = {
         'basedir': os.getcwd(),
         'predictors': [ softsusy, feynhiggs ]
@@ -31,33 +30,39 @@ OPTIONS = {
 
 root_flags = subprocess.check_output(['root-config','--cflags','--libs'])
 
-def fetch_url(target, local_path):
-    try:
-        f = urllib2.urlopen(target)
-        print("Downloading {0} ...".format(target))
-        local_file = open(local_path,'wb')
-        local_file.write(f.read())
-        local_file.close()
-        print("  --> Done")
-    except urllib2.HTTPError, e:
-        print("HTTP Error:", e.code, target)
-    except urllib2.URLError, e:
-        print("URL Error:", e.reason, target)
 
 def get_predictors(predictors):
     for predictor in predictors:
         filename = predictor['source_filename']
         local_path = '{dir}/{file}'.format(dir=tar_dir, file=filename)
+        success = True
         try:
             with open(local_path) as f: pass
         except IOError as e:
             # file didn't exist better get it
             fn = predictor['source_filename']
             target = predictor['source_url_fmt'].format(fn)
-            fetch_url(target, local_path)
+            success = fetch_url(target, local_path)
+        finally:
+            if success:
+                predictor['tar'] = local_path
+            else:
+                predictor['tar'] = None
+
+
+def extract_predictors_source(predictors):
+    for predictor in predictors:
+        if predictor['tar'] is not None:
+            predictor['source_dir'] = extract_tarfile(predictor['tar'], predictor_dir)
+
+def compile_predictors(predictors):
+    for predictor in predictors:
 
 def main():
-    get_predictors(OPTIONS['predictors'])
+    predictors = OPTIONS['predictors']
+    get_predictors(predictors)
+    extract_predictors_source(predictors)
+    compile_predictors(predictors)
 
 if __name__=='__main__':
     main()
