@@ -7,7 +7,7 @@ def pipe_to_function(pipe_name, obj, function):
     try:
         os.mkfifo(pipe_name)
     except OSError, e:
-        print "Failed to create FIFO: %s" % e
+        print("Failed to create FIFO: %s" % e)
         exit()
 
     child_pid = os.fork()
@@ -39,15 +39,29 @@ def fetch_url(target, local_path):
         print("URL Error:", e.reason, target)
     return success
 
-def extract_tarfile(file, local_path):
-    print file, local_path
-    success = True
+def extract_tarfile(file, local_dir):
+    output_dir = None
     if tarfile.is_tarfile(file):
         mode = 'r'
         if file.endswith('.gz'):
             mode += ':gz'
         tf = tarfile.open(file,mode)
-        tf.extractall(local_path)
+        test_file = filter(lambda x: '/' in x, tf.getnames())[0]
+        test_obj = '{l}/{f}'.format(l=local_dir, f=test_file)
+        dir_end_pos = find_nth(test_obj, '/',2)
+        output_dir = test_obj[:dir_end_pos]
+        try:
+            with open(test_obj) as f: pass
+        except IOError as e:
+            print("Extracting {f} to {p} ...".format(f=file, p=local_dir))
+            tf.extractall(local_dir)
+            print("  --> Done")
         tf.close()
-    else:
-        success = False
+    return output_dir
+
+def find_nth(haystack, needle, n):
+    start = haystack.find(needle)
+    while start >= 0 and n > 1:
+        start = haystack.find(needle, start+len(needle))
+        n -= 1
+    return start
