@@ -2,6 +2,9 @@
 
 from ctypes import cdll, c_int, c_double, c_char_p
 
+from modules import mcoutput
+from interfaces.slha import SLHAfile
+
 SPlib = cdll.LoadLibrary('./libs/libmcsoftsusy.so')
 # set our return types
 SPlib.DoubleVector_display.restype = c_double
@@ -71,3 +74,25 @@ class QedQcd(object) :
         SPlib.QedQcd_setAlpha( self.obj, ai, c_double(ap))
     def set( self, dv ) :
         SPlib.QedQcd_set( dv )
+
+
+def run (tanb, sgnMu, mgut, mt, boundary_condition, vars):
+    mcoutput.header('softsusy')
+    inputs = DoubleVector(len(vars))
+    for pos in range(len(vars)):
+        inputs[pos] = vars[pos]
+    r = MssmSoftsusy()
+
+    oneset = QedQcd()
+    oneset.setPoleMt(mt)
+    oneset.setMass(3,mt)
+
+    r.lowOrg( boundary_condition, mgut, inputs, sgnMu, tanb, oneset, False )
+
+    slhafile = SLHAfile()
+    slhafile.ReadFile("")
+
+    r.lesHouchesAccordOutputStream( "sugra", inputs, sgnMu, tanb, 91.1875,
+            1, mgut, False, slhafile.obj )
+
+    return slhafile

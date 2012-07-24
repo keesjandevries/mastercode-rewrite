@@ -2,6 +2,8 @@
 
 from ctypes import cdll, c_int, c_double, c_char_p, byref
 
+from modules import mcoutput
+
 FHlib = cdll.LoadLibrary('./libs/libmcfeynhiggs.so')
 
 mssmpart = 4
@@ -14,10 +16,7 @@ Tl_mt = 1
 tl_bot_resum = 1
 
 
-def run_feynhiggs(filename) :
+def run(filename) :
+    mcoutput.header('feynhiggs')
     FHlib.run_feynhiggs(filename, mssmpart, fieldren, tanbren, higgsmix,
             p2approx, looplevel, Tl_mt, tl_bot_resum)
-    return
-
-if __name__=='__main__':
-    run_feynhiggs('post_ss.slha')
