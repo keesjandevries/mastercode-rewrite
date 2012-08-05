@@ -1,3 +1,3 @@
-from make import predictors
+from build import predictors
 
 predictors.compile()
