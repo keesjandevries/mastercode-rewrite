@@ -1,3 +1,10 @@
-from build import predictors
+import os
 
-predictors.compile()
+from build import predictors, utils
+
+OPTIONS = {
+        'base_dir': os.getcwd(),
+        }
+
+for mod in [ predictors, utils ]:
+    mod.compile(**OPTIONS)
