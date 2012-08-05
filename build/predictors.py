@@ -17,10 +17,10 @@ softsusy = {
 
 feynhiggs = {
         'name': 'FeynHiggs',
-        'version': '2.9.1',
+        'version': '2.9.2',
         'source_url_fmt': 'http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/'
             'newversion/{0}',
-        'source_filename': 'FeynHiggs-2.9.1.tar.gz',
+        'source_filename': 'FeynHiggs-2.9.2.tar.gz',
         'library': 'lib64/libFH.a',
         }
 
