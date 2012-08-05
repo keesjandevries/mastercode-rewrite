@@ -11,7 +11,7 @@ softsusy = {
         'name': 'SoftSUSY',
         'version': '3.3.1',
         'source_url_fmt': 'http://www.hepforge.org/archive/softsusy/{0}',
-        'source_filename': 'softsusy-3.3.1.tar.gz',
+        'source_filename': 'softsusy-{version}.tar.gz',
         'library': 'lib/libsoft.so',
         }
 
@@ -20,7 +20,7 @@ feynhiggs = {
         'version': '2.9.2',
         'source_url_fmt': 'http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/'
             'newversion/{0}',
-        'source_filename': 'FeynHiggs-2.9.2.tar.gz',
+        'source_filename': 'FeynHiggs-{version}.tar.gz',
         'library': 'lib64/libFH.a',
         }
 
@@ -35,14 +35,13 @@ root_flags = subprocess.check_output(['root-config','--cflags','--libs'])
 
 def fetch_predictors(predictors):
     for predictor in predictors:
-        filename = predictor['source_filename']
-        local_path = '{dir}/{file}'.format(dir=tar_dir, file=filename)
+        fn = predictor['source_filename'].format(verison=predictor['version'])
+        local_path = '{dir}/{file}'.format(dir=tar_dir, file=fn)
         success = True
         try:
             with open(local_path) as f: pass
         except IOError as e:
             # file didn't exist better get it
-            fn = predictor['source_filename']
             target = predictor['source_url_fmt'].format(fn)
             success = fetch_url(target, local_path)
         finally:
