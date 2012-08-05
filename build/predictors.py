@@ -24,10 +24,7 @@ feynhiggs = {
         'library': 'lib64/libFH.a',
         }
 
-OPTIONS = {
-        'basedir': os.getcwd(),
-        'predictors': [ softsusy, feynhiggs ]
-        }
+PREDICTORS = [ softsusy, feynhiggs ]
 
 
 root_flags = subprocess.check_output(['root-config','--cflags','--libs'])
@@ -85,13 +82,11 @@ def compile_predictors(predictors, base_dir):
         os.chdir(base_dir)
         print("  --> Done")
 
-def compile():
-    predictors = OPTIONS['predictors']
-    base_dir = OPTIONS['basedir']
-    fetch_predictors(predictors)
-    extract_predictors_source(predictors)
-    configure_predictors(predictors, base_dir)
-    compile_predictors(predictors, base_dir)
+def compile(base_dir):
+    fetch_predictors(PREDICTORS)
+    extract_predictors_source(PREDICTORS)
+    configure_predictors(PREDICTORS, base_dir)
+    compile_predictors(PREDICTORS, base_dir)
 
 if __name__=='__main__':
-    compile()
+    compile(os.getcwd())
