@@ -1,95 +1,16 @@
-From 23e2b67524744f46903d9f9a2ab3d18bcd30495f Mon Sep 17 00:00:00 2001
-From: Sam Rogerson <samr@cern.ch>
-Date: Fri, 20 Jul 2012 11:26:09 +0100
-Subject: [PATCH 1/4] slha action:read
-
----
- FeynHiggs-2.9.1/src/SLHA/SLHARead.F | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/FeynHiggs-2.9.1/src/SLHA/SLHARead.F b/FeynHiggs-2.9.1/src/SLHA/SLHARead.F
-index 5f6e95f..c3747d2 100644
---- a/FeynHiggs-2.9.1/src/SLHA/SLHARead.F
-+++ b/FeynHiggs-2.9.1/src/SLHA/SLHARead.F
-@@ -65,7 +65,7 @@ read(tok, *, err=997, end=997)
- 	  unit = 5
- 	  if( lineno .ne. 0 ) goto 501
- 	else
--	  open(10, file=filename, status="old", err=996)
-+	  open(10, file=filename, status="old", err=996, action='read')
- 	  unit = 10
- 	  lineno = 0
- 	endif
--- 
-1.7.11.2
-
-
-From 6b8e020bc21619ae2f74d03b9600d5505faa2f4e Mon Sep 17 00:00:00 2001
-From: Sam Rogerson <samr@cern.ch>
-Date: Fri, 20 Jul 2012 11:26:36 +0100
-Subject: [PATCH 2/4] elseif->elif
-
----
- FeynHiggs-2.9.1/src/include/ftypes.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/FeynHiggs-2.9.1/src/include/ftypes.h b/FeynHiggs-2.9.1/src/include/ftypes.h
-index aeccc62..58dde7c 100644
---- a/FeynHiggs-2.9.1/src/include/ftypes.h
-+++ b/FeynHiggs-2.9.1/src/include/ftypes.h
-@@ -81,7 +81,7 @@ typedef std::complex<Real> Complex;
- #define Re(x) std::real(x)
- #define Im(x) std::imag(x)
- 
--#elseif __STDC_VERSION__ >= 199901L
-+#elif __STDC_VERSION__ >= 199901L
- 
- #include <complex.h>
- typedef Real complex Complex;
--- 
-1.7.11.2
-
-
-From 20a7f872bbad9591e3f6bb52ee9c4dfd642de150 Mon Sep 17 00:00:00 2001
-From: Sam Rogerson <samr@cern.ch>
-Date: Fri, 20 Jul 2012 11:27:55 +0100
-Subject: [PATCH 3/4] no anonymous arguments
-
----
- FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in b/FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in
-index 56e18c7..da9f50e 100644
---- a/FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in
-+++ b/FeynHiggs-2.9.1/src/include/CFeynHiggs.h.in
-@@ -627,7 +627,8 @@ static inline void FHRetrieveRecord(int *error,
- 
- static inline void FHLoadTable(int *error, const char *inputfile)
- {
--  FORTRAN(fhloadtable)(error, inputfile, (int[]){0}, strlen(inputfile));
-+  int inputunit = 5;
-+  FORTRAN(fhloadtable)(error, inputfile, &inputunit, strlen(inputfile));
- }
- 
- 
--- 
-1.7.11.2
-
-
 From 3b2f520d2486cb99e212ce7606ae8a34078920a6 Mon Sep 17 00:00:00 2001
 From: Sam Rogerson <samr@cern.ch>
 Date: Fri, 20 Jul 2012 11:28:33 +0100
 Subject: [PATCH 4/4] pos indep code flags
 
 ---
- FeynHiggs-2.9.1/makefile.in | 4 ++--
+ predictors/FeynHiggs-2.9.2/makefile.in | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/FeynHiggs-2.9.1/makefile.in b/FeynHiggs-2.9.1/makefile.in
+diff --git a/predictors/FeynHiggs-2.9.2/makefile.in b/predictors/FeynHiggs-2.9.2/makefile.in
 index 0c82fb4..c698311 100644
---- a/FeynHiggs-2.9.1/makefile.in
-+++ b/FeynHiggs-2.9.1/makefile.in
+--- a/predictors/FeynHiggs-2.9.2/makefile.in
++++ b/predictors/FeynHiggs-2.9.2/makefile.in
 @@ -13,9 +13,9 @@ ARGS = $(PARALLEL) \
    NOUNDERSCORE="$(NOUNDERSCORE)" \
    EXE="$(EXE)" \
@@ -104,4 +25,29 @@ index 0c82fb4..c698311 100644
    QUAD="$(QUAD)" \
 -- 
 1.7.11.2
+
+From bfa93a4d40fb70e0de8f9f07968a81d884bfd6c3 Mon Sep 17 00:00:00 2001
+From: Sam Rogerson <samr@cern.ch>
+Date: Sun, 5 Aug 2012 14:25:44 +0200
+Subject: [PATCH] read only
+
+---
+ src/SLHA/SLHARead.F | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/predictors/FeynHiggs-2.9.2/src/SLHA/SLHARead.F b/predictors/FeynHiggs-2.9.2/src/SLHA/SLHARead.F
+index de38bb9..8be0bbe 100644
+--- a/predictors/FeynHiggs-2.9.2/src/SLHA/SLHARead.F
++++ b/predictors/FeynHiggs-2.9.2/src/SLHA/SLHARead.F
+@@ -65,7 +65,7 @@ read(tok, *, err=997, end=997)
+ 	  unit = 5
+ 	  if( lineno .ne. 0 ) goto 501
+ 	else
+-	  open(10, file=filename, status="old", err=996)
++	  open(10, file=filename, status="old", err=996, action='read')
+ 	  unit = 10
+ 	  lineno = 0
+ 	endif
+-- 
+1.7.11.4
 
