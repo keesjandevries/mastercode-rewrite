@@ -1,12 +1,14 @@
 #! /bin/bash
 MAINDIR=`pwd`  
+PREDICTOR_DIR="predictors"
+
 SOFTSUSY_VERSION="3.3.1"
 SOFTSUSY_BASE="softsusy-${SOFTSUSY_VERSION}"
 SOFTSUSY_TARGET="http://www.hepforge.org/archive/softsusy/\
 ${SOFTSUSY_BASE}.tar.gz"
 SOFTSUSY_LIB="packages/lib/libsoft.so"
 
-FEYNHIGGS_VERSION="2.9.1"
+FEYNHIGGS_VERSION="2.9.2"
 FEYNHIGGS_BASE="FeynHiggs-${FEYNHIGGS_VERSION}"
 FEYNHIGGS_TARGET="http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/\
 newversion/${FEYNHIGGS_BASE}.tar.gz"
@@ -22,10 +24,10 @@ function compile_softsusy {
         if [[ ! -f tars/${SOFTSUSY_BASE}.tar.gz ]]; then
             wget -P tars/ ${SOFTUSY_TARGET}
         fi
-        if [[ ! -d ${SOFTSUSY_BASE} ]]; then
-            tar zxf tars/${SOFTSUSY_BASE}.tar.gz
+        if [[ ! -d ${PREDICTOR_DIR}/${SOFTSUSY_BASE} ]]; then
+            tar -zxf tars/${SOFTSUSY_BASE}.tar.gz -C ${PREDICTOR_DIR}
         fi
-        cd ${SOFTSUSY_BASE}
+        cd  ${PREDICTOR_DIR}/${SOFTSUSY_BASE}
         ./configure --prefix=${MAINDIR}/packages
         make
         make install
@@ -44,11 +46,11 @@ function compile_feynhiggs {
         if [[ ! -f tars/${FEYNHIGGS_BASE}.tar.gz ]]; then
             wget -P tars/ ${FEYNHIGGS_TARGET}
         fi
-        if [[ ! -d ${FEYNHIGGS_BASE} ]]; then
-            tar zxf tars/${FEYNHIGGS_BASE}.tar.gz
+        if [[ ! -d ${PREDICTOR_DIR}/${FEYNHIGGS_BASE} ]]; then
+            tar -zxf tars/${FEYNHIGGS_BASE}.tar.gz -C ${PREDICTOR_DIR}
             patch -p1 < patches/FH.patch
         fi
-        cd ${FEYNHIGGS_BASE}
+        cd ${PREDICTOR_DIR}/${FEYNHIGGS_BASE}
         ./configure --prefix=${MAINDIR}/packages
         make
         make install
@@ -108,7 +110,7 @@ function compile_joint_interfaces {
 }
 
 
-#compile_softsusy
+compile_softsusy
 #compile_softsusy_interfaces
 compile_slha_interfaces
 #compile_joint_interfaces
