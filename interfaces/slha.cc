@@ -38,7 +38,7 @@ extern "C" {
                                   std::stringstream::out );
         ss_out << (*sb);
         std::string bn_str = ss_out.str();
-        const char* sb_cstr = sb_str.c_str();
+        const char* sb_cstr = bn_str.c_str();
         strncpy(buf,sb_cstr,len-1);
         buf[len-1]=0;
         return strlen(buf);
