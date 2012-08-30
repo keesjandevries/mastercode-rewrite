@@ -22,7 +22,7 @@ function compile_softsusy {
     if [[ ! -h ${SOFTSUSY_LIB} ]] || \
        [[ `strings ${SOFTSUSY_LIB} | grep "${SOFTSUSY_VERSION}"` ]]; then
         if [[ ! -f tars/${SOFTSUSY_BASE}.tar.gz ]]; then
-            wget -P tars/ ${SOFTUSY_TARGET}
+            wget -P tars/ ${SOFTSUSY_TARGET}
         fi
         if [[ ! -d ${PREDICTOR_DIR}/${SOFTSUSY_BASE} ]]; then
             tar -zxf tars/${SOFTSUSY_BASE}.tar.gz -C ${PREDICTOR_DIR}
@@ -111,9 +111,9 @@ function compile_joint_interfaces {
 
 
 compile_softsusy
-#compile_softsusy_interfaces
+compile_softsusy_interfaces
 compile_slha_interfaces
-#compile_joint_interfaces
+compile_joint_interfaces
 
-#compile_feynhiggs
-#compile_feynhiggs_interfaces
+compile_feynhiggs
+compile_feynhiggs_interfaces
