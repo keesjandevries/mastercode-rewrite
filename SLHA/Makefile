@@ -1,6 +1,13 @@
 CXX=g++
 LD=g++
 
+UNAME := $(shell uname)
+
+ifeq ($(UNAME),Darwin)
+	SONAME := -install_name
+else
+	SONAME := -soname
+
 INCDIR=\
 	-Iinc \
 	-I$(ROOTSYS)/include 
@@ -37,7 +44,7 @@ $(OBJ):$(SRC)
 	$(CXX) $(CXXFLAGS) $(INCDIR) $(subst .o,.cc,$(subst obj,src,$@)) -o $@
 
 $(SLHALIBS):$(OBJ)
-	$(CXX) -shared -Wl,-soname,$@ -o $(LIBDIR)/$@ $(OBJ) $(LIBS)
+	$(CXX) -shared -Wl,$(SONAME),$@ -o $(LIBDIR)/$@ $(OBJ) $(LIBS)
 
 clean:
 	@rm obj/*
