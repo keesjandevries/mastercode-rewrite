@@ -7,6 +7,7 @@ ifeq ($(UNAME),Darwin)
 	SONAME := -install_name
 else
 	SONAME := -soname
+endif
 
 INCDIR=\
 	-Iinc \
