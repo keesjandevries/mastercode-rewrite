@@ -10,8 +10,8 @@ from modules import utils
 
 from interfaces import slha
 
-def run_point(tanb, sgnMu, mgut, mt, boundary_condition, vars) :
-    slhafile = rge_calc.run(tanb, sgnMu, mgut, mt, boundary_condition, vars)
+def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
+    slhafile = rge_calc.run(tanb, sgnMu, mgut, mt, boundary_condition, i_vars)
 
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
     pipe_name = "/tmp/mc-{host}-{pid}-{time}".format(host=gethostname(),
@@ -25,7 +25,6 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, vars) :
     line_test.set_index_2(5)
     line_test.set_comment('lulz')
     line_test.set_value(123.4)
-    #print line_test
 
     block_test = slha.SLHAblock('lol block')
     block_test.add_line(line_test)
@@ -35,9 +34,8 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, vars) :
     print block_test
 
 
-
 if __name__=="__main__" :
-    vars = [ 100, 200, 0 ]
+    i_vars = [ 100, 200, 0 ]
     boundary_condition = "sugraBcs"
     run_point(tanb=10., sgnMu=1, mgut=2e16, mt=173.2,
-            boundary_condition=boundary_condition, vars=vars)
+            boundary_condition=boundary_condition, i_vars=i_vars)
