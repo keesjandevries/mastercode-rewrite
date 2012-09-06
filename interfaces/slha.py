@@ -14,21 +14,6 @@ def c_str_access(obj, func, max_size):
         print "*** WARNING: string access has been truncated"
     return c_str_buf.value
 
-class SLHAfile(object):
-    def __init__(self):
-        self._obj = SLHAlib.SLHAfile_new()
-    def __str__(self):
-        return c_str_access(self._obj, SLHAlib.SLHAfile_getstr,
-                __MAX_SLHA_SIZE)
-    def ReadFile(self, filename):
-        SLHAlib.SLHAfile_ReadFile(self._obj, str(filename))
-
-class SLHAblock(object):
-    def __init__(self, name=''):
-        self._obj = SLHAlib.SLHAblock_new(str(name))
-    def __str__(self):
-        return c_str_access(self._obj, SLHAlib.SLHAblock_getstr,
-                __MAX_SLHA_SIZE)
 
 class SLHAline(object):
     def __init__(self, name):
@@ -61,3 +46,25 @@ class SLHAline(object):
 
     def get_comment(self):
         c_str_access(self._obj, SLHAlib.SLHAline_getcomment, __MAX_SLHA_SIZE)
+
+
+class SLHAblock(object):
+    def __init__(self, name=''):
+        self._obj = SLHAlib.SLHAblock_new(str(name))
+    def __str__(self):
+        return c_str_access(self._obj, SLHAlib.SLHAblock_getstr,
+                __MAX_SLHA_SIZE)
+    def add_line(self, line):
+        SLHAlib.SLHAblock_addline(self._obj, line._obj)
+
+
+class SLHAfile(object):
+    def __init__(self):
+        self._obj = SLHAlib.SLHAfile_new()
+    def __str__(self):
+        return c_str_access(self._obj, SLHAlib.SLHAfile_getstr,
+                __MAX_SLHA_SIZE)
+    def read_file(self, filename):
+        SLHAlib.SLHAfile_readfile(self._obj, str(filename))
+    def add_block(self, block):
+        SLHAlib.SLHAfile_addblock(self._obj, block._obj)
