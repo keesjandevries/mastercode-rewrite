@@ -21,11 +21,18 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, vars) :
             lambda: feynhiggs.run(pipe_name))
 
     line_test = slha.SLHAline()
-    line_test.set_comment('lulz')
-    line_test.set_value(123.4)
     line_test.set_index_1(5)
     line_test.set_index_2(5)
-    print line_test
+    line_test.set_comment('lulz')
+    line_test.set_value(123.4)
+    #print line_test
+
+    block_test = slha.SLHAblock('lol block')
+    block_test.add_line(line_test)
+    line_test.set_comment('ffff')
+    line_test.set_value(567.8)
+    block_test.add_line(line_test)
+    print block_test
 
 
 
