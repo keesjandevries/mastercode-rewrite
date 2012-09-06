@@ -8,6 +8,7 @@ from interfaces import softsusy as rge_calc
 from interfaces import feynhiggs
 from modules import utils
 
+from interfaces import slha
 
 def run_point(tanb, sgnMu, mgut, mt, boundary_condition, vars) :
     slhafile = rge_calc.run(tanb, sgnMu, mgut, mt, boundary_condition, vars)
@@ -19,7 +20,13 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, vars) :
     utils.pipe_to_function(pipe_name, slhafile,
             lambda: feynhiggs.run(pipe_name))
 
-    print slhafile
+    line_test = slha.SLHAline()
+    line_test.set_comment('lulz')
+    line_test.set_value(123.4)
+    line_test.set_index_1(5)
+    line_test.set_index_2(5)
+    print line_test
+
 
 
 if __name__=="__main__" :
