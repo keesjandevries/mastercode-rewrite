@@ -28,15 +28,8 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
 
     block_test = slha.SLHAblock('lol block')
     block_test.add_line(line_test)
-    line_test.set_comment('ffff')
-    line_test.set_value(567.8)
-    block_test.add_line(line_test)
     slhafile.add_block(block_test)
     print slhafile
-    print line_test.get_num_indices()
-    print line_test.get_index1()
-    print line_test.get_index2()
-    print line_test.get_full_index()
 
 
 if __name__=="__main__" :
