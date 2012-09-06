@@ -32,7 +32,7 @@ class SLHAline(object):
         #except:
             #print "*** ERROR: failed to set value for SLHAline obj", e
         #else:
-            #self._value = val
+        self._value = val
 
     def get_value(self):
         return self._value
@@ -43,26 +43,38 @@ class SLHAline(object):
         #except:
             #print "*** ERROR: failed to set comment for SLHAline obj"
         #else:
-            #self._comment = comment
+        self._comment = comment
 
     def get_comment(self):
         c_str_access(self._obj, SLHAlib.SLHAline_getcomment, __MAX_SLHA_SIZE)
 
-    def set_index_1(self, index):
+    def set_index1(self, index):
         #try:
         SLHAlib.SLHAline_setindex1(self._obj, c_int(index))
         #except:
             #print "*** ERROR: failed to set index for SLHAline obj"
         #else:
-            #self._index = index
+        self._index1 = index
 
-    def set_index_2(self, index):
+    def get_index1(self):
+        return SLHAlib.SLHAline_getindex1(self._obj)
+
+    def set_index2(self, index):
         #try:
         SLHAlib.SLHAline_setindex2(self._obj, c_int(index))
         #except:
             #print "*** ERROR: failed to set index for SLHAline obj"
         #else:
-            #self._index = index
+        self._index2 = index
+
+    def get_index2(self):
+        return SLHAlib.SLHAline_getindex2(self._obj)
+
+    def get_num_indices(self):
+        return SLHAlib.SLHAline_getnumindices(self._obj)
+
+    def get_full_index(self):
+        return SLHAlib.SLHAline_getfullindex(self._obj)
 
 
 class SLHAblock(object):

@@ -73,8 +73,16 @@ extern "C" {
         sl->SetIndex1(index);
     }
 
+    void SLHAline_getindex1(SLHAline* sl) {
+        sl->GetIndex1();
+    }
+
     void SLHAline_setindex2(SLHAline* sl, int index) {
         sl->SetIndex2(index);
+    }
+
+    void SLHAline_getindex2(SLHAline* sl) {
+        sl->GetIndex2();
     }
 
     int SLHAline_getstr(SLHAline* sl, char* buf, int len) {
@@ -86,6 +94,14 @@ extern "C" {
         strncpy(buf,sl_cstr,len-1);
         buf[len-1]=0;
         return strlen(buf);
+    }
+
+    int SLHAline_getnumindices(SLHAline* sl) {
+        return sl->GetNumIndices();
+    }
+
+    int SLHAline_getfullindex(SLHAline* sl) {
+        return sl->GetFullIndex();
     }
 
     // Multiple
