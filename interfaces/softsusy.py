@@ -90,7 +90,7 @@ def run (tanb, sgnMu, mgut, mt, boundary_condition, vars):
     r.lowOrg( boundary_condition, mgut, inputs, sgnMu, tanb, oneset, False )
 
     slhafile = SLHAfile()
-    slhafile.ReadFile("")
+    slhafile.read_file("")
 
     r.lesHouchesAccordOutputStream( "sugra", inputs, sgnMu, tanb, 91.1875,
             1, mgut, False, slhafile._obj )
