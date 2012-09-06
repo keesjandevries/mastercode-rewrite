@@ -14,6 +14,7 @@ def pipe_to_function(pipe_name, obj, function):
     if child_pid == 0 :
     # child process
         function()
+        os._exit(child_pid)
     else:
     # parent process
         pipeout = os.open(pipe_name, os.O_WRONLY)
