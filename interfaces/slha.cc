@@ -45,12 +45,12 @@ extern "C" {
     }
 
     // SLHA line
-    SLHAline* SLHAline_new(const char* name){
-        return new SLHAline(name);
+    SLHAline* SLHAline_new(){
+        return new SLHAline();
     }
 
     void SLHAline_setvalue(SLHAline* sl, double val){
-        sl->SetValue(val)SLHAline;
+        sl->SetValue(val);
     }
 
     double SLHAline_getvalue(SLHAline* sl){
@@ -63,7 +63,7 @@ extern "C" {
 
     int SLHAline_getcomment(SLHAline* sl, char* buf, int len){
         std::string comment_str = sl->GetComment();
-        const char* sl_cstr = bn_str.c_str();
+        const char* sl_cstr = comment_str.c_str();
         strncpy(buf,sl_cstr,len-1);
         buf[len-1]=0;
         return strlen(buf);
