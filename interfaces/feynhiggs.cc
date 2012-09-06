@@ -5,13 +5,16 @@
 
 #include "CFeynHiggs.h"
 #include "CSLHA.h"
+#include "SLHADefs.h"
 
 const int fh_interface_nslhadata = 5558;
+
+const bool WRITE_SLHA = false;
 
 extern "C" {
     void run_feynhiggs(const char slhafilename [], int mssmpart, int fieldren,
             int tanbren, int higgsmix, int p2approx, int looplevel,
-            int tl_running_mt, int tl_bot_resum) {
+            int tl_running_mt, int tl_bot_resum, double* prec_obs_array) {
 
         COMPLEX slhadata[fh_interface_nslhadata]; // stupid typedefs: not a true constructor
         int error;
@@ -42,50 +45,27 @@ extern "C" {
         }
         else {
             std::cout << "FH SUCCESS" << std::endl;
-            std::cout << "(g-2)_mu = " <<  gm2 << std::endl;
-            const char lulz[] = "feyn_out.slha";
-            std::cout << "Writing FH SLHA" << std::endl;
-            SLHAWrite(&error, slhadata, lulz);
-            std::cout << "Wrote FH SLHA" << std::endl;
+            if( WRITE_SLHA ) {
+                const char slha_name[] = "feyn_out.slha";
+                std::cout << "Writing FH SLHA" << std::endl;
+                SLHAWrite(&error, slhadata, slha_name);
+                std::cout << "Wrote FH SLHA" << std::endl;
+            }
+            prec_obs_array[0] = PrecObs_DeltaRho;
+            prec_obs_array[1] = PrecObs_MWMSSM;
+            prec_obs_array[2] = PrecObs_MWSM;
+            prec_obs_array[3] = PrecObs_SW2effMSSM;
+            prec_obs_array[4] = PrecObs_SW2effSM;
+            prec_obs_array[5] = PrecObs_gminus2mu;
+            prec_obs_array[6] = PrecObs_EDMeTh;
+            prec_obs_array[7] = PrecObs_EDMn;
+            prec_obs_array[8] = PrecObs_EDMHg;
+            prec_obs_array[9] = PrecObs_bsgammaMSSM;
+            prec_obs_array[10] = PrecObs_bsgammaSM;
+            prec_obs_array[11] = PrecObs_DeltaMsMSSM;
+            prec_obs_array[12] = PrecObs_DeltaMsSM;
+            prec_obs_array[13] = PrecObs_BsmumuMSSM;
+            prec_obs_array[14] = PrecObs_BsmumuSM;
         }
     }
 }
-     /* PREDICTIONS FROM  FEYN HIGGS */
-      //PREDICT(7)  = gm2         ! FeynHiggs
-      //PREDICT(19) = MHiggs(1)   ! FeynHiggs
-      //PREDICT(33) = HMix_MUE    ! Mu
-      //PREDICT(35) = Alpha_Alpha ! Alpha_effective
-      
-      //PREDICT(36) = HMix_MA02   ! MA0^2(Q)
-
-      //PREDICT(37) = NMix_ZNeu(1,1) ! neu mix matrix
-      //PREDICT(38) = NMix_ZNeu(1,2) ! neu mix matrix
-      //PREDICT(39) = NMix_ZNeu(1,3) ! neu mix matrix
-      //PREDICT(40) = NMix_ZNeu(1,4) ! neu mix matrix
-      //PREDICT(41) = NMix_ZNeu(2,1) ! neu mix matrix
-      //PREDICT(42) = NMix_ZNeu(2,2) ! neu mix matrix
-      //PREDICT(43) = NMix_ZNeu(2,3) ! neu mix matrix
-      //PREDICT(44) = NMix_ZNeu(2,4) ! neu mix matrix
-      //PREDICT(45) = NMix_ZNeu(3,1) ! neu mix matrix
-      //PREDICT(46) = NMix_ZNeu(3,2) ! neu mix matrix
-      //PREDICT(47) = NMix_ZNeu(3,3) ! neu mix matrix
-      //PREDICT(48) = NMix_ZNeu(3,4) ! neu mix matrix
-      //PREDICT(49) = NMix_ZNeu(4,1) ! neu mix matrix
-      //PREDICT(50) = NMix_ZNeu(4,2) ! neu mix matrix
-      //PREDICT(51) = NMix_ZNeu(4,3) ! neu mix matrix
-      //PREDICT(52) = NMix_ZNeu(4,4) ! neu mix matrix
-
-      //PREDICT(53) = Mass_MSf(1,3,1) ! muL
-      //PREDICT(54) = Mass_MSf(2,3,1) ! muR
-      //PREDICT(55) = Mass_MSf(1,4,1) ! mdL
-      //PREDICT(56) = Mass_MSf(2,4,1) ! mdR
-
-      //PREDICT(57) = StopMix_USf(1,1)
-      //PREDICT(58) = StopMix_USf(1,2)
-      //PREDICT(59) = StopMix_USf(2,1)
-      //PREDICT(60) = StopMix_USf(2,2)
-
-      //PREDICT(61) = SbotMix_USf(1,1)
-      //PREDICT(62) = SbotMix_USf(1,2)
-      //PREDICT(63) = SbotMix_USf(2,1)
-      //PREDICT(64) = SbotMix_USf(2,2)
