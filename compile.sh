@@ -74,6 +74,9 @@ function compile_feynhiggs_interfaces {
 
 
 function compile_softsusy_interfaces {
+    echo "======================="
+    echo "Compiling SS Interfaces"
+    echo "======================="
     g++ -c -fPIC -o obj/softsusy.o interfaces/softsusy.cc \
         -I${MAINDIR}/packages/include/softsusy/ \
         -L${MAINDIR}/packages/lib -lsoft
@@ -84,6 +87,9 @@ function compile_softsusy_interfaces {
 
 
 function compile_slha_interfaces {
+    echo "======================="
+    echo "Compiling SLHA Interfaces"
+    echo "======================="
     g++ -c -fPIC -o obj/slha.o interfaces/slha.cc \
         -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
         ${RFLAGS}
@@ -95,6 +101,9 @@ function compile_slha_interfaces {
 
 
 function compile_joint_interfaces {
+    echo "======================="
+    echo "Compiling Joint Interfaces"
+    echo "======================="
     # softsusy & slha join interface
     g++ -c -fPIC -o obj/softsusy_slha.o interfaces/softsusy_slha.cc \
         -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
@@ -110,10 +119,10 @@ function compile_joint_interfaces {
 }
 
 
+#compile_softsusy
+#compile_feynhiggs
 
 compile_softsusy_interfaces
 compile_slha_interfaces
 compile_joint_interfaces
-
-#compile_feynhiggs
 compile_feynhiggs_interfaces
