@@ -69,8 +69,12 @@ extern "C" {
         return strlen(buf);
     }
 
-    void SLHAline_setindex(SLHAline* sl, int index) {
-        sl->SetFullIndex(index);
+    void SLHAline_setindex1(SLHAline* sl, int index) {
+        sl->SetIndex1(index);
+    }
+
+    void SLHAline_setindex2(SLHAline* sl, int index) {
+        sl->SetIndex2(index);
     }
 
     int SLHAline_getstr(SLHAline* sl, char* buf, int len) {

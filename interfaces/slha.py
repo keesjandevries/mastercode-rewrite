@@ -48,9 +48,17 @@ class SLHAline(object):
     def get_comment(self):
         c_str_access(self._obj, SLHAlib.SLHAline_getcomment, __MAX_SLHA_SIZE)
 
-    def set_index(self, index):
+    def set_index_1(self, index):
         #try:
-        SLHAlib.SLHAline_setindex(self._obj, c_int(index))
+        SLHAlib.SLHAline_setindex1(self._obj, c_int(index))
+        #except:
+            #print "*** ERROR: failed to set index for SLHAline obj"
+        #else:
+            #self._index = index
+
+    def set_index_2(self, index):
+        #try:
+        SLHAlib.SLHAline_setindex2(self._obj, c_int(index))
         #except:
             #print "*** ERROR: failed to set index for SLHAline obj"
         #else:
