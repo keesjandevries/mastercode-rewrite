@@ -8,7 +8,7 @@
 #include "SLHADefs.h"
 
 const int fh_interface_nslhadata = 5558;
-const bool WRITE_SLHA = false;
+const bool write_fh_slha = false;
 
 extern "C" {
     void run_feynhiggs(const char slhafilename [], int mssmpart, int fieldren,
@@ -35,6 +35,7 @@ extern "C" {
         double gm2, Deltarho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn,
                edmHg;
         int ccb;
+
         FHConstraints(&error, &gm2, &Deltarho, &MWMSSM, &MWSM, &SW2MSSM,
                 &SW2SM, &edmeTh, &edmn, &edmHg, &ccb);
         
@@ -44,10 +45,10 @@ extern "C" {
         }
         else {
             std::cout << "FH SUCCESS" << std::endl;
-            if( WRITE_SLHA ) {
-                const char slha_name[] = "feyn_out.slha";
+            if( write_fh_slha ) {
+                const char fh_slha_name[] = "feyn_out.slha";
                 std::cout << "Writing FH SLHA" << std::endl;
-                SLHAWrite(&error, slhadata, slha_name);
+                SLHAWrite(&error, slhadata, fh_slha_name);
                 std::cout << "Wrote FH SLHA" << std::endl;
             }
             //prec_obs_array[0] = PrecObs_DeltaRho;
