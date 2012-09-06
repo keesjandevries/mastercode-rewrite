@@ -69,6 +69,10 @@ extern "C" {
         return strlen(buf);
     }
 
+    void SLHAline_setindex(SLHAline* sl, int index) {
+        sl->SetFullIndex(index);
+    }
+
     int SLHAline_getstr(SLHAline* sl, char* buf, int len) {
         std::stringstream ss_out( std::stringstream::in |
                                   std::stringstream::out );
