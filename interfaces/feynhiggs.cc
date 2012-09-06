@@ -8,7 +8,6 @@
 #include "SLHADefs.h"
 
 const int fh_interface_nslhadata = 5558;
-
 const bool WRITE_SLHA = false;
 
 extern "C" {
