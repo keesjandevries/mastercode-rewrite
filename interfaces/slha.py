@@ -16,8 +16,8 @@ def c_str_access(obj, func, max_size):
 
 
 class SLHAline(object):
-    def __init__(self, name):
-        self._obj = SLHAlib.SLHAline_new(str(name))
+    def __init__(self):
+        self._obj = SLHAlib.SLHAline_new()
         self._value = SLHAlib.SLHAline_getvalue(self._obj)
         self._comment = c_str_access(self._obj, SLHAlib.SLHAline_getcomment,
                 __MAX_SLHA_SIZE)
