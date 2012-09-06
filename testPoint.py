@@ -21,8 +21,8 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
             lambda: feynhiggs.run(pipe_name))
 
     line_test = slha.SLHAline()
-    line_test.set_index_1(2000006)
-    #line_test.set_index_2(5)
+    line_test.set_index1(2000006)
+    line_test.set_index2(5)
     line_test.set_comment('lulz')
     line_test.set_value(123.4)
 
@@ -33,6 +33,10 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     block_test.add_line(line_test)
     slhafile.add_block(block_test)
     print slhafile
+    print line_test.get_num_indices()
+    print line_test.get_index1()
+    print line_test.get_index2()
+    print line_test.get_full_index()
 
 
 if __name__=="__main__" :
