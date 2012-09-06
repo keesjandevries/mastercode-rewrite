@@ -4,7 +4,7 @@ _SLHAfile__MAX_SLHA_SIZE = 10000
 _SLHAblock__MAX_SLHA_SIZE = 10000
 _SLHAline__MAX_SLHA_SIZE = 10000
 
-from ctypes import cdll, create_string_buffer
+from ctypes import cdll, create_string_buffer, c_double, c_int
 SLHAlib = cdll.LoadLibrary('./libs/libmcslha.so')
 
 def c_str_access(obj, func, max_size):
@@ -27,34 +27,34 @@ class SLHAline(object):
         return c_str_access(self._obj, SLHAlib.SLHAline_getstr, __MAX_SLHA_SIZE)
 
     def set_value(self, val):
-        try:
-            SLHAlib.SLHAline_setvalue(self._obj, c_double(val))
-        except:
-            print "*** ERROR: failed to set value for SLHAline obj"
-        else:
-            self._value = val
+        #try:
+        SLHAlib.SLHAline_setvalue(self._obj, c_double(val))
+        #except:
+            #print "*** ERROR: failed to set value for SLHAline obj", e
+        #else:
+            #self._value = val
 
     def get_value(self):
         return self._value
 
     def set_comment(self, comment):
-        try:
-            SLHAlib.SLHAline_setcomment(self._obj,comment)
-        except:
-            print "*** ERROR: failed to set comment for SLHAline obj"
-        else:
-            self._comment = comment
+        #try:
+        SLHAlib.SLHAline_setcomment(self._obj,comment)
+        #except:
+            #print "*** ERROR: failed to set comment for SLHAline obj"
+        #else:
+            #self._comment = comment
 
     def get_comment(self):
         c_str_access(self._obj, SLHAlib.SLHAline_getcomment, __MAX_SLHA_SIZE)
 
     def set_index(self, index):
-        try:
-            SLHAlib.SLHAline_setindex(self._obj, index)
-        except:
-            print "*** ERROR: failed to set index for SLHAline obj"
-        else:
-            self._index = index
+        #try:
+        SLHAlib.SLHAline_setindex(self._obj, c_int(index))
+        #except:
+            #print "*** ERROR: failed to set index for SLHAline obj"
+        #else:
+            #self._index = index
 
 
 class SLHAblock(object):
