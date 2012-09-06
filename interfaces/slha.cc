@@ -7,12 +7,12 @@ extern "C" {
         return new SLHAfile(); 
     }
     
-    bool SLHAfile_ReadStream( SLHAfile* sf, std::istream& mfile, 
+    bool SLHAfile_readstream( SLHAfile* sf, std::istream& mfile, 
                               bool mVerbose = false ) {
         sf->ReadStream(mfile,mVerbose);
     }
 
-    bool SLHAfile_ReadFile(SLHAfile* sf, const char* f) {
+    bool SLHAfile_readfile(SLHAfile* sf, const char* f) {
         std::string s(f);
         return sf->ReadFile(s);
     }
@@ -29,7 +29,7 @@ extern "C" {
     }
     
     // SLHA block
-    SLHAblock* SLHAblock_new(const char* name){ 
+    SLHAblock* SLHAblock_new(const char* name) { 
         return new SLHAblock(name); 
     }
 
@@ -45,23 +45,23 @@ extern "C" {
     }
 
     // SLHA line
-    SLHAline* SLHAline_new(){
+    SLHAline* SLHAline_new() {
         return new SLHAline();
     }
 
-    void SLHAline_setvalue(SLHAline* sl, double val){
+    void SLHAline_setvalue(SLHAline* sl, double val) {
         sl->SetValue(val);
     }
 
-    double SLHAline_getvalue(SLHAline* sl){
+    double SLHAline_getvalue(SLHAline* sl) {
         return sl->GetValue();
     }
 
-    void SLHAline_setcomment(SLHAline* sl, const char* comment){
+    void SLHAline_setcomment(SLHAline* sl, const char* comment) {
         sl->SetComment(comment);
     }
 
-    int SLHAline_getcomment(SLHAline* sl, char* buf, int len){
+    int SLHAline_getcomment(SLHAline* sl, char* buf, int len) {
         std::string comment_str = sl->GetComment();
         const char* sl_cstr = comment_str.c_str();
         strncpy(buf,sl_cstr,len-1);
@@ -78,5 +78,14 @@ extern "C" {
         strncpy(buf,sl_cstr,len-1);
         buf[len-1]=0;
         return strlen(buf);
+    }
+
+    // Multiple
+    void SLHAfile_addblock(SLHAfile* sf, SLHAblock *sb) {
+        sf->AddBlock(*sb);
+    }
+
+    void SLHAblock_addline(SLHAblock *sb, SLHAline *sl) {
+        sb->AddLine(*sl);
     }
 }
