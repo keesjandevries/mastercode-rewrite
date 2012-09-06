@@ -67,7 +67,7 @@ function compile_feynhiggs_interfaces {
         -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH \
          -lgfortran
     g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfeynhiggs.so \
-        obj/feynhiggs.o -L${MAINDIR}/packages/lib -lFH \
+        obj/feynhiggs.o -L${MAINDIR}/packages/lib64 -lFH \
         -lgfortran
     echo "Done"
 }
