@@ -43,4 +43,40 @@ extern "C" {
         buf[len-1]=0;
         return strlen(buf);
     }
+
+    // SLHA line
+    SLHAline* SLHAline_new(const char* name){
+        return new SLHAline(name);
+    }
+
+    void SLHAline_setvalue(SLHAline* sl, double val){
+        sl->SetValue(val)SLHAline;
+    }
+
+    double SLHAline_getvalue(SLHAline* sl){
+        return sl->GetValue();
+    }
+
+    void SLHAline_setcomment(SLHAline* sl, const char* comment){
+        sl->SetComment(comment);
+    }
+
+    int SLHAline_getcomment(SLHAline* sl, char* buf, int len){
+        std::string comment_str = sl->GetComment();
+        const char* sl_cstr = bn_str.c_str();
+        strncpy(buf,sl_cstr,len-1);
+        buf[len-1]=0;
+        return strlen(buf);
+    }
+
+    int SLHAline_getstr(SLHAline* sl, char* buf, int len) {
+        std::stringstream ss_out( std::stringstream::in |
+                                  std::stringstream::out );
+        ss_out << (*sl);
+        std::string bn_str = ss_out.str();
+        const char* sl_cstr = bn_str.c_str();
+        strncpy(buf,sl_cstr,len-1);
+        buf[len-1]=0;
+        return strlen(buf);
+    }
 }
