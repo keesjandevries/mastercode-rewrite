@@ -10,22 +10,15 @@ extern "C" {
                                                     int sgnMu, double tanb,
                                                     double qMax, int numPoints,
                                                     double mgut, bool altEwsb,
-                                                    SLHAfile *sf = NULL ) {
+                                                    SLHAfile *sf) {
 
         std::stringstream ss_out( std::stringstream::in |
                                   std::stringstream::out );
 
         mss->lesHouchesAccordOutput( ss_out, model, *pars, sgnMu, tanb, qMax,
                                      numPoints, mgut, altEwsb );
-        std::istream iss( ss_out.rdbuf() ); // its in here
+        std::istream iss( ss_out.rdbuf() );
 
         iss >> (*sf);
-
-//        }
-//        else {
-//            std::cout << "No SLHAfile object specific, printing to stdout" <<
-//                std::endl;
-//            std::cout << iss;
-//        }
     }
 }
