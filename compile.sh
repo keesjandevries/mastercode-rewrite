@@ -136,12 +136,14 @@ function compile_joint_interfaces {
         ${RFLAGS}
 }
 
+touch ${LOG_TARGET}
+tailf ${LOG_TARGET} &
 
-#compile_slha >> ${LOG_FILE}
-#compile_softsusy >> ${LOG_FILE}
-#compile_feynhiggs >> ${LOG_FILE}
+compile_slha >> ${LOG_FILE}
+compile_softsusy >> ${LOG_FILE}
+compile_feynhiggs >> ${LOG_FILE}
 
-compile_softsusy_interfaces
-compile_slha_interfaces
-compile_joint_interfaces
-compile_feynhiggs_interfaces
+compile_softsusy_interfaces >> ${LOG_FILE}
+compile_slha_interfaces >> ${LOG_FILE}
+compile_joint_interfaces >> ${LOG_FILE}
+compile_feynhiggs_interfaces >> ${LOG_FILE}
