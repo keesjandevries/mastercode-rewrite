@@ -136,8 +136,8 @@ function compile_joint_interfaces {
         ${RFLAGS}
 }
 
-touch ${LOG_TARGET}
-tailf ${LOG_TARGET} &
+cat /dev/null > ${LOG_FILE}
+#tailf ${LOG_FILE} &
 
 compile_slha >> ${LOG_FILE}
 compile_softsusy >> ${LOG_FILE}
