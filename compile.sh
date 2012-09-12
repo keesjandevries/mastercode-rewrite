@@ -1,4 +1,7 @@
 #! /bin/bash
+
+LOG_FILE="build/build.log"
+
 MAINDIR=`pwd`  
 PREDICTOR_DIR="predictors"
 
@@ -12,13 +15,19 @@ FEYNHIGGS_VERSION="2.9.2"
 FEYNHIGGS_BASE="FeynHiggs-${FEYNHIGGS_VERSION}"
 FEYNHIGGS_TARGET="http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/\
 newversion/${FEYNHIGGS_BASE}.tar.gz"
-FEYNHIGGS_LIB="packages/lib64/libFH.a"
+FEYNHIGGS_LIB="packages/lib/libFH.a"
+
+SLHA_DIR="SLHA"
 
 RFLAGS=`root-config --cflags --libs`
 
+border="============================"
+
 
 function compile_softsusy {
-    echo -n "Compiling softsusy... "
+    echo ${border}
+    echo "  Compiling softsusy"
+    echo ${border}
     if [[ ! -h ${SOFTSUSY_LIB} ]] || \
        [[ `strings ${SOFTSUSY_LIB} | grep "${SOFTSUSY_VERSION}"` ]]; then
         if [[ ! -f tars/${SOFTSUSY_BASE}.tar.gz ]]; then
@@ -38,9 +47,9 @@ function compile_softsusy {
 
 
 function compile_feynhiggs {
-    echo "==================="
-    echo "Compiling feynhiggs"
-    echo "==================="
+    echo ${border}
+    echo "  Compiling feynhiggs..."
+    echo ${border}
     if [[ ! -h ${FEYNHIGGS_LIB} ]] || \
        [[ `strings ${FEYNHIGGS_LIB} | grep "${FEYNHIGGS_VERSION}"` ]]; then
         if [[ ! -f tars/${FEYNHIGGS_BASE}.tar.gz ]]; then
@@ -59,24 +68,33 @@ function compile_feynhiggs {
     echo "Done"
 }
 
+function compile_slha {
+    echo ${border}
+    echo "  Compiling SLHA classes"
+    echo ${border}
+    cd ${SLHA_DIR}
+    make
+    cd ${MAINDIR}
+}
+
 function compile_feynhiggs_interfaces {
-    echo "======================="
-    echo "Compiling FH Interfaces"
-    echo "======================="
+    echo ${border}
+    echo "  Compiling FH Interfaces"
+    echo ${border}
     g++ -c -fPIC -o obj/feynhiggs.o interfaces/feynhiggs.cc \
-        -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH \
+        -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib -lFH \
          -lgfortran
     g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfeynhiggs.so \
-        obj/feynhiggs.o -L${MAINDIR}/packages/lib64 -lFH \
+        obj/feynhiggs.o -L${MAINDIR}/packages/lib -lFH \
         -lgfortran
     echo "Done"
 }
 
 
 function compile_softsusy_interfaces {
-    echo "======================="
-    echo "Compiling SS Interfaces"
-    echo "======================="
+    echo ${border}
+    echo "  Compiling SS Interfaces"
+    echo ${border}
     g++ -c -fPIC -o obj/softsusy.o interfaces/softsusy.cc \
         -I${MAINDIR}/packages/include/softsusy/ \
         -L${MAINDIR}/packages/lib -lsoft
@@ -87,9 +105,9 @@ function compile_softsusy_interfaces {
 
 
 function compile_slha_interfaces {
-    echo "======================="
-    echo "Compiling SLHA Interfaces"
-    echo "======================="
+    echo ${border}
+    echo "  Compiling SLHA Interfaces"
+    echo ${border}
     g++ -c -fPIC -o obj/slha.o interfaces/slha.cc \
         -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
         ${RFLAGS}
@@ -101,9 +119,9 @@ function compile_slha_interfaces {
 
 
 function compile_joint_interfaces {
-    echo "======================="
-    echo "Compiling Joint Interfaces"
-    echo "======================="
+    echo ${border}
+    echo "  Compiling Joint Interfaces"
+    echo ${border}
     # softsusy & slha join interface
     g++ -c -fPIC -o obj/softsusy_slha.o interfaces/softsusy_slha.cc \
         -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
@@ -119,8 +137,9 @@ function compile_joint_interfaces {
 }
 
 
-#compile_softsusy
-#compile_feynhiggs
+#compile_slha >> ${LOG_FILE}
+#compile_softsusy >> ${LOG_FILE}
+#compile_feynhiggs >> ${LOG_FILE}
 
 compile_softsusy_interfaces
 compile_slha_interfaces
