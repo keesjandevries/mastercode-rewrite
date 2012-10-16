@@ -2,6 +2,7 @@
 #include <complex>
 #include <string>
 #include <fstream>
+#include <stdlib.h>
 
 #include "CFeynHiggs.h"
 #include "CSLHA.h"
@@ -24,7 +25,9 @@ extern "C" {
                 tl_running_mt, tl_bot_resum, 0);
 
         SLHARead(&error, slhadata, slhafilename, abort);
+        if(error) exit(error);
         FHSetSLHA(&error, slhadata);
+        if(error) exit(error);
 
         double mhiggs[4];
         Complex SAeff;
