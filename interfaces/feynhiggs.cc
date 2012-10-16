@@ -8,7 +8,6 @@
 #include "CSLHA.h"
 #include "SLHADefs.h"
 
-const int fh_interface_nslhadata = 5558;
 const bool write_fh_slha = false;
 
 extern "C" {
@@ -16,7 +15,7 @@ extern "C" {
             int tanbren, int higgsmix, int p2approx, int looplevel,
             int tl_running_mt, int tl_bot_resum) {
 
-        COMPLEX slhadata[fh_interface_nslhadata]; // stupid typedefs: not a true constructor
+        COMPLEX slhadata[nslhadata]; // stupid typedefs: not a true constructor
         int error;
         const int abort(0);
         FHSetDebug(0);
