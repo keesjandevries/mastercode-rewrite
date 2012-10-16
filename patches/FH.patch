@@ -4,13 +4,13 @@ Date: Fri, 20 Jul 2012 11:28:33 +0100
 Subject: [PATCH 4/4] pos indep code flags
 
 ---
- predictors/FeynHiggs-2.9.3/makefile.in | 4 ++--
+ predictors/FeynHiggs-2.9.4/makefile.in | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/predictors/FeynHiggs-2.9.3/makefile.in b/predictors/FeynHiggs-2.9.3/makefile.in
+diff --git a/predictors/FeynHiggs-2.9.4/makefile.in b/predictors/FeynHiggs-2.9.4/makefile.in
 index 0c82fb4..c698311 100644
---- a/predictors/FeynHiggs-2.9.3/makefile.in
-+++ b/predictors/FeynHiggs-2.9.3/makefile.in
+--- a/predictors/FeynHiggs-2.9.4/makefile.in
++++ b/predictors/FeynHiggs-2.9.4/makefile.in
 @@ -13,9 +13,9 @@ ARGS = $(PARALLEL) \
    NOUNDERSCORE="$(NOUNDERSCORE)" \
    EXE="$(EXE)" \
@@ -35,10 +35,10 @@ Subject: [PATCH] read only
  src/SLHA/SLHARead.F | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/predictors/FeynHiggs-2.9.3/src/SLHA/SLHARead.F b/predictors/FeynHiggs-2.9.3/src/SLHA/SLHARead.F
+diff --git a/predictors/FeynHiggs-2.9.4/src/SLHA/SLHARead.F b/predictors/FeynHiggs-2.9.4/src/SLHA/SLHARead.F
 index de38bb9..8be0bbe 100644
---- a/predictors/FeynHiggs-2.9.3/src/SLHA/SLHARead.F
-+++ b/predictors/FeynHiggs-2.9.3/src/SLHA/SLHARead.F
+--- a/predictors/FeynHiggs-2.9.4/src/SLHA/SLHARead.F
++++ b/predictors/FeynHiggs-2.9.4/src/SLHA/SLHARead.F
 @@ -65,7 +65,7 @@ read(tok, *, err=997, end=997)
  	  unit = 5
  	  if( lineno .ne. 0 ) goto 501

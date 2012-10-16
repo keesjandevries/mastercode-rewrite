@@ -11,7 +11,7 @@ SOFTSUSY_TARGET="http://www.hepforge.org/archive/softsusy/\
 ${SOFTSUSY_BASE}.tar.gz"
 SOFTSUSY_LIB="packages/lib/libsoft.so"
 
-FEYNHIGGS_VERSION="2.9.3"
+FEYNHIGGS_VERSION="2.9.4"
 FEYNHIGGS_BASE="FeynHiggs-${FEYNHIGGS_VERSION}"
 FEYNHIGGS_TARGET="http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/\
 newversion/${FEYNHIGGS_BASE}.tar.gz"
