@@ -29,7 +29,7 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     block_test = slha.SLHAblock('lol block')
     block_test.add_line(line_test)
     slhafile.add_block(block_test)
-    print slhafile
+    #print slhafile
 
 
 if __name__=="__main__" :
