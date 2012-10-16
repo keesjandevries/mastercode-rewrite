@@ -11,7 +11,7 @@ SOFTSUSY_TARGET="http://www.hepforge.org/archive/softsusy/\
 ${SOFTSUSY_BASE}.tar.gz"
 SOFTSUSY_LIB="packages/lib/libsoft.so"
 
-FEYNHIGGS_VERSION="2.9.4"
+FEYNHIGGS_VERSION="2.9.3"
 FEYNHIGGS_BASE="FeynHiggs-${FEYNHIGGS_VERSION}"
 FEYNHIGGS_TARGET="http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/\
 newversion/${FEYNHIGGS_BASE}.tar.gz"
@@ -82,10 +82,10 @@ function compile_feynhiggs_interfaces {
     echo "  Compiling FH Interfaces"
     echo ${border}
     g++ -c -fPIC -o obj/feynhiggs.o interfaces/feynhiggs.cc \
-        -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib -lFH \
+        -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH \
          -lgfortran
     g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfeynhiggs.so \
-        obj/feynhiggs.o -L${MAINDIR}/packages/lib -lFH \
+        obj/feynhiggs.o -L${MAINDIR}/packages/lib64 -lFH \
         -lgfortran
     echo "Done"
 }
@@ -139,9 +139,9 @@ function compile_joint_interfaces {
 cat /dev/null > ${LOG_FILE}
 #tailf ${LOG_FILE} &
 
-compile_slha >> ${LOG_FILE}
-compile_softsusy >> ${LOG_FILE}
-compile_feynhiggs >> ${LOG_FILE}
+#compile_slha >> ${LOG_FILE}
+#compile_softsusy >> ${LOG_FILE}
+#compile_feynhiggs >> ${LOG_FILE}
 
 compile_softsusy_interfaces >> ${LOG_FILE}
 compile_slha_interfaces >> ${LOG_FILE}
