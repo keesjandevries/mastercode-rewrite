@@ -5,13 +5,13 @@ LOG_FILE="build/build.log"
 MAINDIR=`pwd`  
 PREDICTOR_DIR="predictors"
 
-SOFTSUSY_VERSION="3.3.1"
+SOFTSUSY_VERSION="3.3.4"
 SOFTSUSY_BASE="softsusy-${SOFTSUSY_VERSION}"
 SOFTSUSY_TARGET="http://www.hepforge.org/archive/softsusy/\
 ${SOFTSUSY_BASE}.tar.gz"
 SOFTSUSY_LIB="packages/lib/libsoft.so"
 
-FEYNHIGGS_VERSION="2.9.2"
+FEYNHIGGS_VERSION="2.9.4"
 FEYNHIGGS_BASE="FeynHiggs-${FEYNHIGGS_VERSION}"
 FEYNHIGGS_TARGET="http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/\
 newversion/${FEYNHIGGS_BASE}.tar.gz"
