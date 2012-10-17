@@ -55,9 +55,9 @@ void SLHAline::SetIndex1(Long_t index1) {
     newindexinfo = (newindexinfo & 0xFF000000); //mask off the bottom 20 bits
     newindexinfo = newindexinfo | index1; //logical OR with passed index
     mIndexInfo = newindexinfo; //set new index
-    if( this->GetNumIndices() == 0 ){
-        this->SetNumIndices(1);
-    }
+    //if( this->GetNumIndices() == 0 ){
+        //this->SetNumIndices(1);
+    //}
   } else {
     std::cout << "The range for index1 must be between 0 and 0xFFFFFF inclusive. You gave " << index1 << std::endl;
     throw 0;
@@ -79,12 +79,12 @@ void SLHAline::SetIndex2(Long_t index2) {
     UInt_t ind2 = index2 << 24; //move index 2 to occupy bits 24-30
     newindexinfo = newindexinfo | ind2; //merge back with other info
     mIndexInfo = newindexinfo; //set mIndexInfo to new value
-    if( this->GetNumIndices() == 0 ){
-        throw 0;
-    }
-    if( this->GetNumIndices() == 1 ){
-        this->SetNumIndices(2);
-    }
+    //if( this->GetNumIndices() == 0 ){
+        //throw 0;
+    //}
+    //if( this->GetNumIndices() == 1 ){
+        //this->SetNumIndices(2);
+    //}
   } else {
     std::cout << "The range for index2 must be between 0 and 0x3F inclusive. You gave " << index2 << std::endl;
     throw 0;
