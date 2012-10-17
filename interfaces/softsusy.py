@@ -94,5 +94,7 @@ def run (tanb, sgnMu, mgut, mt, boundary_condition, vars):
 
     r.lesHouchesAccordOutputStream( "sugra", inputs, sgnMu, tanb, 91.1875,
             1, mgut, False, slhafile._obj )
+    #r.lesHouchesAccordOutput( "sugra", inputs, sgnMu, tanb, 91.1875,
+            #1, mgut, False)
 
     return slhafile
