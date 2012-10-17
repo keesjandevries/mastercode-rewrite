@@ -20,8 +20,7 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     #utils.pipe_to_function(pipe_name, slhafile,
             #lambda: feynhiggs.run(pipe_name))
     utils.pipe_to_function(pipe_name, slhafile,
-            lambda: feynhiggs.run("slhas/"+["jad_reads_softsusy_out_as.slha",
-                                            "softsusy_raw_output.slha"][0]))
+            lambda: feynhiggs.run(["slhas/test.slha", pipe_name][-1]))
 
 
     line_test = slha.SLHAline()
