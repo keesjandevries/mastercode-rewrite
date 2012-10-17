@@ -17,8 +17,12 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     pipe_name = "/tmp/mc-{host}-{pid}-{time}".format(host=gethostname(),
             pid=os.getpid(), time=t_now)
 
+    #utils.pipe_to_function(pipe_name, slhafile,
+            #lambda: feynhiggs.run(pipe_name))
     utils.pipe_to_function(pipe_name, slhafile,
-            lambda: feynhiggs.run(pipe_name))
+            lambda: feynhiggs.run("slhas/"+["jad_reads_softsusy_out_as.slha",
+                                            "softsusy_raw_output.slha"][0]))
+
 
     line_test = slha.SLHAline()
     line_test.set_index1(2000006)
