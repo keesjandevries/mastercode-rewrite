@@ -20,18 +20,22 @@ extern "C" {
         const int abort(0);
         FHSetDebug(0);
 
-        FHSetFlags(&error, mssmpart, fieldren, tanbren, higgsmix, p2approx, looplevel,
-                tl_running_mt, tl_bot_resum, 0);
+        FHSetFlags(&error, mssmpart, fieldren, tanbren, higgsmix, p2approx,
+                looplevel, tl_running_mt, tl_bot_resum, 0);
 
         SLHARead(&error, slhadata, slhafilename, abort);
-        if(error) exit(error);
+        if(error) {
+            exit(error);
+        }
         FHSetSLHA(&error, slhadata);
-        if(error) exit(error);
+        if(error) {
+            exit(error);
+        }
 
         double mhiggs[4];
-        Complex SAeff;
-        Complex UHiggs[3][3];
-        Complex ZHiggs[3][3];
+        ComplexType SAeff;
+        ComplexType UHiggs[3][3];
+        ComplexType ZHiggs[3][3];
         FHHiggsCorr(&error, mhiggs, &SAeff, UHiggs, ZHiggs);
 
         double gm2, Deltarho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn,
