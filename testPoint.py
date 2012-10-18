@@ -19,9 +19,10 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
 
     #utils.pipe_to_function(pipe_name, slhafile,
             #lambda: feynhiggs.run(pipe_name))
-    utils.pipe_to_function(pipe_name, slhafile,
+    fh_out = utils.pipe_to_function(pipe_name, slhafile,
             lambda: feynhiggs.run([pipe_name, "slhas/test.slha"][0]))
 
+    print fh_out.gm2
 
     line_test = slha.SLHAline()
     line_test.set_index1(2000006)
