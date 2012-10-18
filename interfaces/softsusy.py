@@ -15,8 +15,6 @@ boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "generalBcs",
 
 SPSLHAlib = cdll.LoadLibrary('./libs/libmcsoftsusyslha.so')
 
-from interfaces.slha import SLHAfile
-
 class DoubleVector(object) :
     def __init__(self, size = 0) :
         self._obj = SPlib.DoubleVector_new( size )
