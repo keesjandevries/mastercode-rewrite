@@ -28,9 +28,7 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     print>>open('slhas/testPoint_output.slha','w'), slhafile
     utils.pickle_object(slhafile, 'slhas/testPoint_output.pickled')
     unpickled = utils.open_pickled_file('slhas/testPoint_output.pickled')
-    print "**"
     print unpickled
-    print "**"
 
     #line_test = slha.SLHAline()
     #line_test.set_index1(2000006)
