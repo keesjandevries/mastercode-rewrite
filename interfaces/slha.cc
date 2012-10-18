@@ -45,8 +45,11 @@ extern "C" {
     }
 
     // SLHA line
-    SLHAline* SLHAline_new() {
-        return new SLHAline();
+    SLHAline* SLHAline_new(double val=0., const char* comment="") {
+        SLHAline* sl = new SLHAline;
+        sl->SetValue(val);
+        sl->SetComment(comment);
+        return sl;
     }
 
     void SLHAline_setvalue(SLHAline* sl, double val) {
