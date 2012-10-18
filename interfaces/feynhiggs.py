@@ -31,5 +31,6 @@ def run(filename) :
     FHout = FeynHiggsPrecObs()
     FHlib.run_feynhiggs(filename, mssmpart, fieldren, tanbren, higgsmix,
             p2approx, looplevel, Tl_mt, tl_bot_resum, byref(FHout))
-    print dir(FHout)
-    exit()
+    for item in dir(FHout):
+        if item[0] != "_":
+            print "{i} => {v}".format(i=item, v=getattr(FHout,item))
