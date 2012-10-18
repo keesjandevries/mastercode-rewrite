@@ -16,13 +16,17 @@ Tl_mt = 1
 tl_bot_resum = 1
 
 class FeynHiggsPrecObs(Structure):
-    _fields_ = [('DeltaRho', c_double), ('MWMSSM', c_double),
-            ('MWSM', c_double), ('SW2effMSSM', c_double),
-            ('SW2effSM', c_double), ('gminus2mu', c_double),
-            ('EDMeTh', c_double), ('EDMn', c_double), ('EDMHg', c_double),
-            ('bsgammaMSSM', c_double), ('bsgammaSM', c_double),
-            ('DeltaMsMSSM', c_double), ('DeltaMsSM', c_double),
-            ('BsmumuMSSM', c_double), ('BsmumuSM', c_double)]
+    #_fields_ = [('DeltaRho', c_double), ('MWMSSM', c_double),
+            #('MWSM', c_double), ('SW2effMSSM', c_double),
+            #('SW2effSM', c_double), ('gminus2mu', c_double),
+            #('EDMeTh', c_double), ('EDMn', c_double), ('EDMHg', c_double),
+            #('bsgammaMSSM', c_double), ('bsgammaSM', c_double),
+            #('DeltaMsMSSM', c_double), ('DeltaMsSM', c_double),
+            #('BsmumuMSSM', c_double), ('BsmumuSM', c_double)]
+    _fields_ = [('gm2', c_double), ('DeltaRho', c_double),
+            ('MWMSSM', c_double), ('MWSM', c_double), ('SW2effMSSM', c_double),
+            ('SW2effSM', c_double), ('EDMeTh', c_double), ('EDMn', c_double),
+            ('EDMHg', c_double)]
 
 
 
@@ -31,6 +35,4 @@ def run(filename) :
     FHout = FeynHiggsPrecObs()
     FHlib.run_feynhiggs(filename, mssmpart, fieldren, tanbren, higgsmix,
             p2approx, looplevel, Tl_mt, tl_bot_resum, byref(FHout))
-    for item in dir(FHout):
-        if item[0] != "_":
-            print "{i} => {v}".format(i=item, v=getattr(FHout,item))
+    return FHout

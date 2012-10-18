@@ -11,9 +11,10 @@
 const bool write_fh_slha = false;
 
 struct FeynHiggsPrecObs {
-    double DeltaRho, MWMSSM, MWSM, SW2effMSSM, SW2effSM, gminus2mu, EDMeTh,
-           EDMn, EDMHg, bsgammaMSSM, bsgammaSM, DeltaMsMSSM, DeltaMsSM,
-           BsmumuMSSM, BsmumuSM;
+    //double gm2, DeltaRho, MWMSSM, MWSM, SW2effMSSM, SW2effSM, EDMeTh,
+           //EDMn, EDMHg, bsgammaMSSM, bsgammaSM, DeltaMsMSSM, DeltaMsSM,
+           //BsmumuMSSM, BsmumuSM;
+    double  gm2, DeltaRho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn, edmHg;
 };
 
 extern "C" {
@@ -44,12 +45,15 @@ extern "C" {
         ComplexType ZHiggs[3][3];
         FHHiggsCorr(&error, mhiggs, &SAeff, UHiggs, ZHiggs);
 
-        double gm2, Deltarho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn,
-               edmHg;
+        //double gm2, DeltaRho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn,
+               //edmHg;
         int ccb;
 
-        FHConstraints(&error, &gm2, &Deltarho, &MWMSSM, &MWSM, &SW2MSSM,
-                &SW2SM, &edmeTh, &edmn, &edmHg, &ccb);
+        //FHConstraints(&error, &gm2, &Deltarho, &MWMSSM, &MWSM, &SW2MSSM,
+                //&SW2SM, &edmeTh, &edmn, &edmHg, &ccb);
+        FHConstraints(&error, &(out->gm2), &(out->DeltaRho),
+                &(out->MWMSSM), &(out->MWSM), &(out->SW2MSSM), &(out->SW2SM),
+                &(out->edmeTh), &(out->edmn), &(out->edmHg), &ccb);
         
         if(error != 0) {
             std::cout << "FH FAILED" << std::endl;
@@ -63,21 +67,23 @@ extern "C" {
                 SLHAWrite(&error, slhadata, fh_slha_name);
                 std::cout << "Wrote FH SLHA" << std::endl;
             }
-            out->DeltaRho = PrecObs_DeltaRho.re;
-            out->MWMSSM = PrecObs_MWMSSM.re;
-            out->MWSM = PrecObs_MWSM.re;
-            out->SW2effMSSM = PrecObs_SW2effMSSM.re;
-            out->SW2effSM = PrecObs_SW2effSM.re;
-            out->gminus2mu = PrecObs_gminus2mu.re;
-            out->EDMeTh = PrecObs_EDMeTh.re;
-            out->EDMn = PrecObs_EDMn.re;
-            out->EDMHg = PrecObs_EDMHg.re;
-            out->bsgammaMSSM = PrecObs_bsgammaMSSM.re;
-            out->bsgammaSM = PrecObs_bsgammaSM.re;
-            out->DeltaMsMSSM = PrecObs_DeltaMsMSSM.re;
-            out->DeltaMsSM = PrecObs_DeltaMsSM.re;
-            out->BsmumuMSSM = PrecObs_BsmumuMSSM.re;
-            out->BsmumuSM = PrecObs_BsmumuSM.re;
+            //out->DeltaRho = PrecObs_DeltaRho.re;
+            //out->MWMSSM = PrecObs_MWMSSM.re;
+            //out->MWSM = PrecObs_MWSM.re;
+            //out->SW2effMSSM = PrecObs_SW2effMSSM.re;
+            //out->SW2effSM = PrecObs_SW2effSM.re;
+            //out->gm2 = PrecObs_gminus2mu.re;
+            //out->EDMeTh = PrecObs_EDMeTh.re;
+            //out->EDMn = PrecObs_EDMn.re;
+            //out->EDMHg = PrecObs_EDMHg.re;
+            //out->bsgammaMSSM = PrecObs_bsgammaMSSM.re;
+            //out->bsgammaSM = PrecObs_bsgammaSM.re;
+            //out->DeltaMsMSSM = PrecObs_DeltaMsMSSM.re;
+            //out->DeltaMsSM = PrecObs_DeltaMsSM.re;
+            //out->BsmumuMSSM = PrecObs_BsmumuMSSM.re;
+            //out->BsmumuSM = PrecObs_BsmumuSM.re;
+
+
         }
     }
 }
