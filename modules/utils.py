@@ -2,6 +2,7 @@ import os
 import time
 import urllib2
 import tarfile
+import pickle
 
 def pipe_to_function(pipe_name, obj, function):
     try:
@@ -72,5 +73,12 @@ def extract_values(output_object):
     for name in dir(output_object):
         if name[0] != "_":
             values[name] = getattr(output_object,name)
-    return output_object
+    return values
 
+def pickle_object(obj, filename):
+    f = open(filename, 'w')
+    pickle.dump(obj,f)
+
+def open_pickled_file(filename):
+    f = open(filename,'r')
+    return pickle.load(f)
