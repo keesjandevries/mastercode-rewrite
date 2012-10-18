@@ -66,3 +66,11 @@ def find_nth(haystack, needle, n):
         start = haystack.find(needle, start+len(needle))
         n -= 1
     return start
+
+def extract_values(output_object):
+    values = {}
+    for name in dir(output_object):
+        if name[0] != "_":
+            values[name] = getattr(output_object,name)
+    return output_object
+
