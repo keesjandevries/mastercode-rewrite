@@ -9,4 +9,4 @@
 
 # FeynHiggs
 
-* needs to take a new SLHA file object (in run_feynhiggs) and append the relevant lines to it (ideally we do this in python , but not sure how we get the information out)
+* find out why PrecObs_* don't get filled (are these SLHA only: if so how do you get bsgamma etc.)
