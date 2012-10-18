@@ -16,8 +16,8 @@ def c_str_access(obj, func, max_size):
 
 
 class SLHAline(object):
-    def __init__(self):
-        self._obj = SLHAlib.SLHAline_new()
+    def __init__(self,value=0, comment=''):
+        self._obj = SLHAlib.SLHAline_new(c_double(value), comment)
         self._value = SLHAlib.SLHAline_getvalue(self._obj)
         self._comment = c_str_access(self._obj, SLHAlib.SLHAline_getcomment,
                 __MAX_SLHA_SIZE)
@@ -78,8 +78,10 @@ class SLHAline(object):
 
 
 class SLHAblock(object):
-    def __init__(self, name=''):
+    def __init__(self, name='', lines=[]):
         self._obj = SLHAlib.SLHAblock_new(str(name))
+        for line in lines:
+            add_line(line)
 
     def __str__(self):
         return c_str_access(self._obj, SLHAlib.SLHAblock_getstr,
@@ -102,3 +104,10 @@ class SLHAfile(object):
 
     def add_block(self, block):
         SLHAlib.SLHAfile_addblock(self._obj, block._obj)
+
+    def add_values(self, block_name, value_dict):
+        lines_to_add = []
+        block = SLHAblock(block_name)
+        for comment, value in value_dict.iteritems():
+            block.add_line( SLHAline(value,str(comment)) )
+        self.add_block(block)
