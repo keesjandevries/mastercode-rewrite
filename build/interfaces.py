@@ -10,7 +10,7 @@ softsusy = {
 
 softsusy_slha = {
         'name': 'softsusy_slha',
-        'requires': [predictors.softsusy, utils.slha_class]
+        'requires': [utils.slha_class, predictors.softsusy]
         }
 
 feynhiggs = {
@@ -23,7 +23,8 @@ slha = {
         'requires': [utils.slha_class],
         }
 
-INTERFACES = [ softsusy, feynhiggs, slha, softsusy_slha ]
+#INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs ]
+INTERFACES = [ softsusy ] # slha, softsusy_slha, feynhiggs ]
 
 src_dir = 'interfaces'
 object_dir = 'obj'
@@ -32,7 +33,7 @@ rpath = 'packages/lib'
 
 compiler=['g++']
 compile_opts = ['-c', '-fPIC']
-lib_build_opts = ['-Wl', '-shared']
+lib_build_opts = ['-shared']
 
 def get_include_options(interface):
     includes = [ '-I{0}/{1}'.format(r['installed_dir'], r['src_dir'])
@@ -68,7 +69,8 @@ def compile_objects(interfaces):
         includes = get_include_options(interface)
         links = get_library_link_options(interface)
         command = base_command+src_files+includes+links
-        subprocess.check_output(command,
+        print command
+        subprocess.check_call(command,
                 stderr=subprocess.STDOUT)
 
 def compile_libraries(interfaces):
@@ -80,54 +82,11 @@ def compile_libraries(interfaces):
         output =  ['-o', '{0}/{1}'.format(lib_dir, soname)]
         obj_input = ['{0}/{1}.o'.format(object_dir, name)]
         links = get_library_link_options(interface)
-        command = compiler + lib_build_opts + rpath_opts + output + \
-                obj_input + links
-        subprocess.check_output(command, stderr=subprocess.STDOUT)
+        command = compiler + lib_build_opts + soname_opt + rpath_opts + \
+                output + obj_input + links
+        print " ".join(command)
+        subprocess.check_call(command, stderr=subprocess.STDOUT)
 
 def compile(base_dir):
     compile_objects(INTERFACES)
     compile_libraries(INTERFACES)
-
-#function compile_softsusy_interfaces {
-    #g++ -c -fPIC -o obj/softsusy.o interfaces/softsusy.cc \
-        #-I${MAINDIR}/packages/include/softsusy/ \
-        #-L${MAINDIR}/packages/lib -lsoft
-    #g++ -shared -Wl,-soname,libmcsoftsusy.so \
-        #-Wl,-rpath,${MAINDIR}/packages/lib -o libs/libmcsoftsusy.so \
-       #obj/softsusy.o -L${MAINDIR}/packages/lib -lsoft
-#}
-
-#function compile_slha_interfaces {
-    #g++ -c -fPIC -o obj/slha.o interfaces/slha.cc \
-        #-I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
-        #${RFLAGS}
-    #g++ -shared -Wl,-soname,libmcslha.so \
-        #-Wl,-rpath,${MAINDIR}/SLHA/libs -o libs/libmcslha.so \
-        #obj/slha.o -L${MAINDIR}/SLHA/libs -lSLHAfile \
-        #${RFLAGS}
-#}
-
-
-#function compile_joint_interfaces {
-    #g++ -c -fPIC -o obj/softsusy_slha.o interfaces/softsusy_slha.cc \
-        #-I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
-        #-I${MAINDIR}/packages/include/softsusy \
-        #-L${MAINDIR}/packages/lib -lsoft \
-        #${RFLAGS}
-
-    #g++ -shared -Wl,-soname,libmcsoftsusyslha.so \
-        #-Wl,-rpath,${MAINDIR}/SLHA/libs:${MAINDIR}/packages/lib  \
-        #-o libs/libmcsoftsusyslha.so obj/softsusy_slha.o \
-        #-L${MAINDIR}/SLHA/libs -lSLHAfile -L${MAINDIR}/packages/lib -lsoft \
-        #${RFLAGS}
-#}
-
-
-#function compile_feynhiggs_interfaces {
-    #g++ -c -fPIC -o obj/feynhiggs.o interfaces/feynhiggs.cc \
-        #-I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH \
-         #-lgfortran
-    #g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfeynhiggs.so \
-        #obj/feynhiggs.o -L${MAINDIR}/packages/lib64 -lFH \
-        #-lgfortran
-#}
