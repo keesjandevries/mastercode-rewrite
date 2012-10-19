@@ -11,7 +11,6 @@ softsusy_slha = {
 #INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs ]
 INTERFACES = [ softsusy_slha ]
 
-installed_dir='packages'
 src_dir = 'interfaces'
 object_dir = 'obj'
 output_lib_dir = 'libs'
@@ -28,23 +27,21 @@ def construct_object_compile_commands(interfaces):
         name = interface['name'].lower()
         base_command = [compiler] + compile_opts + ['-o',
                 '{0}/{1}.o'.format(object_dir, name)]
-        src_files = [ '{0}/{1}.cc'.format(src_dir, r['name'].lower()) for r in
-                    interface['requires'] ]
-        includes = [ '-I{0}/include/{1}'.format(installed_dir, r['name'].lower())
-                for r in interface['requires'] ]
+        src_files = [ '{0}/{1}.cc'.format(src_dir,name)]
+        includes = [ '-I{0}/{1}'.format(r['installed_dir'], r['src_dir'])
+            for r in interface['requires'] ]
         # this crazyness below:
         # have have 'some/dir/structure/libSOMETHING.so' and we want SOMETHING
         #            ^                 ^   ^       ^
         #            |_________________|   |_______|
         #                          {1}_|           |
         #                                      {2}_|
-        links = [ '-L{0}/{1} -l{2}'.format(installed_dir,
-            r['library'].rpartition('/')[0],
-            r['library'].rpartition('/')[2].rpartition('.')[0][3:]) for r in
-                interface['requires'] ]
-
-        commands.append(base_command+src_files+includes+links)
-        print commands[-1]
+        links = ['-L{0}/{1} -l{2}'.format(r['installed_dir'], r['lib_dir'],
+            r['library'].rpartition('.')[0][3:]) for r in interface['requires']]
+        command = base_command+src_files+includes+links
+        print " ".join(command)
+        subprocess.check_output(base_command+src_files+includes+links,
+                stderr=subprocess.STDOUT)
 
 def compile(base_dir):
     construct_object_compile_commands(INTERFACES)
