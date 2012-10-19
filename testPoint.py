@@ -22,7 +22,8 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     fh_out = utils.pipe_to_function(pipe_name, slhafile,
             lambda: feynhiggs.run([pipe_name, "slhas/test.slha"][0]))
 
-    fh_values = utils.extract_values(fh_out)
+    #fh_values = utils.extract_values(fh_out)
+    fh_values = feynhiggs.get_values(fh_out)
     slhafile.add_values('FH PrecObs', fh_values)
 
     print>>open('slhas/testPoint_output.slha','w'), slhafile
