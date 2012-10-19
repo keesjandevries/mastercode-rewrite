@@ -3,8 +3,9 @@ import subprocess
 
 slha_class = {
     'source_dir': 'SLHA',
-    'name': 'SLHA class',
+    'name': 'SLHA',
     'installable': False,
+    'library': 'SLHA/libs/libSLHAfile.so',
     }
 
 UTILS = [ slha_class ]
