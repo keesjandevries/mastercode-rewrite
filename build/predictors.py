@@ -6,6 +6,7 @@ from modules.utils import fetch_url, extract_tarfile
 prefix_dir = 'packages'
 tar_dir = 'tars'
 predictor_dir = 'predictors'
+patch_dir = 'patches'
 
 softsusy = {
         'name': 'SoftSUSY',
@@ -27,12 +28,9 @@ feynhiggs = {
 PREDICTORS = [ softsusy, feynhiggs ]
 
 
-root_flags = subprocess.check_output(['root-config','--cflags','--libs'])
-
-
 def fetch_predictors(predictors):
     for predictor in predictors:
-        fn = predictor['source_filename'].format(verison=predictor['version'])
+        fn = predictor['source_filename'].format(version=predictor['version'])
         local_path = '{dir}/{file}'.format(dir=tar_dir, file=fn)
         success = True
         try:
@@ -54,6 +52,17 @@ def extract_predictors_source(predictors):
             predictor['source_dir'] = extract_tarfile(predictor['tar'],
                     predictor_dir)
 
+def patch_predictors(predictors):
+    for predictor in predictors:
+        try:
+            patch_file='{d}/{p}.patch'.format(d=patch_dir,p=predictor['name'])
+            with open(patch_file) as f: pass
+            subprocess.call(['patch','-N','-p','1','<', patch_file])
+            print(" --> Patched {0}".format(predictor['name']))
+        except IOError as e:
+            print("  --> No patch file present for {0}".format(
+                predictor['name']))
+
 
 def configure_predictors(predictors, base_dir):
     for predictor in predictors:
@@ -71,7 +80,8 @@ def configure_predictors(predictors, base_dir):
             os.chdir(base_dir)
             print("  --> Done")
         except IOError as e:
-            print("No config file present for {0}".format(predictor['name']))
+            print("  --> No config file present for {0}".format(
+                predictor['name']))
 
 def compile_predictors(predictors, base_dir):
     for predictor in predictors:
@@ -85,6 +95,7 @@ def compile_predictors(predictors, base_dir):
 def compile(base_dir):
     fetch_predictors(PREDICTORS)
     extract_predictors_source(PREDICTORS)
+    patch_predictors(PREDICTORS)
     configure_predictors(PREDICTORS, base_dir)
     compile_predictors(PREDICTORS, base_dir)
 
