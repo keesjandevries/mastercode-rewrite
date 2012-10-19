@@ -24,8 +24,8 @@ slha = {
         'requires': [utils.slha_class],
         }
 
-#INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs ]
-INTERFACES = [ softsusy ] # slha, softsusy_slha, feynhiggs ]
+INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs ]
+#INTERFACES = [ softsusy ] # slha, softsusy_slha, feynhiggs ]
 
 src_dir = 'interfaces'
 object_dir = 'obj'
