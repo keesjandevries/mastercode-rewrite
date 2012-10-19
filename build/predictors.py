@@ -54,14 +54,18 @@ def extract_predictors_source(predictors):
 
 def patch_predictors(predictors):
     for predictor in predictors:
+        print "Patching {0} ...".format(predictor['name'])
         try:
             patch_file='{d}/{p}.patch'.format(d=patch_dir,p=predictor['name'])
             with open(patch_file) as f: pass
-            subprocess.call(['patch','-N','-p','1','<', patch_file])
-            print(" --> Patched {0}".format(predictor['name']))
-        except IOError as e:
+            subprocess.check_output(['patch','-N','-p','1','-i', patch_file],
+                    stderr=subprocess.STDOUT)
+            print(" --> Done")
+        except IOError:
             print("  --> No patch file present for {0}".format(
                 predictor['name']))
+        except subprocess.CalledProcessError:
+            print("  --> Already patched")
 
 
 def configure_predictors(predictors, base_dir):
