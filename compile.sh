@@ -24,8 +24,6 @@ ${MICROMEGAS_BASE}.tgz"
 
 SLHA_DIR="SLHA"
 
-RFLAGS=`root-config --cflags --libs`
-
 border="============================"
 
 
@@ -119,12 +117,10 @@ function compile_slha_interfaces {
     echo "  Compiling SLHA Interfaces"
     echo ${border}
     g++ -c -fPIC -o obj/slha.o interfaces/slha.cc \
-        -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
-        ${RFLAGS}
+        -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile
     g++ -shared -Wl,-soname,libmcslha.so \
         -Wl,-rpath,${MAINDIR}/SLHA/libs -o libs/libmcslha.so \
-        obj/slha.o -L${MAINDIR}/SLHA/libs -lSLHAfile \
-        ${RFLAGS}
+        obj/slha.o -L${MAINDIR}/SLHA/libs -lSLHAfile
 }
 
 
@@ -137,13 +133,11 @@ function compile_joint_interfaces {
         -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
         -I${MAINDIR}/packages/include/softsusy \
         -L${MAINDIR}/packages/lib -lsoft \
-        ${RFLAGS}
 
     g++ -shared -Wl,-soname,libmcsoftsusyslha.so \
         -Wl,-rpath,${MAINDIR}/SLHA/libs:${MAINDIR}/packages/lib  \
         -o libs/libmcsoftsusyslha.so obj/softsusy_slha.o \
-        -L${MAINDIR}/SLHA/libs -lSLHAfile -L${MAINDIR}/packages/lib -lsoft \
-        ${RFLAGS}
+        -L${MAINDIR}/SLHA/libs -lSLHAfile -L${MAINDIR}/packages/lib -lsoft
 }
 
 cat /dev/null > ${LOG_FILE}
