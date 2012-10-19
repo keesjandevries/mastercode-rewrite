@@ -17,6 +17,7 @@ softsusy_slha = {
 feynhiggs = {
         'name': 'feynhiggs',
         'requires': [predictors.feynhiggs],
+        'extra_opts': ['-lgfortran'],
         }
 
 slha = {
@@ -71,6 +72,7 @@ def compile_objects(interfaces):
         includes = get_include_options(interface)
         links = get_library_link_options(interface)
         command = base_command+src_files+includes+links
+        command += interface.get('extra_opts',[])
 
         subprocess.check_call(command,
                 stderr=subprocess.STDOUT)
@@ -85,7 +87,7 @@ def compile_libraries(interfaces):
         obj_input = ['{0}/{1}.o'.format(object_dir, name)]
         links = get_library_link_options(interface)
         command = compiler + lib_build_opts + soname_opt + rpath_opts + \
-                output + obj_input + links
+                output + obj_input + links + interface.get('extra_opts',[])
 
         subprocess.check_call(command, stderr=subprocess.STDOUT)
 
