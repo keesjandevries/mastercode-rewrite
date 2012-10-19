@@ -18,7 +18,7 @@ public:
   void clear(); //resets the private members
   unsigned int size() const; //read-only
   SLHAline FindComment(std::string) const; //read-only
-  SLHAline FindIndex(std::pair<UInt_t, UInt_t>, UInt_t) const; //read-only
+  SLHAline FindIndex(std::pair<uint32_t, uint32_t>, uint32_t) const; //read-only
   std::string GetBlockName() const; //read-only
   SLHAline GetLine(unsigned int) const; //read-only
 

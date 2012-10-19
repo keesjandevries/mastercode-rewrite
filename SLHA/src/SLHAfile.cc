@@ -148,8 +148,8 @@ bool SLHAfile::ReadStream(std::istream& myfile, bool mVerbose) {
 
 	  //define some variables and cast the strings to their values
 	  std::stringstream lStr1 , lStr2 , lStr3;
-	  UInt_t lIntIndex0(0) , lIntIndex1(0);
-          Double_t lDoubleValue(0.0);
+	  uint32_t lIntIndex0(0) , lIntIndex1(0);
+          double lDoubleValue(0.0);
 	  
 	  lStr1 << lIndex0;
 	  lStr1 >> lIntIndex0;

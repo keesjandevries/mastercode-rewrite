@@ -3,13 +3,14 @@
 #define __SLHALINE__
 #include <iostream>
 #include <string>
-#include "Rtypes.h"
+#include <stdint.h>
+//#include "Rtypes.h"
 
 //we include Rtypes.h which is a bunch of ROOT typedefs to ensure
 //we always get the same number of bits for int/long etc
-//UInt_t = 32 bits unsigned
-//Double_t = 64 bits signed
-//Long_t = 64 bits signed
+//UInt_t = 32 bits unsigned -> uint32_t
+//Double_t = 64 bits signed -> double
+//Long_t = 64 bits signed -> int64_t
 
 //the structure of the indexinfo: 32 bits, unsigned int
 // 2 bits | 6 bits | 24 bits
@@ -25,20 +26,20 @@ class SLHAline {
   SLHAline();
   ~SLHAline();
 
-  UInt_t GetNumIndices() const; //since read-only function
-  void SetNumIndices(Long_t);
+  uint32_t GetNumIndices() const; //since read-only function
+  void SetNumIndices(int64_t);
 
-  UInt_t GetIndex1() const; //read-only
-  void SetIndex1(Long_t);
+  uint32_t GetIndex1() const; //read-only
+  void SetIndex1(int64_t);
 
-  UInt_t GetIndex2() const; //read-only
-  void SetIndex2(Long_t);
+  uint32_t GetIndex2() const; //read-only
+  void SetIndex2(int64_t);
   
-  UInt_t GetFullIndex() const; //read-only
-  void SetFullIndex(Long_t); 
+  uint32_t GetFullIndex() const; //read-only
+  void SetFullIndex(int64_t); 
 
-  Double_t GetValue() const; //read-only
-  void SetValue(Double_t);
+  double GetValue() const; //read-only
+  void SetValue(double);
 
   std::string GetComment() const; //read-only
   void SetComment(std::string);
@@ -52,8 +53,8 @@ class SLHAline {
   //At least this provides a way to catch such cases
 
  private:
-  UInt_t mIndexInfo;
-  Double_t mValue;
+  uint32_t mIndexInfo;
+  double mValue;
   std::string mComment;
 };
 
