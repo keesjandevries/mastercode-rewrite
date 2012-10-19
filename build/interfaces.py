@@ -3,13 +3,9 @@ import subprocess
 from build import predictors
 from build import utils
 
-root_cflags = subprocess.check_output(['root-config', '--cflags',
-    '--libs']).split()
-
 softsusy_slha = {
     'name': 'softsusy_slha',
     'requires': [predictors.softsusy, utils.slha_class],
-    'ROOT': True,
     }
 
 #INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs ]
@@ -43,8 +39,6 @@ def construct_object_compile_commands(interfaces):
         links = ['-L{0}/{1} -l{2}'.format(r['installed_dir'], r['lib_dir'],
             r['library'].rpartition('.')[0][3:]) for r in interface['requires']]
         command = base_command+src_files+includes+links
-        if interface.get('ROOT',False):
-            command += root_cflags
         subprocess.check_output(command,
                 stderr=subprocess.STDOUT)
 
