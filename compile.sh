@@ -134,9 +134,9 @@ function compile_joint_interfaces {
         -I${MAINDIR}/packages/include/softsusy \
         -L${MAINDIR}/packages/lib -lsoft \
 
-    g++ -shared -Wl,-soname,libmcsoftsusyslha.so \
+    g++ -shared -Wl,-soname,libmcsoftsusy_slha.so \
         -Wl,-rpath,${MAINDIR}/SLHA/libs:${MAINDIR}/packages/lib  \
-        -o libs/libmcsoftsusyslha.so obj/softsusy_slha.o \
+        -o libs/libmcsoftsusy_slha.so obj/softsusy_slha.o \
         -L${MAINDIR}/SLHA/libs -lSLHAfile -L${MAINDIR}/packages/lib -lsoft
 }
 
@@ -152,4 +152,3 @@ compile_softsusy_interfaces >> ${LOG_FILE}
 compile_slha_interfaces >> ${LOG_FILE}
 compile_joint_interfaces >> ${LOG_FILE}
 compile_feynhiggs_interfaces >> ${LOG_FILE}
-
