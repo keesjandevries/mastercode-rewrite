@@ -9,16 +9,18 @@ else
 	SONAME := -soname
 endif
 
+#INCDIR=\
+	#-Iinc \
+	#-I$(ROOTSYS)/include 
 INCDIR=\
-	-Iinc \
-	-I$(ROOTSYS)/include 
+	-Iinc
 
-CXXFLAGS=-c -fPIC -ansi -g -DLinux $(shell $(ROOTSYS)/bin/root-config --cflags)
+CXXFLAGS=-c --std=c++11 -fPIC -ansi -g -DLinux
 LINKSEARCH= -L$(ROOTSYS)/lib 
 
 LDFLAGS=
 LINK=
-LIBS= $(shell $(ROOTSYS)/bin/root-config --cflags --libs)
+LIBS=
 
 SRCDIR=src
 OBJDIR=obj
