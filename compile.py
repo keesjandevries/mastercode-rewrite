@@ -11,5 +11,5 @@ OPTIONS = {
 #if not os.environ.get('ROOTSYS',None):
     #raise OSError("ROOTSYS not defined: please source ROOT before building")
 
-for mod in [ predictors, utils, interfaces ]:
+for mod in [predictors, utils, interfaces]:
     mod.compile(**OPTIONS)
