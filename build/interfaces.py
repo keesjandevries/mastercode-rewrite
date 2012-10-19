@@ -90,5 +90,9 @@ def compile_libraries(interfaces):
         subprocess.check_call(command, stderr=subprocess.STDOUT)
 
 def compile(base_dir):
+    print "Building interface objects ..."
     compile_objects(INTERFACES)
+    print "  --> Done"
+    print "Building interface libraries ..."
     compile_libraries(INTERFACES)
+    print "  --> Done"
