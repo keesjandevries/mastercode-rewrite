@@ -74,6 +74,7 @@ function compile_feynhiggs {
 }
 
 function compile_micromegas {
+}
 
 
 function compile_slha {
@@ -156,3 +157,4 @@ compile_softsusy_interfaces >> ${LOG_FILE}
 compile_slha_interfaces >> ${LOG_FILE}
 compile_joint_interfaces >> ${LOG_FILE}
 compile_feynhiggs_interfaces >> ${LOG_FILE}
+
