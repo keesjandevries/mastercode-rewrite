@@ -28,6 +28,11 @@ class FeynHiggsPrecObs(Structure):
             ('SW2effSM', c_double), ('EDMeTh', c_double), ('EDMn', c_double),
             ('EDMHg', c_double)]
 
+def get_values(output):
+    d = dict([(attr, getattr(output,attr)) for (attr, a_type) in
+        output._fields_])
+    return d
+
 
 
 def run(filename) :
