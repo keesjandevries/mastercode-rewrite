@@ -2,6 +2,7 @@ import os
 import subprocess
 from build import predictors
 from build import utils
+#import shlex
 
 softsusy = {
         'name': 'softsusy',
@@ -47,9 +48,10 @@ def get_library_link_options(interface):
     #            |_________________|   |_______|
     #                          {1}_|           |
     #                                      {2}_|
-    links = ['-L{0}/{1} -l{2}'.format(r['installed_dir'], r['lib_dir'],
-        r['library'].rpartition('.')[0][3:])
-        for r in interface.get('requires',[])]
+    links = []
+    for r in interface.get('requires',[]):
+        links += ['-L{0}/{1}'.format(r['installed_dir'], r['lib_dir']),
+                '-l{0}'.format(r['library'].rpartition('.')[0][3:])]
     return links
 
 def get_rpath_options(interface):
@@ -69,7 +71,7 @@ def compile_objects(interfaces):
         includes = get_include_options(interface)
         links = get_library_link_options(interface)
         command = base_command+src_files+includes+links
-        print command
+
         subprocess.check_call(command,
                 stderr=subprocess.STDOUT)
 
@@ -84,7 +86,7 @@ def compile_libraries(interfaces):
         links = get_library_link_options(interface)
         command = compiler + lib_build_opts + soname_opt + rpath_opts + \
                 output + obj_input + links
-        print " ".join(command)
+
         subprocess.check_call(command, stderr=subprocess.STDOUT)
 
 def compile(base_dir):
