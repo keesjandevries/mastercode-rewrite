@@ -74,6 +74,7 @@ function compile_feynhiggs {
 }
 
 function compile_micromegas {
+    echo "lol"
 }
 
 
