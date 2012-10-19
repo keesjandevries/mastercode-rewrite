@@ -17,6 +17,11 @@ FEYNHIGGS_TARGET="http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/\
 newversion/${FEYNHIGGS_BASE}.tar.gz"
 FEYNHIGGS_LIB="packages/lib/libFH.a"
 
+MICROMEGAS_VERSION="2.4.5"
+MICROMEGAS_BASE="micromegas_${MICROMEGAS_VERSION}"
+MICROMEGAS_TARGET="http://lapth.in2p3.fr/micromegas/downloadarea/code/\
+${MICROMEGAS_BASE}.tgz"
+
 SLHA_DIR="SLHA"
 
 RFLAGS=`root-config --cflags --libs`
@@ -67,6 +72,9 @@ function compile_feynhiggs {
     fi
     echo "Done"
 }
+
+function compile_micromegas {
+
 
 function compile_slha {
     echo ${border}
@@ -142,6 +150,7 @@ cat /dev/null > ${LOG_FILE}
 #compile_slha >> ${LOG_FILE}
 #compile_softsusy >> ${LOG_FILE}
 #compile_feynhiggs >> ${LOG_FILE}
+#compile_micromegas >> ${LOG_FILE}
 
 compile_softsusy_interfaces >> ${LOG_FILE}
 compile_slha_interfaces >> ${LOG_FILE}
