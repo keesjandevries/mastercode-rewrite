@@ -13,7 +13,7 @@ boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "generalBcs",
                        "lvsBcs", "nonUniGauginos", "userDefinedBcs",
                        "nonUniGauginos", ]
 
-SPSLHAlib = cdll.LoadLibrary('./libs/libmcsoftsusyslha.so')
+SPSLHAlib = cdll.LoadLibrary('./libs/libmcsoftsusy_slha.so')
 
 class DoubleVector(object) :
     def __init__(self, size = 0) :
