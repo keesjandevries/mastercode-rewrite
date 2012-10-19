@@ -55,9 +55,9 @@ def get_rpath_options(interface):
         opts = '-Wl,-rpath,'
         paths = []
         for req in interface.get('requires',[]):
-            paths.append('{0}/{1}'.format(req['installed_dir'], r['lib_dir']))
+            paths.append('{0}/{1}'.format(req['installed_dir'], req['lib_dir']))
         opts += ':'.join(paths)
-        return opts
+        return [opts]
 
 def compile_objects(interfaces):
     for interface in interfaces:
