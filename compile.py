@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 import os
 
-from build import predictors, utils
+from build import predictors, utils, interfaces
 
 OPTIONS = {
         'base_dir': os.getcwd(),
@@ -11,5 +11,6 @@ OPTIONS = {
 if not os.environ.get('ROOTSYS',None):
     raise OSError("ROOTSYS not defined: please source ROOT before building")
 
-for mod in [ predictors, utils ]:
+#for mod in [ predictors, utils, interfaces ]:
+for mod in [ interfaces ]:
     mod.compile(**OPTIONS)
