@@ -13,7 +13,10 @@ softsusy = {
         'version': '3.3.4',
         'source_url_fmt': 'http://www.hepforge.org/archive/softsusy/{0}',
         'source_filename': 'softsusy-{version}.tar.gz',
-        'library': 'lib/libsoft.so',
+        'library': 'libsoft.so',
+        'installed_dir': prefix_dir,
+        'lib_dir': 'lib',
+        'src_dir': 'include/softsusy'
         }
 
 feynhiggs = {
@@ -22,7 +25,10 @@ feynhiggs = {
         'source_url_fmt': 'http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/'
             'newversion/{0}',
         'source_filename': 'FeynHiggs-{version}.tar.gz',
-        'library': 'lib64/libFH.a',
+        'library': 'libFH.a',
+        'installed_dir': prefix_dir,
+        'lib_dir': 'lib64',
+        'src_dir': 'include'
         }
 
 PREDICTORS = [ softsusy, feynhiggs ]

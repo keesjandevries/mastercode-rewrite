@@ -5,7 +5,10 @@ slha_class = {
     'source_dir': 'SLHA',
     'name': 'SLHA',
     'installable': False,
-    'library': 'SLHA/libs/libSLHAfile.so',
+    'library': 'libSLHAfile.so',
+    'installed_dir': 'SLHA',
+    'src_dir': 'inc',
+    'lib_dir': 'libs',
     }
 
 UTILS = [ slha_class ]
