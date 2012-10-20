@@ -31,17 +31,6 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     unpickled = utils.open_pickled_file('slhas/testPoint_output.pickled')
     print unpickled
 
-    #line_test = slha.SLHAline()
-    #line_test.set_index1(2000006)
-    #line_test.set_index2(5)
-    #line_test.set_comment('lulz')
-    #line_test.set_value(123.4)
-
-    #block_test = slha.SLHAblock('lol block')
-    #block_test.add_line(line_test)
-    #slhafile.add_block(block_test)
-    #print slhafile
-
 
 if __name__=="__main__" :
     i_vars = [ 100, 200, 0 ]
