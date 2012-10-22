@@ -5,7 +5,7 @@ from socket import gethostname
 from time import gmtime, strftime
 
 from interfaces import softsusy as rge_calc
-from interfaces import feynhiggs
+from interfaces import feynhiggs, micromegas
 from modules import utils
 
 from interfaces import slha
@@ -20,8 +20,13 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     fh_out = utils.pipe_to_function(pipe_name, slhafile,
             lambda: feynhiggs.run([pipe_name, "slhas/test.slha"][0]))
 
+    mo_out = utils.pipe_to_function(pipe_name, slhafile,
+            lambda: micromegas.run([pipe_name, "slhas/test.slha"][0]))
+
     fh_values = feynhiggs.get_values(fh_out)
+    mo_values = micromegas.get_values(mo_out)
     slhafile.add_values('FH PrecObs', fh_values)
+    slhafile.add_values('MO PrecObs', mo_values)
 
     print>>open('slhas/testPoint_output.slha','w'), slhafile
     utils.pickle_object(slhafile, 'slhas/testPoint_output.pickled')
