@@ -17,7 +17,7 @@ softsusy_slha = {
 feynhiggs = {
         'name': 'feynhiggs',
         'requires': [predictors.feynhiggs],
-        'extra_opts': ['-lgfortran'],
+        'extra_link_opts': ['-lgfortran'],
         }
 
 slha = {
@@ -28,10 +28,11 @@ slha = {
 micromegas = {
         'name': 'micromegas',
         'requires': [predictors.micromegas],
+        'extra_link_opts': ['-ldl', '-lX11']
         }
 
-INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs ]
-#INTERFACES = [ softsusy ] # slha, softsusy_slha, feynhiggs ]
+#INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs, micromegas ]
+INTERFACES = [ micromegas ]
 
 src_dir = 'interfaces'
 object_dir = 'obj'
@@ -61,6 +62,8 @@ def get_library_link_options(interface):
         if 'library' in r:
             links += ['-L{0}/{1}'.format(r['installed_dir'], r['lib_dir']),
                     '-l{0}'.format(r['library'].rpartition('.')[0][3:])]
+        links += ['{d}/{l}'.format(d=r['installed_dir'].format(v=r['version']),
+                l=linkobj) for linkobj in r.get('manual_objects',[])]
     return links
 
 def get_rpath_options(interface):
@@ -78,12 +81,10 @@ def compile_objects(interfaces):
                 '{0}/{1}.o'.format(object_dir, name)]
         src_files = [ '{0}/{1}.cc'.format(src_dir,name)]
         includes = get_include_options(interface)
-        links = get_library_link_options(interface)
-        command = base_command+src_files+includes+links
-        command += interface.get('extra_opts',[])
-
-        subprocess.check_call(command,
-                stderr=subprocess.STDOUT)
+        #links = get_library_link_options(interface)
+        command = base_command+src_files+includes
+        command += interface.get('extra_compile_opts',[])
+        subprocess.check_call(command, stderr=subprocess.STDOUT)
 
 def compile_libraries(interfaces):
     for interface in interfaces:
@@ -95,7 +96,8 @@ def compile_libraries(interfaces):
         obj_input = ['{0}/{1}.o'.format(object_dir, name)]
         links = get_library_link_options(interface)
         command = compiler + lib_build_opts + soname_opt + rpath_opts + \
-                output + obj_input + links + interface.get('extra_opts',[])
+                output + obj_input + links + \
+                interface.get('extra_link_opts',[])
 
         subprocess.check_call(command, stderr=subprocess.STDOUT)
 

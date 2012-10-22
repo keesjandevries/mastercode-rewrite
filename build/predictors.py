@@ -40,15 +40,15 @@ micromegas = {
         'installed_dir': 'predictors/micromegas_{v}',
         'lib_dir': '',
         'src_dir': '',
-        'other_linking': ['sources/micromegas.a', 'MSSM/lib/aLib.a',
+        'manual_objects': ['sources/micromegas.a', 'MSSM/lib/aLib.a',
             'MSSM/work/work_aux.a', 'CalcHEP_src/lib/dynamic_me.a',
             'CalcHEP_src/lib/libSLHAplus.a', 'CalcHEP_src/lib/num_c.a',
-            'CalcHEP_src/lib/serv.a', 'CalcHEP_src/lib/sqme_aux.so',
-            '-ldl', '-lX11' ],
+            'CalcHEP_src/lib/serv.a', 'CalcHEP_src/lib/sqme_aux.so'],
         'subdirs': ['MSSM'],
         }
 
-PREDICTORS = [ softsusy, feynhiggs, micromegas ]
+#PREDICTORS = [ softsusy, feynhiggs, micromegas ]
+PREDICTORS = [ micromegas ]
 
 
 def fetch_predictors(predictors):
