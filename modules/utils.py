@@ -25,6 +25,19 @@ def pipe_to_function(pipe_name, obj, function):
         os.waitpid(child_pid,0)
         return function_out
 
+def make_file_from_pipe(pipe_name):
+    pipe_in = open(pipe_name,'r').read()
+    new_filename = pipe_name+"_P"
+    print>>open(new_filename,'w'), pipe_in
+    return new_filename
+
+def rm(filename):
+    try:
+        with open(filename) as f: pass
+        os.remove(filename)
+    except IOError as e:
+        print "rm: File {0} does not exist"
+
 def fetch_url(target, local_path):
     success = False
     try:
