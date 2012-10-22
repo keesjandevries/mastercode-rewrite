@@ -142,17 +142,28 @@ function compile_joint_interfaces {
 
 function compile_micromegas_interfaces {
     MODIR="predictors/micromegas_2.4.5"
-    g++ -c -fPIC -o obj/micromegas.o interfaces/micromegas.cc \
+    #g++ -c -fPIC -o obj/micromegas.o interfaces/micromegas.cc \
+        #-I${MODIR} \
+        #${MODIR}/sources/micromegas.a ${MODIR}/MSSM/lib/aLib.a \
+        #${MODIR}/MSSM/work/work_aux.a
+        ##${MODIR}/CalcHEP_src/sqme_aux.so \
+        ##${MODIR}/CalcHEP_src/model_aux.so
+    g++ -o micromegas.x interfaces/micromegas.cc \
         -I${MODIR} \
-        ${MODIR}/sources/micromegas.a ${MODIR}/MSSM/lib/aLib.a \
-        ${MODIR}/MSSM/work/work_aux.a
-        #${MODIR}/CalcHEP_src/sqme_aux.so \
-        #${MODIR}/CalcHEP_src/model_aux.so
-    g++ -shared -Wl,-soname,libmcmicromegas.so \
-        -Wl,-rpath,${MODIR} \
-        -o libs/libmcmicromegas.so obj/micromegas.o \
-        ${MODIR}/sources/micromegas.a ${MODIR}/MSSM/lib/aLib.a \
-        ${MODIR}/MSSM/work/work_aux.a
+        ${MODIR}/sources/micromegas.a \
+        ${MODIR}/MSSM/lib/aLib.a \
+        ${MODIR}/MSSM/work/work_aux.a \
+        ${MODIR}/CalcHEP_src/lib/dynamic_me.a \
+        ${MODIR}/CalcHEP_src/lib/libSLHAplus.a \
+        ${MODIR}/CalcHEP_src/lib/sqme_aux.so \
+        -ldl
+        #${MODIR}/CalcHEP_src/lib/serv.a
+
+    #g++ -shared -Wl,-soname,libmcmicromegas.so \
+        #-Wl,-rpath,${MODIR} \
+        #-o libs/libmcmicromegas.so obj/micromegas.o \
+        #${MODIR}/sources/micromegas.a ${MODIR}/MSSM/lib/aLib.a \
+        #${MODIR}/MSSM/work/work_aux.a
 }
 
 #cat /dev/null > ${LOG_FILE}
