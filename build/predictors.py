@@ -59,7 +59,7 @@ superiso = {
         'library': 'libisospin.a'
         }
 
-PREDICTORS = [ softsusy, feynhiggs, micromegas ]
+PREDICTORS = [ softsusy, feynhiggs, micromegas, superiso ]
 
 
 def fetch_predictors(predictors):
