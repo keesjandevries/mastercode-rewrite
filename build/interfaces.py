@@ -1,5 +1,6 @@
 import os
 import subprocess
+import platform
 from build import predictors
 from build import utils
 #import shlex
@@ -41,6 +42,11 @@ rpath = 'packages/lib'
 compiler=['g++']
 compile_opts = ['-c', '-fPIC']
 lib_build_opts = ['-shared']
+
+system_lib_opt = {
+        'Linux': 'soname',
+        'Darwin': 'install_name',
+        }[platform.system()]
 
 def get_include_options(interface):
     includes = []
@@ -89,7 +95,7 @@ def compile_libraries(interfaces):
     for interface in interfaces:
         name = interface['name'].lower()
         soname = 'libmc{0}.so'.format(name)
-        soname_opt = ['-Wl,-soname,{0}'.format(soname)]
+        soname_opt = ['-Wl,-{0},{1}'.format(system_lib_opt,2soname)]
         rpath_opts = get_rpath_options(interface)
         output =  ['-o', '{0}/{1}'.format(lib_dir, soname)]
         obj_input = ['{0}/{1}.o'.format(object_dir, name)]
