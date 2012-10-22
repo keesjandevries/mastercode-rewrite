@@ -17,16 +17,15 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     pipe_name = "/tmp/mc-{host}-{pid}-{time}".format(host=gethostname(),
             pid=os.getpid(), time=t_now)
 
-    fh_out = utils.pipe_to_function(pipe_name, slhafile,
-            lambda: feynhiggs.run([pipe_name, "slhas/test.slha"][0]))
+    predictors = { 'FeynHiggs': feynhiggs, 'Micromegas': micromegas }
+    predictor_output = {}
+    for name,predictor in predictors.iteritems():
+        out = utils.pipe_to_function(pipe_name, slhafile,
+                lambda: predictor.run([pipe_name, "slha/test.slha"][0]))
+        predictor_output[name] = predictor.get_values(out)
 
-    mo_out = utils.pipe_to_function(pipe_name, slhafile,
-            lambda: micromegas.run([pipe_name, "slhas/test.slha"][0]))
-
-    fh_values = feynhiggs.get_values(fh_out)
-    mo_values = micromegas.get_values(mo_out)
-    slhafile.add_values('FH PrecObs', fh_values)
-    slhafile.add_values('MO PrecObs', mo_values)
+    for block_name, values in predictor_output.iteritems():
+        slhafile.add_values(block_name, values)
 
     print>>open('slhas/testPoint_output.slha','w'), slhafile
     utils.pickle_object(slhafile, 'slhas/testPoint_output.pickled')
