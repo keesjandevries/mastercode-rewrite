@@ -5,6 +5,7 @@ extern "C" {
 
 struct SuperISOPrecObs {
       double SIbsg, SId0, SIgm2;
+// inspect superiso_v<version>/slha.c to see all possible calculations
 };
 
 extern "C" {
