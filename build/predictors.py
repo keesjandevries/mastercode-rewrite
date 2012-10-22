@@ -59,6 +59,17 @@ superiso = {
         'library': 'libisospin.a'
         }
 
+susypope = {
+        'name': 'SUSY-POPE',
+        'version': '0.1',
+        'source_url_fmt': 'http://superiso.in2p3.fr/download/{0}',
+        'source_filename': 'SUSY-POPE-{v}.tgz',
+        'installed_dir': 'predictors/SUSY-POPE-{v}',
+        #'src_dir': 'src',
+        #'lib_dir': 'src',
+        #'library': 'libisospin.a'
+        }
+
 PREDICTORS = [ softsusy, feynhiggs, micromegas, superiso ]
 
 
