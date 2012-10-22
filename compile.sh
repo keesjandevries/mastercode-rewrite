@@ -166,15 +166,16 @@ function compile_micromegas_interfaces {
 
 function compile_superiso_interfaces {
     SIDIR="predictors/superiso_v3.3"
-    g++ -o superiso.x interfaces/superiso.cc  ${SIDIR}/src/libisospin.a \
-        -I${SIDIR}/src 
+    #g++ -o superiso.x interfaces/superiso.cc  -L${SIDIR}/src -lisospin \
+        #-I${SIDIR}/src 
 
-    #g++ -c -fPIC -o obj/superiso.o interfaces/superiso.cc \
-        #-I${SIDIR}/src
-    #g++ -shared -Wl,-soname,libmcsuperiso.so \
-        #-Wl,-rpath,${SIDIR} \
-        #-o libs/libmcsuperiso.so obj/superiso.o \
-        #${SIDIR}/src/libisospin.a
+    g++ -c -fPIC -o obj/superiso.o interfaces/superiso.cc \
+        -I${SIDIR}/src
+        #-L${SIDIR}/src -lisospin \
+    g++ -shared -Wl,-soname,libmcsuperiso.so \
+        -Wl,-rpath,${SIDIR} \
+        -o libs/libmcsuperiso.so obj/superiso.o \
+        -L${SIDIR}/src -lisospin
 }
 #cat /dev/null > ${LOG_FILE}
 #tailf ${LOG_FILE} &
