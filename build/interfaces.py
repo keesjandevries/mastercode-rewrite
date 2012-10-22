@@ -95,7 +95,7 @@ def compile_libraries(interfaces):
     for interface in interfaces:
         name = interface['name'].lower()
         soname = 'libmc{0}.so'.format(name)
-        soname_opt = ['-Wl,-{0},{1}'.format(system_lib_opt,2soname)]
+        soname_opt = ['-Wl,-{0},{1}'.format(system_lib_opt,soname)]
         rpath_opts = get_rpath_options(interface)
         output =  ['-o', '{0}/{1}'.format(lib_dir, soname)]
         obj_input = ['{0}/{1}.o'.format(object_dir, name)]
