@@ -1,0 +1,15 @@
+diff --git a/Makefile b/Makefile
+index 647ed32..e4d7b31 100755
+--- a/predictors/SUSY-POPE-0.1/Makefile
++++ b/predictors/SUSY-POPE-0.1/Makefile
+@@ -3,8 +3,8 @@
+ .KEEP_STATE:
+ 
+ # Choose your compilers here
+-FF=     g77
+-FC=	g77
++FF=     gfortran
++FC=	gfortran
+ #FF= 	pgf77
+ #FC=	pgf77
+ 
