@@ -47,6 +47,13 @@ micromegas = {
         'subdirs': ['MSSM'],
         }
 
+superiso = {
+        'name': 'SuperISO',
+        'version': '3.3',
+        'source_url_fmt': 'http://superiso.in2p3.fr/download/{0}',
+        'source_filename': 'superiso_v{v}.tgz',
+        }
+
 PREDICTORS = [ softsusy, feynhiggs, micromegas ]
 
 
