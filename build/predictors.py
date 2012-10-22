@@ -53,7 +53,7 @@ superiso = {
         'source_url_fmt': 'http://superiso.in2p3.fr/download/{0}',
         'source_filename': 'superiso_v{v}.tgz',
         'installed_dir': 'predictors/superiso_v{v}'
-        'src_dir': 'src'
+        'src_dir': 'src',
         'manual_objects': ['src/libisospin.a']
         }
 
