@@ -32,7 +32,13 @@ micromegas = {
         'extra_link_opts': ['-ldl', '-lX11']
         }
 
-INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs, micromegas ]
+superiso = {
+        'name': 'superiso',
+        'requires': [predictors.superiso],
+        }
+
+#INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs, micromegas, superiso ]
+INTERFACES = [ superiso ]
 
 src_dir = 'interfaces'
 object_dir = 'obj'
@@ -65,8 +71,10 @@ def get_library_link_options(interface):
     links = []
     for r in interface.get('requires',[]):
         if 'library' in r:
-            links += ['-L{0}/{1}'.format(r['installed_dir'], r['lib_dir']),
-                    '-l{0}'.format(r['library'].rpartition('.')[0][3:])]
+            L_link = '-L{0}/{1}'.format(r['installed_dir'].format(
+                v=r['version']), r['lib_dir'])
+            l_link = '-l{0}'.format(r['library'].rpartition('.')[0][3:])
+            links += [ L_link, l_link ]
         links += ['{d}/{l}'.format(d=r['installed_dir'].format(v=r['version']),
                 l=linkobj) for linkobj in r.get('manual_objects',[])]
     return links
