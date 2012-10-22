@@ -12,7 +12,7 @@ softsusy = {
         'name': 'SoftSUSY',
         'version': '3.3.4',
         'source_url_fmt': 'http://www.hepforge.org/archive/softsusy/{0}',
-        'source_filename': 'softsusy-{version}.tar.gz',
+        'source_filename': 'softsusy-{v}.tar.gz',
         'library': 'libsoft.so',
         'installed_dir': prefix_dir,
         'lib_dir': 'lib',
@@ -24,19 +24,36 @@ feynhiggs = {
         'version': '2.9.4',
         'source_url_fmt': 'http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/'
             'newversion/{0}',
-        'source_filename': 'FeynHiggs-{version}.tar.gz',
+        'source_filename': 'FeynHiggs-{v}.tar.gz',
         'library': 'libFH.a',
         'installed_dir': prefix_dir,
         'lib_dir': 'lib64',
         'src_dir': 'include'
         }
 
-PREDICTORS = [ softsusy, feynhiggs ]
+micromegas = {
+        'name': 'Micromegas',
+        'version': '2.4.5',
+        'source_url_fmt': 'http://lapth.in2p3.fr/micromegas/downloadarea/code/'
+            '{0}',
+        'source_filename': 'micromegas_{v}.tgz',
+        'installed_dir': 'predictors/micromegas_{v}',
+        'lib_dir': '',
+        'src_dir': '',
+        'other_linking': ['sources/micromegas.a', 'MSSM/lib/aLib.a',
+            'MSSM/work/work_aux.a', 'CalcHEP_src/lib/dynamic_me.a',
+            'CalcHEP_src/lib/libSLHAplus.a', 'CalcHEP_src/lib/num_c.a',
+            'CalcHEP_src/lib/serv.a', 'CalcHEP_src/lib/sqme_aux.so',
+            '-ldl', '-lX11' ],
+        'subdirs': ['MSSM'],
+        }
+
+PREDICTORS = [ softsusy, feynhiggs, micromegas ]
 
 
 def fetch_predictors(predictors):
     for predictor in predictors:
-        fn = predictor['source_filename'].format(version=predictor['version'])
+        fn = predictor['source_filename'].format(v=predictor['version'])
         local_path = '{dir}/{file}'.format(dir=tar_dir, file=fn)
         success = True
         try:
@@ -80,8 +97,8 @@ def configure_predictors(predictors, base_dir):
             conf_dir = '{bd}/{pd}/'.format(bd=base_dir,
                 pd=predictor['source_dir'])
             conf_file = '{cd}/configure'.format(cd=conf_dir)
-            with open(conf_file) as f: pass
             print("Configuring {0} ...".format(predictor['name']))
+            with open(conf_file) as f: pass
             prefix_str = '--prefix={bd}/{pd}'.format(bd=base_dir,
                 pd=prefix_dir)
             os.chdir(conf_dir)
@@ -95,12 +112,24 @@ def configure_predictors(predictors, base_dir):
 
 def compile_predictors(predictors, base_dir):
     for predictor in predictors:
-        os.chdir('{bd}/{pd}'.format(bd=base_dir, pd=predictor['source_dir']))
+        pred_src_dir = '{bd}/{pd}'.format(bd=base_dir,
+                pd=predictor['source_dir'])
+        os.chdir(pred_src_dir)
         print("Making {0} ...".format(predictor['name']))
         subprocess.check_output(['make'], stderr=subprocess.STDOUT)
-        subprocess.check_output(['make', 'install'], stderr=subprocess.STDOUT)
-        os.chdir(base_dir)
+        subprocess.call(['make', 'install'], stderr=subprocess.STDOUT,
+                stdout=open(os.devnull,'w'))
         print("  --> Done")
+        if 'subdirs' in  predictor:
+            for sdir in predictor['subdirs']:
+                print("Making {0}:{1} ...".format(predictor['name'], sdir))
+                os.chdir(sdir)
+                subprocess.check_output(['make'], stderr=subprocess.STDOUT)
+                subprocess.call(['make', 'install'], stderr=subprocess.STDOUT,
+                        stdout=open(os.devnull,'w'))
+                os.chdir(pred_src_dir)
+                print("  --> Done")
+        os.chdir(base_dir)
 
 def compile(base_dir):
     fetch_predictors(PREDICTORS)
