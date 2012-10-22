@@ -12,12 +12,13 @@ def get_values(output):
         output._fields_])
     return d
 
-def run(filename) :
+def run(filename, make_perm=True) :
     mcoutput.header('superiso')
     SIout = SuperISOPrecObs()
     # FIXME: to be honest this is stupid: we send our slhafile obj itno a pipe,
     # read it out and onto a tmp file -> maybe feature request in superiso?
-    perm_filename = utils.make_file_from_pipe(filename)
-    SIlib.run_superiso(perm_filename, byref(SIout))
-    utils.rm(perm_filename)
+    if make_perm:
+        filename = utils.make_file_from_pipe(filename)
+    SIlib.run_superiso(filename, byref(SIout))
+    utils.rm(filename)
     return SIout
