@@ -140,7 +140,22 @@ function compile_joint_interfaces {
         -L${MAINDIR}/SLHA/libs -lSLHAfile -L${MAINDIR}/packages/lib -lsoft
 }
 
-cat /dev/null > ${LOG_FILE}
+function compile_micromegas_interfaces {
+    MODIR="predictors/micromegas_2.4.5"
+    g++ -c -fPIC -o obj/micromegas.o interfaces/micromegas.cc \
+        -I${MODIR} \
+        ${MODIR}/sources/micromegas.a ${MODIR}/MSSM/lib/aLib.a \
+        ${MODIR}/MSSM/work/work_aux.a
+        #${MODIR}/CalcHEP_src/sqme_aux.so \
+        #${MODIR}/CalcHEP_src/model_aux.so
+    g++ -shared -Wl,-soname,libmcmicromegas.so \
+        -Wl,-rpath,${MODIR} \
+        -o libs/libmcmicromegas.so obj/micromegas.o \
+        ${MODIR}/sources/micromegas.a ${MODIR}/MSSM/lib/aLib.a \
+        ${MODIR}/MSSM/work/work_aux.a
+}
+
+#cat /dev/null > ${LOG_FILE}
 #tailf ${LOG_FILE} &
 
 #compile_slha >> ${LOG_FILE}
@@ -148,7 +163,8 @@ cat /dev/null > ${LOG_FILE}
 #compile_feynhiggs >> ${LOG_FILE}
 #compile_micromegas >> ${LOG_FILE}
 
-compile_softsusy_interfaces >> ${LOG_FILE}
-compile_slha_interfaces >> ${LOG_FILE}
-compile_joint_interfaces >> ${LOG_FILE}
-compile_feynhiggs_interfaces >> ${LOG_FILE}
+#compile_softsusy_interfaces >> ${LOG_FILE}
+#compile_slha_interfaces >> ${LOG_FILE}
+#compile_joint_interfaces >> ${LOG_FILE}
+#compile_feynhiggs_interfaces >> ${LOG_FILE}
+compile_micromegas_interfaces
