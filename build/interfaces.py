@@ -25,6 +25,11 @@ slha = {
         'requires': [utils.slha_class],
         }
 
+micromegas = {
+        'name': 'micromegas',
+        'requires': [predictors.micromegas],
+        }
+
 INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs ]
 #INTERFACES = [ softsusy ] # slha, softsusy_slha, feynhiggs ]
 
@@ -38,8 +43,10 @@ compile_opts = ['-c', '-fPIC']
 lib_build_opts = ['-shared']
 
 def get_include_options(interface):
-    includes = [ '-I{0}/{1}'.format(r['installed_dir'], r['src_dir'])
-        for r in interface.get('requires',[]) ]
+    includes = []
+    if 'requires' in interface:
+        includes = ['-I{0}/{1}'.format(r['installed_dir'].format(
+            v=r['version']), r['src_dir']) for r in interface['requires']]
     return includes
 
 def get_library_link_options(interface):
@@ -51,8 +58,9 @@ def get_library_link_options(interface):
     #                                      {2}_|
     links = []
     for r in interface.get('requires',[]):
-        links += ['-L{0}/{1}'.format(r['installed_dir'], r['lib_dir']),
-                '-l{0}'.format(r['library'].rpartition('.')[0][3:])]
+        if 'library' in r:
+            links += ['-L{0}/{1}'.format(r['installed_dir'], r['lib_dir']),
+                    '-l{0}'.format(r['library'].rpartition('.')[0][3:])]
     return links
 
 def get_rpath_options(interface):
