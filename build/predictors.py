@@ -55,7 +55,8 @@ superiso = {
         'source_filename': 'superiso_v{v}.tgz',
         'installed_dir': 'predictors/superiso_v{v}',
         'src_dir': 'src',
-        'manual_objects': ['src/libisospin.a'],
+        'lib_dir': 'src',
+        'library': 'libisospin.a'
         }
 
 PREDICTORS = [ softsusy, feynhiggs, micromegas ]
