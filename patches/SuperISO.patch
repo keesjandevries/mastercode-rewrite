@@ -1,0 +1,13 @@
+diff --git a/superiso_v3.3/Makefile b/superiso_v3.3/Makefile
+index 3d1d8bf..8c754f9 100644
+--- a/predictors/superiso_v3.3/Makefile
++++ b/predictors/superiso_v3.3/Makefile
+@@ -5,7 +5,7 @@ VERSION = v3.3
+ 
+ # Choose your compilers here (in general gcc/gfortran on Linux systems):
+ CC = gcc
+-CFLAGS= -O3 -pipe -fomit-frame-pointer
++CFLAGS= -fPIC -O3 -pipe -fomit-frame-pointer
+ 
+ # CC = icc
+ # CFLAGS = -O3
