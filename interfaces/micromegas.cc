@@ -5,45 +5,59 @@
            //$(MGMLIBDIR)/MSSM/work/work_aux.a $(MGMLIBDIR)/CalcHEP_src/sqme_aux.so \
            //$(MGMLIBDIR)/CalcHEP_src/model_aux.so
 
+
+struct MicroMegasPrecObs {
+    double  Omega, Bll, Bsg, SMbsg;
+};
+
+const int fast = 1;
+const double Beps = 1e-5;
+
 extern "C" {
-    void run_micromegas(const char* slhafilename) {
+    void run_micromegas(char slhafilename[], MicroMegasPrecObs* out) {
         double omegaMu,bsg, bll, sigppMu;
         // need to check this argument, seems to not do anything anymore
-        int error = readLesH(slhafilename,2) ;
+        int error = readLesH(slhafilename,2);
         if (error != 0) {
             std::cout << "*** Error: micromegas fail to open " <<
                 slhafilename << std::endl;//SLHAFILE
         }
-        //To include threshold corrections to H-b-B vertex  
-        call assignValW('dMb',deltaMb())   
-        
-        ERROR = sortOddParticles(mess)
-        
-        Now get observables
-        if(ERROR.ne.0) then ! Calculation error
-           write(*,*) 'Can not calculate ',mess
-        else 
-           if (mess.ne.'~o1') then ! LSP problem
-              ERROR = -10
-              write(*,*) '~o1 is not LSP'
-              IF (PENALTY(8).LE.0) PENALTY(8) = 10.
-           else
-              Omega = darkOmega(Xf,fast,Beps)
-              Bll   = bsmumu()
-              Bsg   = bsgnlo()
-        Copied from micromegas_2.2/MSSM/main.F, l. 419 sqq
-              ERROR = nucleonAmplitudes( FeScLoop, pA0, pA5, nA0, nA5 )
-              Nmass=0.939d0 ! Nucleon mass
-              SCcoeff=4/M_PI*3.8937966E8*(Nmass*lopmass()/(Nmass+ lopmass()))**2
-              sigpSI = SCcoeff*pA0(1)**2
-           endif
-        endif
-        continue
-        
-        end 
 
+        //To include threshold corrections to H-b-B vertex  
+        //micromegas_2.2/MSSM/lib/bsg_nlo.c:double deltaMb(void)
+        char dMb_s [] = "dMb";
+        assignValW(dMb_s,deltaMb());
+        
+        // micromegas_2.2/sources/omega.c:int sortOddParticles(char * lsp)
+        char mess[20];
+        error = sortOddParticles(mess);
         if(error != 0) {
-            std::cout << "! Calculation failed: no point in continuing"
+                std::cout << "Can not calculate " << mess << std::endl;
+                return;
+        }
+        std::cout << "MESS IS " << mess << std::endl;
+
+        if(mess!="~o1@") {
+            std::cout << "~o1 is not LSP" << std::endl;
+            //ERROR = -10
+            //IF (PENALTY(8).LE.0) PENALTY(8) = 10.
+            return;
+        }
+
+        double Xf;
+        out->Omega = darkOmega(&Xf,fast,Beps);
+        out->Bll = bsmumu();
+        out->Bsg = bsgnlo(&(out->SMbsg));
+
+        //Copied from micromegas_2.2/MSSM/main.F, l. 419 sqq
+        //ERROR = nucleonAmplitudes( FeScLoop, pA0, pA5, nA0, nA5 )
+        //Nmass=0.939d0 ! Nucleon mass
+        //SCcoeff=4/M_PI*3.8937966E8*(Nmass*lopmass()/(Nmass+ lopmass()))**2
+        //sigpSI = SCcoeff*pA0(1)**2
+        
+        if(error != 0) {
+            std::cout << "! Calculation failed: no point in continuing" <<
+                std::endl;
         }
     }
 }
