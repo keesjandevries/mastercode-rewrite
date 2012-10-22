@@ -6,7 +6,7 @@
            //$(MGMLIBDIR)/CalcHEP_src/model_aux.so
 
 
-struct MicroMegasPrecObs {
+struct MicromegasPrecObs {
     double  Omega, Bll, Bsg, SMbsg;
 };
 
@@ -14,7 +14,7 @@ const int fast = 1;
 const double Beps = 1e-5;
 
 extern "C" {
-    void run_micromegas(char slhafilename[], MicroMegasPrecObs* out) {
+    void run_micromegas(char slhafilename[], MicromegasPrecObs* out) {
         double omegaMu,bsg, bll, sigppMu;
         // need to check this argument, seems to not do anything anymore
         int error = readLesH(slhafilename,2);
@@ -61,6 +61,14 @@ extern "C" {
         }
     }
 }
+
+int main() {
+    MicromegasPrecObs mo_out;
+    char filename [] = "test.slha";
+    run_micromegas(filename, &mo_out);
+    std::cout << mo_out.Omega << std::endl;
+}
+    
         //- chargino
         //SPECTRUM(1)=findValW("MC1")
         //SPECTRUM(2)=findValW("MC2") 
