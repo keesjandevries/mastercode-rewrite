@@ -1,10 +1,6 @@
 #include <iostream>
 #include "sources/micromegas.h"
 #include "MSSM/lib/pmodel.h"
-//$(MGMLIBDIR)/sources/micromegas.a $(MGMLIBDIR)/MSSM/lib/aLib.a \
-           //$(MGMLIBDIR)/MSSM/work/work_aux.a $(MGMLIBDIR)/CalcHEP_src/sqme_aux.so \
-           //$(MGMLIBDIR)/CalcHEP_src/model_aux.so
-
 
 struct MicromegasPrecObs {
     double  Omega, Bll, Bsg, SMbsg;
@@ -37,7 +33,7 @@ extern "C" {
         }
         std::cout << "MESS IS " << mess << std::endl;
 
-        if(mess!="~o1@") {
+        if(!strcmp(mess,"~o1")) {
             std::cout << "~o1 is not LSP" << std::endl;
             //ERROR = -10
             //IF (PENALTY(8).LE.0) PENALTY(8) = 10.
@@ -62,12 +58,12 @@ extern "C" {
     }
 }
 
-int main() {
-    MicromegasPrecObs mo_out;
-    char filename [] = "test.slha";
-    run_micromegas(filename, &mo_out);
-    std::cout << mo_out.Omega << std::endl;
-}
+//int main() {
+    //MicromegasPrecObs mo_out;
+    //char filename [] = "test.slha";
+    //run_micromegas(filename, &mo_out);
+    //std::cout << mo_out.Omega << std::endl;
+//}
     
         //- chargino
         //SPECTRUM(1)=findValW("MC1")
