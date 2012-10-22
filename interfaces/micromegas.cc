@@ -24,16 +24,16 @@ extern "C" {
         char dMb_s [] = "dMb";
         assignValW(dMb_s,deltaMb());
         
-        // micromegas_2.2/sources/omega.c:int sortOddParticles(char * lsp)
         char mess[20];
+        // micromegas_2.2/sources/omega.c:int sortOddParticles(char * lsp)
         error = sortOddParticles(mess);
         if(error != 0) {
                 std::cout << "Can not calculate " << mess << std::endl;
                 return;
         }
-        std::cout << "MESS IS " << mess << std::endl;
 
-        if(!strcmp(mess,"~o1")) {
+        char lsp_label [] = "~o1";
+        if(strcmp(mess,lsp_label) != 0) {
             std::cout << "~o1 is not LSP" << std::endl;
             //ERROR = -10
             //IF (PENALTY(8).LE.0) PENALTY(8) = 10.
