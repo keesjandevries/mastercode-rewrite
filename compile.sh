@@ -164,6 +164,16 @@ function compile_micromegas_interfaces {
         -ldl -lX11
 }
 
+function compile_superiso_interfaces {
+    SIDIR="predictors/superiso_v3.3"
+    g++ -c -fPIC -o obj/superiso.o interfaces/superiso.cc \
+        -I${SIDIR}/src
+
+    g++ -shared -Wl,-soname,libmcsuperiso.so \
+        -Wl,-rpath,${SIDIR} \
+        -o libs/libmcsuperiso.so obj/superiso.o \
+        ${SIDIR}/src/libisospin.a
+}
 #cat /dev/null > ${LOG_FILE}
 #tailf ${LOG_FILE} &
 
@@ -177,3 +187,4 @@ function compile_micromegas_interfaces {
 #compile_joint_interfaces >> ${LOG_FILE}
 #compile_feynhiggs_interfaces >> ${LOG_FILE}
 #compile_micromegas_interfaces
+compile_superiso_interfaces 
