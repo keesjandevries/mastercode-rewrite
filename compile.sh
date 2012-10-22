@@ -143,16 +143,7 @@ function compile_joint_interfaces {
 function compile_micromegas_interfaces {
     MODIR="predictors/micromegas_2.4.5"
     g++ -c -fPIC  -o obj/micromegas.o interfaces/micromegas.cc \
-        -I${MODIR} \
-        ${MODIR}/sources/micromegas.a \
-        ${MODIR}/MSSM/lib/aLib.a \
-        ${MODIR}/MSSM/work/work_aux.a \
-        ${MODIR}/CalcHEP_src/lib/dynamic_me.a \
-        ${MODIR}/CalcHEP_src/lib/libSLHAplus.a \
-        ${MODIR}/CalcHEP_src/lib/num_c.a \
-        ${MODIR}/CalcHEP_src/lib/serv.a \
-        ${MODIR}/CalcHEP_src/lib/sqme_aux.so \
-        -ldl -lX11
+        -I${MODIR}
 
     g++ -shared -Wl,-soname,libmcmicromegas.so \
         -Wl,-rpath,${MODIR} \
