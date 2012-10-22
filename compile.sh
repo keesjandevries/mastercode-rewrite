@@ -1,5 +1,10 @@
 #! /bin/bash
 
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "    THIS IS FOR TESTING ONLY IT DOES NOT BUILD THE ACTUAL SYSTEM"
+echo "        USE compile.py"
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+
 LOG_FILE="build/build.log"
 
 MAINDIR=`pwd`  
@@ -171,4 +176,4 @@ function compile_micromegas_interfaces {
 #compile_slha_interfaces >> ${LOG_FILE}
 #compile_joint_interfaces >> ${LOG_FILE}
 #compile_feynhiggs_interfaces >> ${LOG_FILE}
-compile_micromegas_interfaces
+#compile_micromegas_interfaces
