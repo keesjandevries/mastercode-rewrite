@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import os
 import subprocess
+import platform
 from modules.utils import fetch_url, extract_tarfile
 
 prefix_dir = 'packages'
@@ -27,7 +28,7 @@ feynhiggs = {
         'source_filename': 'FeynHiggs-{v}.tar.gz',
         'library': 'libFH.a',
         'installed_dir': prefix_dir,
-        'lib_dir': 'lib64',
+        'lib_dir': { 'x86_64': 'lib64', 'i386': 'lib'}[platform.machine()]
         'src_dir': 'include'
         }
 
