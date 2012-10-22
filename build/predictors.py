@@ -47,8 +47,7 @@ micromegas = {
         'subdirs': ['MSSM'],
         }
 
-#PREDICTORS = [ softsusy, feynhiggs, micromegas ]
-PREDICTORS = [ micromegas ]
+PREDICTORS = [ softsusy, feynhiggs, micromegas ]
 
 
 def fetch_predictors(predictors):

@@ -31,8 +31,7 @@ micromegas = {
         'extra_link_opts': ['-ldl', '-lX11']
         }
 
-#INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs, micromegas ]
-INTERFACES = [ micromegas ]
+INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs, micromegas ]
 
 src_dir = 'interfaces'
 object_dir = 'obj'
