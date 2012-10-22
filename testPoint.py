@@ -20,8 +20,7 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     predictors = {
             'FeynHiggs': feynhiggs,
             'Micromegas': micromegas,
-            #'SuperISO': superiso, # still need to fix that it reads the slha
-                                   # multiple times
+            'SuperISO': superiso,
             }
     predictor_output = {}
     for name,predictor in predictors.iteritems():
