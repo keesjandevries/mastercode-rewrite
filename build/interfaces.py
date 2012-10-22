@@ -37,8 +37,7 @@ superiso = {
         'requires': [predictors.superiso],
         }
 
-#INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs, micromegas, superiso ]
-INTERFACES = [ superiso ]
+INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs, micromegas, superiso ]
 
 src_dir = 'interfaces'
 object_dir = 'obj'
