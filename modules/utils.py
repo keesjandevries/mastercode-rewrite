@@ -54,13 +54,13 @@ def fetch_url(target, local_path):
         print("URL Error:", e.reason, target)
     return success
 
-def extract_tarfile(file, local_dir):
+def extract_tarfile(filename, local_dir):
     output_dir = None
-    if tarfile.is_tarfile(file):
+    if tarfile.is_tarfile(filename):
         mode = 'r'
-        if file.endswith('.gz'):
+        if filename.endswith('gz'):
             mode += ':gz'
-        tf = tarfile.open(file,mode)
+        tf = tarfile.open(filename,mode)
         test_file = filter(lambda x: '/' in x, tf.getnames())[0]
         test_obj = '{l}/{f}'.format(l=local_dir, f=test_file)
         dir_end_pos = find_nth(test_obj, '/',2)
@@ -68,10 +68,12 @@ def extract_tarfile(file, local_dir):
         try:
             with open(test_obj) as f: pass
         except IOError as e:
-            print("Extracting {f} to {p} ...".format(f=file, p=local_dir))
+            print("Extracting {f} to {p} ...".format(f=filename, p=local_dir))
             tf.extractall(local_dir)
             print("  --> Done")
         tf.close()
+    else:
+        raise IOError, "{f} is not a tar file".format(f=filename)
     return output_dir
 
 def find_nth(haystack, needle, n):
