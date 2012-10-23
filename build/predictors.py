@@ -2,7 +2,7 @@
 import os
 import subprocess
 import platform
-from modules.utils import fetch_url, extract_tarfile
+from modules.utils import fetch_url, extract_tarfile, md5_matches
 
 prefix_dir = 'packages'
 tar_dir = 'tars'
