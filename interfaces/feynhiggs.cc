@@ -10,6 +10,11 @@
 
 const bool write_fh_slha = false;
 
+struct FeynHiggsOpts {
+    int mssmpart, fieldren, tanbren, higgsmix, p2approx, looplevel,
+        tl_running_mt, tl_bot_resum;
+};
+
 struct FeynHiggsPrecObs {
     //double gm2, DeltaRho, MWMSSM, MWSM, SW2effMSSM, SW2effSM, EDMeTh,
            //EDMn, EDMHg, bsgammaMSSM, bsgammaSM, DeltaMsMSSM, DeltaMsSM,
@@ -18,17 +23,17 @@ struct FeynHiggsPrecObs {
 };
 
 extern "C" {
-    void run_feynhiggs(const char slhafilename [], int mssmpart, int fieldren,
-            int tanbren, int higgsmix, int p2approx, int looplevel,
-            int tl_running_mt, int tl_bot_resum, FeynHiggsPrecObs* out) {
+    void run_feynhiggs(const char slhafilename [], FeynHiggsPrecObs* out,
+            FeynHiggsOpts* opts) {
 
         COMPLEX slhadata[nslhadata]; // stupid typedefs: not a true constructor
         int error;
         const int abort(0);
         FHSetDebug(0);
 
-        FHSetFlags(&error, mssmpart, fieldren, tanbren, higgsmix, p2approx,
-                looplevel, tl_running_mt, tl_bot_resum, 0);
+        FHSetFlags(&error, opts->mssmpart, opts->fieldren, opts->tanbren,
+                opts->higgsmix, opts->p2approx, opts->looplevel,
+                opts->tl_running_mt, opts->tl_bot_resum, 0);
 
         SLHARead(&error, slhadata, slhafilename, abort);
         if(error) {
@@ -67,6 +72,7 @@ extern "C" {
                 SLHAWrite(&error, slhadata, fh_slha_name);
                 std::cout << "Wrote FH SLHA" << std::endl;
             }
+            // FIXME: these dont get filled
             //out->DeltaRho = PrecObs_DeltaRho.re;
             //out->MWMSSM = PrecObs_MWMSSM.re;
             //out->MWSM = PrecObs_MWSM.re;

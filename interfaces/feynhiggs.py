@@ -6,14 +6,20 @@ from modules import mcoutput
 
 FHlib = cdll.LoadLibrary('./libs/libmcfeynhiggs.so')
 
-mssmpart = 4
-fieldren = 0
-tanbren = 0
-higgsmix = 2
-p2approx = 0
-looplevel = 2
-Tl_mt = 1
-tl_bot_resum = 1
+class FeynHiggsOpts(Structure):
+    _fields_ = [('mssmpart', c_int), ('fieldren', c_int), ('tanbren', c_int),
+            ('higgsmix', c_int), ('p2approx', c_int), ('looplevel', c_int),
+            ('tl_running_mt', c_int), ('tl_bot_resum', c_int)]
+    def __init__(self, mssmpart, fieldren, tanbren, higgsmix, p2approx,
+            looplevel, tl_running_mt, tl_bot_resum):
+            self.mssmpart = mssmpart
+            self.fieldren = fieldren
+            self.tanbren = tanbren
+            self.higgsmix = higgsmix
+            self.p2approx = p2approx
+            self.looplevel = looplevel
+            self.tl_running_mt = tl_running_mt
+            self.tl_bot_resum = tl_bot_resum
 
 class FeynHiggsPrecObs(Structure):
     #_fields_ = [('DeltaRho', c_double), ('MWMSSM', c_double),
@@ -35,9 +41,12 @@ def get_values(output):
 
 
 
-def run(filename) :
+def run(filename, fhopts=None) :
+    if fhopts is None:
+        fhopts = FeynHiggsOpts(mssmpart=4, fieldren=0, tanbren=0, higgsmix=2,
+            p2approx=0, looplevel=2, tl_running_mt=1, tl_bot_resum=1)
+
     mcoutput.header('feynhiggs')
     FHout = FeynHiggsPrecObs()
-    FHlib.run_feynhiggs(filename, mssmpart, fieldren, tanbren, higgsmix,
-            p2approx, looplevel, Tl_mt, tl_bot_resum, byref(FHout))
+    FHlib.run_feynhiggs(filename, byref(FHout), byref(fhopts))
     return FHout
