@@ -177,6 +177,11 @@ function compile_superiso_interfaces {
         -o libs/libmcsuperiso.so obj/superiso.o \
         -L${SIDIR}/src -lisospin
 }
+
+function compile_pope_interface {
+    POPEDIR="predcitrs/SUSY-POPE-0.1"
+    POPELIBS = -L$(MAINDIR)/SUSY-POPE-0.1/ -lAMWObs
+}
 #cat /dev/null > ${LOG_FILE}
 #tailf ${LOG_FILE} &
 
