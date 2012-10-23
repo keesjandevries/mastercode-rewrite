@@ -23,7 +23,7 @@ softsusy = {
         }
 
 feynhiggs = {
-
+        'name': 'FeynHiggs'
         'version': '2.9.4',
         'source_url_fmt': 'http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/'
             'newversion/{0}',
