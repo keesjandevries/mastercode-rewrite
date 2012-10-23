@@ -2,7 +2,8 @@
 import os
 import subprocess
 import platform
-from modules.utils import fetch_url, extract_tarfile, md5_matches
+import errno
+from modules.utils import fetch_url, extract_tarfile, md5_matches, rm
 
 prefix_dir = 'packages'
 tar_dir = 'tars'
@@ -88,10 +89,11 @@ def fetch_predictors(predictors):
             # file didn't exist better get it
             target = predictor['source_url_fmt'].format(fn)
             success = fetch_url(target, local_path)
-            if not md5_matches(local_path, predictor['source_md5']):
-                raise IOError, "checksum does not match: {}".format(local_path)
         finally:
             if success:
+                if not md5_matches(local_path, predictor['source_md5']):
+                    raise IOError(errno.EIO, "Checksum Failed", local_path)
+                    # FIXME probably shouldnt be an IOError
                 predictor['tar'] = local_path
             else:
                 predictor['tar'] = None
