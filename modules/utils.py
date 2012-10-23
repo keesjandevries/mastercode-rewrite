@@ -3,6 +3,7 @@ import time
 import urllib2
 import tarfile
 import pickle
+import hashlib
 
 def pipe_to_function(pipe_name, obj, function):
     try:
@@ -53,6 +54,11 @@ def fetch_url(target, local_path):
     except urllib2.URLError, e:
         print("URL Error:", e.reason, target)
     return success
+
+def md5_matches(filename, checksum):
+    checker = hashlib.md5()
+    checker.update(open(filename,'r').read())
+    return checker.hexdigest() == checksum
 
 def extract_tarfile(filename, local_dir):
     output_dir = None
