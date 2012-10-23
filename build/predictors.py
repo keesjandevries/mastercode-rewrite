@@ -14,6 +14,7 @@ softsusy = {
         'version': '3.3.4',
         'source_url_fmt': 'http://www.hepforge.org/archive/softsusy/{0}',
         'source_filename': 'softsusy-{v}.tar.gz',
+        'source_md5': '63c96d8812823edbc30c0e7cb15f9667'
         'library': 'libsoft.so',
         'installed_dir': prefix_dir,
         'lib_dir': 'lib',
@@ -26,6 +27,7 @@ feynhiggs = {
         'source_url_fmt': 'http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/'
             'newversion/{0}',
         'source_filename': 'FeynHiggs-{v}.tar.gz',
+        'source_md5': 'c366b7195f8edeefd60d851fc873a8a5'
         'library': 'libFH.a',
         'installed_dir': prefix_dir,
         'lib_dir': { 'x86_64': 'lib64', 'i386': 'lib'}[platform.machine()],
@@ -38,6 +40,7 @@ micromegas = {
         'source_url_fmt': 'http://lapth.in2p3.fr/micromegas/downloadarea/code/'
             '{0}',
         'source_filename': 'micromegas_{v}.tgz',
+        'source_md5': '322856e02ddf06c76077b65f3a64de5d'
         'installed_dir': 'predictors/micromegas_{v}',
         'lib_dir': '',
         'src_dir': '',
@@ -53,6 +56,7 @@ superiso = {
         'version': '3.3',
         'source_url_fmt': 'http://superiso.in2p3.fr/download/{0}',
         'source_filename': 'superiso_v{v}.tgz',
+        'source_md5': '9b90d637f9899b1e38a06d4ab250301b'
         'installed_dir': 'predictors/superiso_v{v}',
         'src_dir': 'src',
         'lib_dir': 'src',
@@ -76,7 +80,7 @@ PREDICTORS = [ softsusy, feynhiggs, micromegas, superiso ]
 def fetch_predictors(predictors):
     for predictor in predictors:
         fn = predictor['source_filename'].format(v=predictor['version'])
-        local_path = '{dir}/{file}'.format(dir=tar_dir, file=fn)
+        local_path = '{d}/{f}'.format(d=tar_dir, f=fn)
         success = True
         try:
             with open(local_path) as f: pass
@@ -84,6 +88,8 @@ def fetch_predictors(predictors):
             # file didn't exist better get it
             target = predictor['source_url_fmt'].format(fn)
             success = fetch_url(target, local_path)
+            if not md5_matches(local_path, predictor['source_md5']):
+                raise IOError, "checksum does not match: {}".format(local_path)
         finally:
             if success:
                 predictor['tar'] = local_path
