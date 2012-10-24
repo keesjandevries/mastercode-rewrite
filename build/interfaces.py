@@ -5,6 +5,11 @@ from build import predictors
 from build import utils
 #import shlex
 
+lib_X11 = {
+        'Linux': ['-lX11'],
+        'Darwin': ['-L/usr/X11/lib', '-lX11'],
+        }[platform.system()]
+
 softsusy = {
         'name': 'softsusy',
         'requires': [predictors.softsusy]
@@ -29,7 +34,7 @@ slha = {
 micromegas = {
         'name': 'micromegas',
         'requires': [predictors.micromegas],
-        'extra_link_opts': ['-ldl', '-lX11']
+        'extra_link_opts': ['-ldl'] + lib_X11
         }
 
 superiso = {
