@@ -1,10 +1,11 @@
 #! /usr/bin/env python
+from ctypes import cdll, create_string_buffer, c_double, c_int
+from collections import defaultdict
 
 _SLHAfile__MAX_SLHA_SIZE = 10000
 _SLHAblock__MAX_SLHA_SIZE = 10000
 _SLHAline__MAX_SLHA_SIZE = 10000
 
-from ctypes import cdll, create_string_buffer, c_double, c_int
 SLHAlib = cdll.LoadLibrary('./libs/libmcslha.so')
 
 def c_str_access(obj, func, max_size):
@@ -14,6 +15,26 @@ def c_str_access(obj, func, max_size):
         print "*** WARNING: string access has been truncated"
     return c_str_buf.value
 
+def process_slhafile(slhafile):
+    slha_info = defaultdict(list)
+    current_block = ''
+    lines = str(slhafile).replace('\t',' ').split('\n')
+    for line in lines:
+        clean = line.lstrip()
+        fields = clean.split()
+        if line:
+            if clean[0] == 'B':
+                # is block
+                current_block = ' '.join(fields[1:])
+            else:
+                # is info line
+                slha_info[current_block].append(tuple(fields))
+
+    #for block, lines in slha_info.iteritems():
+        #print 'BLOCK', block
+        #for line in lines:
+            #print '\t', ' '.join(line)
+    return slha_info
 
 class SLHAline(object):
     def __init__(self,value=0, comment=''):
