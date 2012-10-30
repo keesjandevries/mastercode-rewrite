@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-from ctypes import cdll, create_string_buffer, c_double, c_int
+from ctypes import cdll, create_string_buffer, c_double, c_int, c_void_p
 from collections import defaultdict
 
 _SLHAfile__MAX_SLHA_SIZE = 10000
@@ -113,7 +113,14 @@ class SLHAblock(object):
 
 
 class SLHAfile(object):
+#def __init__(self):
+    #lib.Foo_new.restype = c_void_p # Needed
+    #self.obj = lib.Foo_new()
+
+#def set(self, v):
+    #lib.Foo_setValue(c_void_p(self.obj), v) # c_void_p needed
     def __init__(self):
+        SLHAlib.SLHAfile_new.restype = c_void_p
         self._obj = SLHAlib.SLHAfile_new()
 
     def __str__(self):
@@ -121,7 +128,7 @@ class SLHAfile(object):
                 __MAX_SLHA_SIZE)
 
     def read_file(self, filename):
-        SLHAlib.SLHAfile_readfile(self._obj, str(filename))
+        SLHAlib.SLHAfile_readfile(c_void_p(self._obj), str(filename))
 
     def add_block(self, block):
         SLHAlib.SLHAfile_addblock(self._obj, block._obj)

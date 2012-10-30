@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from ctypes import cdll, c_int, c_double, c_char_p
+from ctypes import cdll, c_int, c_double, c_char_p, c_void_p
 
 from modules import mcoutput
 from interfaces.slha import SLHAfile
@@ -88,11 +88,8 @@ def run (tanb, sgnMu, mgut, mt, boundary_condition, vars):
     r.lowOrg( boundary_condition, mgut, inputs, sgnMu, tanb, oneset, False )
 
     slhafile = SLHAfile()
-    #slhafile.read_file("")
 
     r.lesHouchesAccordOutputStream( "sugra", inputs, sgnMu, tanb, 91.1875,
-            1, mgut, False, slhafile._obj )
-    #r.lesHouchesAccordOutput( "sugra", inputs, sgnMu, tanb, 91.1875,
-            #1, mgut, False)
+            1, mgut, False, c_void_p(slhafile._obj) )
 
     return slhafile
