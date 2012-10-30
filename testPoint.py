@@ -26,9 +26,8 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
             }
     predictor_output = {}
     for name,predictor in predictors.iteritems():
-        out = utils.pipe_to_function(pipe_name, slhafile,
+        predictor_output[name] = utils.pipe_to_function(pipe_name, slhafile,
                 lambda: predictor.run([pipe_name, "slha/test.slha"][0]))
-        predictor_output[name] = predictor.get_values(out)
 
     for block_name, values in predictor_output.iteritems():
         slhafile.add_values(block_name, values)

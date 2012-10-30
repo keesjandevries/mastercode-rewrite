@@ -19,4 +19,4 @@ def run(filename) :
     mcoutput.header('micromegas')
     MOout = MicromegasPrecObs()
     MOlib.run_micromegas(filename, byref(MOout))
-    return MOout
+    return get_values(MOout)

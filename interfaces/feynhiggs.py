@@ -49,4 +49,4 @@ def run(filename, fhopts=None) :
     mcoutput.header('feynhiggs')
     FHout = FeynHiggsPrecObs()
     FHlib.run_feynhiggs(filename, byref(FHout), byref(fhopts))
-    return FHout
+    return get_values(FHout)

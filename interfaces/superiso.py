@@ -21,4 +21,4 @@ def run(filename, file_is_pipe=True) :
         filename = utils.make_file_from_pipe(filename)
     SIlib.run_superiso(filename, byref(SIout))
     utils.rm(filename)
-    return SIout
+    return get_values(SIout)
