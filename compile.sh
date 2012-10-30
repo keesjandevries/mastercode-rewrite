@@ -95,8 +95,7 @@ function compile_feynhiggs_interfaces {
     echo "  Compiling FH Interfaces"
     echo ${border}
     g++ -c -fPIC -o obj/feynhiggs.o interfaces/feynhiggs.cc \
-        -I${MAINDIR}/packages/include/ -L${MAINDIR}/packages/lib64 -lFH \
-         -lgfortran
+        -I${MAINDIR}/packages/include/
     g++ -shared -Wl,-soname,libmcfeynhiggs.so -o libs/libmcfeynhiggs.so \
         obj/feynhiggs.o -L${MAINDIR}/packages/lib64 -lFH \
         -lgfortran
@@ -109,8 +108,7 @@ function compile_softsusy_interfaces {
     echo "  Compiling SS Interfaces"
     echo ${border}
     g++ -c -fPIC -o obj/softsusy.o interfaces/softsusy.cc \
-        -I${MAINDIR}/packages/include/softsusy/ \
-        -L${MAINDIR}/packages/lib -lsoft
+        -I${MAINDIR}/packages/include/softsusy/
     g++ -shared -Wl,-soname,libmcsoftsusy.so \
         -Wl,-rpath,${MAINDIR}/packages/lib -o libs/libmcsoftsusy.so \
        obj/softsusy.o -L${MAINDIR}/packages/lib -lsoft
@@ -122,7 +120,7 @@ function compile_slha_interfaces {
     echo "  Compiling SLHA Interfaces"
     echo ${border}
     g++ -c -fPIC -o obj/slha.o interfaces/slha.cc \
-        -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile
+        -I${MAINDIR}/SLHA/inc/
     g++ -shared -Wl,-soname,libmcslha.so \
         -Wl,-rpath,${MAINDIR}/SLHA/libs -o libs/libmcslha.so \
         obj/slha.o -L${MAINDIR}/SLHA/libs -lSLHAfile
@@ -135,9 +133,8 @@ function compile_joint_interfaces {
     echo ${border}
     # softsusy & slha join interface
     g++ -c -fPIC -o obj/softsusy_slha.o interfaces/softsusy_slha.cc \
-        -I${MAINDIR}/SLHA/inc/ -L${MAINDIR}/SLHA/libs -lSLHAfile \
-        -I${MAINDIR}/packages/include/softsusy \
-        -L${MAINDIR}/packages/lib -lsoft \
+        -I${MAINDIR}/SLHA/inc/ \
+        -I${MAINDIR}/packages/include/softsusy
 
     g++ -shared -Wl,-soname,libmcsoftsusy_slha.so \
         -Wl,-rpath,${MAINDIR}/SLHA/libs:${MAINDIR}/packages/lib  \
@@ -190,9 +187,9 @@ function compile_pope_interface {
 #compile_feynhiggs >> ${LOG_FILE}
 #compile_micromegas >> ${LOG_FILE}
 
-#compile_softsusy_interfaces >> ${LOG_FILE}
-#compile_slha_interfaces >> ${LOG_FILE}
-#compile_joint_interfaces >> ${LOG_FILE}
+compile_softsusy_interfaces >> ${LOG_FILE}
+compile_slha_interfaces >> ${LOG_FILE}
+compile_joint_interfaces >> ${LOG_FILE}
 #compile_feynhiggs_interfaces >> ${LOG_FILE}
 #compile_micromegas_interfaces
 #compile_superiso_interfaces 
