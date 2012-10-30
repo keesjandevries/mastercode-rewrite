@@ -4,8 +4,7 @@
 
 # SLHA
 
-* decide on base representation and move away from the abomination that is Rtypes.h: less ROOT dependency the better!
-* could use --std=c++11 so we can use int8_t etc.
+* Bug fix cause of MX scale from softsusy
 
 # FeynHiggs
 
