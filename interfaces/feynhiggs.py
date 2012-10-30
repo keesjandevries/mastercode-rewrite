@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
+from collections import OrderedDict
 
 from modules import mcoutput
 
@@ -22,20 +23,14 @@ class FeynHiggsOpts(Structure):
             self.tl_bot_resum = tl_bot_resum
 
 class FeynHiggsPrecObs(Structure):
-    #_fields_ = [('DeltaRho', c_double), ('MWMSSM', c_double),
-            #('MWSM', c_double), ('SW2effMSSM', c_double),
-            #('SW2effSM', c_double), ('gminus2mu', c_double),
-            #('EDMeTh', c_double), ('EDMn', c_double), ('EDMHg', c_double),
-            #('bsgammaMSSM', c_double), ('bsgammaSM', c_double),
-            #('DeltaMsMSSM', c_double), ('DeltaMsSM', c_double),
-            #('BsmumuMSSM', c_double), ('BsmumuSM', c_double)]
     _fields_ = [('gm2', c_double), ('DeltaRho', c_double),
             ('MWMSSM', c_double), ('MWSM', c_double), ('SW2effMSSM', c_double),
             ('SW2effSM', c_double), ('EDMeTh', c_double), ('EDMn', c_double),
-            ('EDMHg', c_double)]
+            ('EDMHg', c_double), ('mh', c_double), ('mH', c_double),
+            ('mA', c_double), ('mHpm', c_double)]
 
 def get_values(output):
-    d = dict([(attr, getattr(output,attr)) for (attr, a_type) in
+    d = OrderedDict([(attr, getattr(output,attr)) for (attr, a_type) in
         output._fields_])
     return d
 

@@ -20,6 +20,7 @@ struct FeynHiggsPrecObs {
            //EDMn, EDMHg, bsgammaMSSM, bsgammaSM, DeltaMsMSSM, DeltaMsSM,
            //BsmumuMSSM, BsmumuSM;
     double  gm2, DeltaRho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn, edmHg;
+    double mh, mH, mA, mHpm;
 };
 
 extern "C" {
@@ -50,12 +51,13 @@ extern "C" {
         ComplexType ZHiggs[3][3];
         FHHiggsCorr(&error, mhiggs, &SAeff, UHiggs, ZHiggs);
 
-        //double gm2, DeltaRho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn,
-               //edmHg;
+        out->mh = mhiggs[0];
+        out->mH = mhiggs[1];
+        out->mA = mhiggs[2];
+        out->mHpm = mhiggs[3];
+
         int ccb;
 
-        //FHConstraints(&error, &gm2, &Deltarho, &MWMSSM, &MWSM, &SW2MSSM,
-                //&SW2SM, &edmeTh, &edmn, &edmHg, &ccb);
         FHConstraints(&error, &(out->gm2), &(out->DeltaRho),
                 &(out->MWMSSM), &(out->MWSM), &(out->SW2MSSM), &(out->SW2SM),
                 &(out->edmeTh), &(out->edmn), &(out->edmHg), &ccb);
@@ -88,8 +90,6 @@ extern "C" {
             //out->DeltaMsSM = PrecObs_DeltaMsSM.re;
             //out->BsmumuMSSM = PrecObs_BsmumuMSSM.re;
             //out->BsmumuSM = PrecObs_BsmumuSM.re;
-
-
         }
     }
 }
