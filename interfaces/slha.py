@@ -8,6 +8,10 @@ _SLHAline__MAX_SLHA_SIZE = 10000
 
 SLHAlib = cdll.LoadLibrary('./libs/libmcslha.so')
 
+SLHAlib.SLHAline_new.restype = c_void_p
+SLHAlib.SLHAblock_new.restype = c_void_p
+SLHAlib.SLHAfile_new.restype = c_void_p
+
 def c_str_access(obj, func, max_size):
     c_str_buf = create_string_buffer(max_size)
     sz = func(obj, c_str_buf, max_size)
@@ -113,14 +117,7 @@ class SLHAblock(object):
 
 
 class SLHAfile(object):
-#def __init__(self):
-    #lib.Foo_new.restype = c_void_p # Needed
-    #self.obj = lib.Foo_new()
-
-#def set(self, v):
-    #lib.Foo_setValue(c_void_p(self.obj), v) # c_void_p needed
     def __init__(self):
-        SLHAlib.SLHAfile_new.restype = c_void_p
         self._obj = SLHAlib.SLHAfile_new()
 
     def __str__(self):
