@@ -1,4 +1,7 @@
+#! /usr/bin/env python
+
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
+from collections import OrderedDict
 
 from modules import mcoutput, utils
 
@@ -8,7 +11,7 @@ class SuperISOPrecObs(Structure):
     _fields_ = [('SIbsg', c_double), ('SId0', c_double), ('SIgm2', c_double)]
 
 def get_values(output):
-    d = dict([(attr, getattr(output,attr)) for (attr, a_type) in
+    d = OrderedDict([(attr, getattr(output,attr)) for (attr, a_type) in
         output._fields_])
     return d
 

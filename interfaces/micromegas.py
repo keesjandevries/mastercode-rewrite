@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
+from collections import OrderedDict
 
 from modules import mcoutput
 
@@ -11,7 +12,7 @@ class MicromegasPrecObs(Structure):
             ('SMbsg', c_double)]
 
 def get_values(output):
-    d = dict([(attr, getattr(output,attr)) for (attr, a_type) in
+    d = OrderedDict([(attr, getattr(output,attr)) for (attr, a_type) in
         output._fields_])
     return d
 
