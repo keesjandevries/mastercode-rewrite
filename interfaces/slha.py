@@ -43,17 +43,17 @@ def process_slhafile(slhafile):
 class SLHAline(object):
     def __init__(self,value=0, comment=''):
         self._obj = SLHAlib.SLHAline_new(c_double(value), comment)
-        self._value = SLHAlib.SLHAline_getvalue(self._obj)
-        self._comment = c_str_access(self._obj, SLHAlib.SLHAline_getcomment,
+        self._value = SLHAlib.SLHAline_getvalue(c_void_p(self._obj))
+        self._comment = c_str_access(c_void_p(self._obj), SLHAlib.SLHAline_getcomment,
                 __MAX_SLHA_SIZE)
         self._index = 0
 
     def __str__(self):
-        return c_str_access(self._obj, SLHAlib.SLHAline_getstr, __MAX_SLHA_SIZE)
+        return c_str_access(c_void_p(self._obj), SLHAlib.SLHAline_getstr, __MAX_SLHA_SIZE)
 
     def set_value(self, val):
         #try:
-        SLHAlib.SLHAline_setvalue(self._obj, c_double(val))
+        SLHAlib.SLHAline_setvalue(c_void_p(self._obj), c_double(val))
         #except:
             #print "*** ERROR: failed to set value for SLHAline obj", e
         #else:
@@ -64,42 +64,42 @@ class SLHAline(object):
 
     def set_comment(self, comment):
         #try:
-        SLHAlib.SLHAline_setcomment(self._obj,comment)
+        SLHAlib.SLHAline_setcomment(c_void_p(self._obj),comment)
         #except:
             #print "*** ERROR: failed to set comment for SLHAline obj"
         #else:
         self._comment = comment
 
     def get_comment(self):
-        c_str_access(self._obj, SLHAlib.SLHAline_getcomment, __MAX_SLHA_SIZE)
+        c_str_access(c_void_p(self._obj), SLHAlib.SLHAline_getcomment, __MAX_SLHA_SIZE)
 
     def set_index1(self, index):
         #try:
-        SLHAlib.SLHAline_setindex1(self._obj, c_int(index))
+        SLHAlib.SLHAline_setindex1(c_void_p(self._obj), c_int(index))
         #except:
             #print "*** ERROR: failed to set index for SLHAline obj"
         #else:
         self._index1 = index
 
     def get_index1(self):
-        return SLHAlib.SLHAline_getindex1(self._obj)
+        return SLHAlib.SLHAline_getindex1(c_void_p(self._obj))
 
     def set_index2(self, index):
         #try:
-        SLHAlib.SLHAline_setindex2(self._obj, c_int(index))
+        SLHAlib.SLHAline_setindex2(c_void_p(self._obj), c_int(index))
         #except:
             #print "*** ERROR: failed to set index for SLHAline obj"
         #else:
         self._index2 = index
 
     def get_index2(self):
-        return SLHAlib.SLHAline_getindex2(self._obj)
+        return SLHAlib.SLHAline_getindex2(c_void_p(self._obj))
 
     def get_num_indices(self):
-        return SLHAlib.SLHAline_getnumindices(self._obj)
+        return SLHAlib.SLHAline_getnumindices(c_void_p(self._obj))
 
     def get_full_index(self):
-        return SLHAlib.SLHAline_getfullindex(self._obj)
+        return SLHAlib.SLHAline_getfullindex(c_void_p(self._obj))
 
 
 class SLHAblock(object):
@@ -109,11 +109,11 @@ class SLHAblock(object):
             add_line(line)
 
     def __str__(self):
-        return c_str_access(self._obj, SLHAlib.SLHAblock_getstr,
+        return c_str_access(c_void_p(self._obj), SLHAlib.SLHAblock_getstr,
                 __MAX_SLHA_SIZE)
 
     def add_line(self, line):
-        SLHAlib.SLHAblock_addline(self._obj, line._obj)
+        SLHAlib.SLHAblock_addline(c_void_p(self._obj), line._obj)
 
 
 class SLHAfile(object):
@@ -121,14 +121,14 @@ class SLHAfile(object):
         self._obj = SLHAlib.SLHAfile_new()
 
     def __str__(self):
-        return c_str_access(self._obj, SLHAlib.SLHAfile_getstr,
+        return c_str_access(c_void_p(self._obj), SLHAlib.SLHAfile_getstr,
                 __MAX_SLHA_SIZE)
 
     def read_file(self, filename):
         SLHAlib.SLHAfile_readfile(c_void_p(self._obj), str(filename))
 
     def add_block(self, block):
-        SLHAlib.SLHAfile_addblock(self._obj, block._obj)
+        SLHAlib.SLHAfile_addblock(c_void_p(self._obj), block._obj)
 
     def add_values(self, block_name, value_dict):
         lines_to_add = []
