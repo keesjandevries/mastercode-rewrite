@@ -4,12 +4,8 @@
 
 # SLHA
 
-* decide on base representation and move away from the abomination that is Rtypes.h: less ROOT dependency the better!
-* could use --std=c++11 so we can use int8_t etc.
+* Bug fix cause of MX scale from softsusy
 
 # FeynHiggs
 
-* needs to take a new SLHA file object (in run_feynhiggs) and append the relevant lines to it (ideally we do this in python , but not sure how we get the information out)
-
-# Crash / Hang problem (32bit related?)
-* No idea what's causing this - FeynHiggs reads the file as a stream fine.
+* find out why PrecObs_* don't get filled (are these SLHA only: if so how do you get bsgamma etc.)

@@ -1,10 +1,15 @@
+#! /usr/bin/env python
 import os
 
-from build import predictors, utils
+from build import predictors, utils, interfaces
 
 OPTIONS = {
         'base_dir': os.getcwd(),
         }
 
-for mod in [ predictors, utils ]:
+#root_flags = subprocess.check_output(['root-config','--cflags','--libs'])
+#if not os.environ.get('ROOTSYS',None):
+    #raise OSError("ROOTSYS not defined: please source ROOT before building")
+
+for mod in [predictors, utils, interfaces]:
     mod.compile(**OPTIONS)

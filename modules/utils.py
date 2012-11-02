@@ -2,6 +2,8 @@ import os
 import time
 import urllib2
 import tarfile
+import pickle
+import hashlib
 
 def pipe_to_function(pipe_name, obj, function):
     try:
@@ -13,16 +15,29 @@ def pipe_to_function(pipe_name, obj, function):
     child_pid = os.fork()
     if child_pid == 0 :
     # child process
-        function()
-        os._exit(child_pid)
-    else:
-    # parent process
         pipeout = os.open(pipe_name, os.O_WRONLY)
         os.write(pipeout, str(obj))
         os.close(pipeout)
+        os._exit(child_pid)
+    else:
+    # parent process
+        function_out = function()
         os.unlink(pipe_name)
-        print "CLOSED PIPE"
         os.waitpid(child_pid,0)
+        return function_out
+
+def make_file_from_pipe(pipe_name):
+    pipe_in = open(pipe_name,'r').read()
+    new_filename = pipe_name+"_P"
+    print>>open(new_filename,'w'), pipe_in
+    return new_filename
+
+def rm(filename):
+    try:
+        with open(filename) as f: pass
+        os.remove(filename)
+    except IOError as e:
+        print "rm: File {0} does not exist"
 
 def fetch_url(target, local_path):
     success = False
@@ -40,13 +55,18 @@ def fetch_url(target, local_path):
         print("URL Error:", e.reason, target)
     return success
 
-def extract_tarfile(file, local_dir):
+def md5_matches(filename, checksum):
+    checker = hashlib.md5()
+    checker.update(open(filename,'r').read())
+    return checker.hexdigest() == checksum
+
+def extract_tarfile(filename, local_dir):
     output_dir = None
-    if tarfile.is_tarfile(file):
+    if tarfile.is_tarfile(filename):
         mode = 'r'
-        if file.endswith('.gz'):
+        if filename.endswith('gz'):
             mode += ':gz'
-        tf = tarfile.open(file,mode)
+        tf = tarfile.open(filename,mode)
         test_file = filter(lambda x: '/' in x, tf.getnames())[0]
         test_obj = '{l}/{f}'.format(l=local_dir, f=test_file)
         dir_end_pos = find_nth(test_obj, '/',2)
@@ -54,10 +74,12 @@ def extract_tarfile(file, local_dir):
         try:
             with open(test_obj) as f: pass
         except IOError as e:
-            print("Extracting {f} to {p} ...".format(f=file, p=local_dir))
+            print("Extracting {f} to {p} ...".format(f=filename, p=local_dir))
             tf.extractall(local_dir)
             print("  --> Done")
         tf.close()
+    else:
+        raise IOError, "{f} is not a tar file".format(f=filename)
     return output_dir
 
 def find_nth(haystack, needle, n):
@@ -66,3 +88,18 @@ def find_nth(haystack, needle, n):
         start = haystack.find(needle, start+len(needle))
         n -= 1
     return start
+
+def extract_values(output_object):
+    values = {}
+    for name in dir(output_object):
+        if name[0] != "_":
+            values[name] = getattr(output_object,name)
+    return values
+
+def pickle_object(obj, filename):
+    f = open(filename, 'w')
+    pickle.dump(obj,f)
+
+def open_pickled_file(filename):
+    f = open(filename,'r')
+    return pickle.load(f)

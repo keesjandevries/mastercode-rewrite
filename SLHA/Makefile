@@ -10,15 +10,13 @@ else
 endif
 
 INCDIR=\
-	-Iinc \
-	-I$(ROOTSYS)/include 
+	-Iinc
 
-CXXFLAGS=-c -fPIC -ansi -g -DLinux $(shell $(ROOTSYS)/bin/root-config --cflags)
-LINKSEARCH= -L$(ROOTSYS)/lib 
+CXXFLAGS=-c --std=c++11 -fPIC -g -DLinux
 
 LDFLAGS=
 LINK=
-LIBS= $(shell $(ROOTSYS)/bin/root-config --cflags --libs)
+LIBS=
 
 SRCDIR=src
 OBJDIR=obj
@@ -36,7 +34,7 @@ TARGETS=$(subst .cpp,,$(subst $(SRCDIR)/,,$(SRCEXE)))
 all:$(TARGETS) $(OBJ) $(SLHALIBS)
 
 $(TARGETS): $(OBJEXE) $(OBJ)
-	$(LD) -o exe/$@ $(OBJ) obj/$@.eo  $(LDFLAGS) $(LINKSEARCH) $(LIBS) $(LIBOBJS)
+	$(LD) -o exe/$@ $(OBJ) obj/$@.eo  $(LDFLAGS) $(LIBS) $(LIBOBJS)
 
 $(OBJEXE):$(SRCEXE)
 	$(CXX) $(CXXFLAGS) $(INCDIR) $(subst .eo,.cpp,$(subst obj,src,$@)) -o $@

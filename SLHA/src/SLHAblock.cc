@@ -46,7 +46,7 @@ SLHAline SLHAblock::FindComment(std::string comment) const {
 }
 
 
-SLHAline SLHAblock::FindIndex(std::pair<UInt_t, UInt_t> index, UInt_t num_indices) const {
+SLHAline SLHAblock::FindIndex(std::pair<uint32_t, uint32_t> index, uint32_t num_indices) const {
 
   if(num_indices == 1 || num_indices == 2) {
     //use the native functions instead of acting on private members

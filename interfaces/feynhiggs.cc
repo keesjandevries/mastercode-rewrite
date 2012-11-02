@@ -2,42 +2,65 @@
 #include <complex>
 #include <string>
 #include <fstream>
+#include <stdlib.h>
 
 #include "CFeynHiggs.h"
 #include "CSLHA.h"
 #include "SLHADefs.h"
 
-const int fh_interface_nslhadata = 5558;
 const bool write_fh_slha = false;
 
-extern "C" {
-    void run_feynhiggs(const char slhafilename [], int mssmpart, int fieldren,
-            int tanbren, int higgsmix, int p2approx, int looplevel,
-            int tl_running_mt, int tl_bot_resum) {
+struct FeynHiggsOpts {
+    int mssmpart, fieldren, tanbren, higgsmix, p2approx, looplevel,
+        tl_running_mt, tl_bot_resum;
+};
 
-        COMPLEX slhadata[fh_interface_nslhadata]; // stupid typedefs: not a true constructor
+struct FeynHiggsPrecObs {
+    //double gm2, DeltaRho, MWMSSM, MWSM, SW2effMSSM, SW2effSM, EDMeTh,
+           //EDMn, EDMHg, bsgammaMSSM, bsgammaSM, DeltaMsMSSM, DeltaMsSM,
+           //BsmumuMSSM, BsmumuSM;
+    double  gm2, DeltaRho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn, edmHg;
+    double mh, mH, mA, mHpm;
+};
+
+extern "C" {
+    void run_feynhiggs(const char slhafilename [], FeynHiggsPrecObs* out,
+            FeynHiggsOpts* opts) {
+
+        COMPLEX slhadata[nslhadata]; // stupid typedefs: not a true constructor
         int error;
         const int abort(0);
         FHSetDebug(0);
 
-        FHSetFlags(&error, mssmpart, fieldren, tanbren, higgsmix, p2approx, looplevel,
-                tl_running_mt, tl_bot_resum, 0);
+        FHSetFlags(&error, opts->mssmpart, opts->fieldren, opts->tanbren,
+                opts->higgsmix, opts->p2approx, opts->looplevel,
+                opts->tl_running_mt, opts->tl_bot_resum, 0);
 
         SLHARead(&error, slhadata, slhafilename, abort);
+        if(error) {
+            exit(error);
+        }
         FHSetSLHA(&error, slhadata);
+        if(error) {
+            exit(error);
+        }
 
         double mhiggs[4];
-        Complex SAeff;
-        Complex UHiggs[3][3];
-        Complex ZHiggs[3][3];
+        ComplexType SAeff;
+        ComplexType UHiggs[3][3];
+        ComplexType ZHiggs[3][3];
         FHHiggsCorr(&error, mhiggs, &SAeff, UHiggs, ZHiggs);
 
-        double gm2, Deltarho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn,
-               edmHg;
+        out->mh = mhiggs[0];
+        out->mH = mhiggs[1];
+        out->mA = mhiggs[2];
+        out->mHpm = mhiggs[3];
+
         int ccb;
 
-        FHConstraints(&error, &gm2, &Deltarho, &MWMSSM, &MWSM, &SW2MSSM,
-                &SW2SM, &edmeTh, &edmn, &edmHg, &ccb);
+        FHConstraints(&error, &(out->gm2), &(out->DeltaRho),
+                &(out->MWMSSM), &(out->MWSM), &(out->SW2MSSM), &(out->SW2SM),
+                &(out->edmeTh), &(out->edmn), &(out->edmHg), &ccb);
         
         if(error != 0) {
             std::cout << "FH FAILED" << std::endl;
@@ -51,21 +74,22 @@ extern "C" {
                 SLHAWrite(&error, slhadata, fh_slha_name);
                 std::cout << "Wrote FH SLHA" << std::endl;
             }
-            //prec_obs_array[0] = PrecObs_DeltaRho;
-            //prec_obs_array[1] = PrecObs_MWMSSM;
-            //prec_obs_array[2] = PrecObs_MWSM;
-            //prec_obs_array[3] = PrecObs_SW2effMSSM;
-            //prec_obs_array[4] = PrecObs_SW2effSM;
-            //prec_obs_array[5] = PrecObs_gminus2mu;
-            //prec_obs_array[6] = PrecObs_EDMeTh;
-            //prec_obs_array[7] = PrecObs_EDMn;
-            //prec_obs_array[8] = PrecObs_EDMHg;
-            //prec_obs_array[9] = PrecObs_bsgammaMSSM;
-            //prec_obs_array[10] = PrecObs_bsgammaSM;
-            //prec_obs_array[11] = PrecObs_DeltaMsMSSM;
-            //prec_obs_array[12] = PrecObs_DeltaMsSM;
-            //prec_obs_array[13] = PrecObs_BsmumuMSSM;
-            //prec_obs_array[14] = PrecObs_BsmumuSM;
+            // FIXME: these dont get filled
+            //out->DeltaRho = PrecObs_DeltaRho.re;
+            //out->MWMSSM = PrecObs_MWMSSM.re;
+            //out->MWSM = PrecObs_MWSM.re;
+            //out->SW2effMSSM = PrecObs_SW2effMSSM.re;
+            //out->SW2effSM = PrecObs_SW2effSM.re;
+            //out->gm2 = PrecObs_gminus2mu.re;
+            //out->EDMeTh = PrecObs_EDMeTh.re;
+            //out->EDMn = PrecObs_EDMn.re;
+            //out->EDMHg = PrecObs_EDMHg.re;
+            //out->bsgammaMSSM = PrecObs_bsgammaMSSM.re;
+            //out->bsgammaSM = PrecObs_bsgammaSM.re;
+            //out->DeltaMsMSSM = PrecObs_DeltaMsMSSM.re;
+            //out->DeltaMsSM = PrecObs_DeltaMsSM.re;
+            //out->BsmumuMSSM = PrecObs_BsmumuMSSM.re;
+            //out->BsmumuSM = PrecObs_BsmumuSM.re;
         }
     }
 }
