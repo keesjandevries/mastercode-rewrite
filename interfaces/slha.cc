@@ -30,7 +30,7 @@ extern "C" {
     }
 
     SLHAblock* SLHAfile_getblock(SLHAfile* sf, const char* blockname) {
-        return (*sf)[blockname];
+        return new SLHAblock((*sf)[blockname]);
     }
     
     // SLHA block
@@ -50,7 +50,7 @@ extern "C" {
     }
 
     SLHAline* SLHAblock_getline(SLHAblock* sb, const char* comment) {
-        return sb->FindComment(comment);
+        return new SLHAline(sb->FindComment(comment));
     }
 
     // SLHA line
