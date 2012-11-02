@@ -3,6 +3,7 @@ import os
 
 from socket import gethostname
 from time import gmtime, strftime
+from collections import OrderedDict
 
 from interfaces import softsusy as rge_calc
 from interfaces import feynhiggs, micromegas, superiso
@@ -19,15 +20,11 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     pipe_name = "/tmp/mc-{host}-{pid}-{time}".format(host=gethostname(),
             pid=os.getpid(), time=t_now)
 
-    predictors = {
-            'FeynHiggs': feynhiggs,
-            'Micromegas': micromegas,
-            'SuperISO': superiso,
-            }
-    predictor_output = {}
-    for name,predictor in predictors.iteritems():
-        predictor_output[name] = utils.pipe_to_function(pipe_name, slhafile,
-                lambda: predictor.run([pipe_name, "slha/test.slha"][0]))
+    predictors = [feynhiggs, micromegas, superiso]
+    predictor_output = OrderedDict()
+    for predictor in predictors:
+        predictor_output.update(utils.pipe_to_function(pipe_name, slhafile,
+                lambda: predictor.run([pipe_name, "slha/test.slha"][0])))
 
     for block_name, values in predictor_output.iteritems():
         slhafile.add_values(block_name, values)

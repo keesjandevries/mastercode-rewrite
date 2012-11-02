@@ -5,6 +5,7 @@ from collections import OrderedDict
 
 from modules import mcoutput
 
+name = "FeynHiggs"
 FHlib = cdll.LoadLibrary('./libs/libmcfeynhiggs.so')
 
 class FeynHiggsOpts(Structure):
@@ -32,8 +33,7 @@ class FeynHiggsPrecObs(Structure):
 def get_values(output):
     d = OrderedDict([(attr, getattr(output,attr)) for (attr, a_type) in
         output._fields_])
-    return d
-
+    return {name: d}
 
 
 def run(filename, fhopts=None) :

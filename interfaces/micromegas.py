@@ -5,6 +5,7 @@ from collections import OrderedDict
 
 from modules import mcoutput
 
+name = "Micromegas"
 MOlib = cdll.LoadLibrary('./libs/libmcmicromegas.so')
 
 class MicromegasPrecObs(Structure):
@@ -14,7 +15,7 @@ class MicromegasPrecObs(Structure):
 def get_values(output):
     d = OrderedDict([(attr, getattr(output,attr)) for (attr, a_type) in
         output._fields_])
-    return d
+    return {name: d}
 
 def run(filename) :
     mcoutput.header('micromegas')
