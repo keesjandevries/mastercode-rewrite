@@ -1,8 +1,6 @@
 #! /usr/bin/env python
 import os
 
-from socket import gethostname
-from time import gmtime, strftime
 from collections import OrderedDict
 
 from interfaces import softsusy as rge_calc
@@ -11,15 +9,13 @@ from modules import utils
 
 from interfaces import slha
 
+predictors = [feynhiggs, micromegas, superiso]
+
 def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     slhafile = rge_calc.run(tanb, sgnMu, mgut, mt, boundary_condition, i_vars)
     #slha.process_slhafile(slhafile)
+    pipe_name = "/tmp/mc-{u}".format(u=utils.unique_str())
 
-    t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
-    pipe_name = "/tmp/mc-{host}-{pid}-{time}".format(host=gethostname(),
-            pid=os.getpid(), time=t_now)
-
-    predictors = [feynhiggs, micromegas, superiso]
     predictor_output = OrderedDict()
     for predictor in predictors:
         predictor_output.update(utils.pipe_to_function(pipe_name, slhafile,

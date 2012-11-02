@@ -5,6 +5,15 @@ import tarfile
 import pickle
 import hashlib
 
+from socket import gethostname
+from time import gmtime, strftime
+
+def unique_str():
+    t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
+    ustr = "{host}-{pid}-{time}".format(host=gethostname(),
+            pid=os.getpid(), time=t_now)
+    return ustr
+
 def pipe_to_function(pipe_name, obj, function):
     try:
         os.mkfifo(pipe_name)
