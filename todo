@@ -5,6 +5,7 @@
 # SLHA
 
 * Bug fix cause of MX scale from softsusy
+* Bug fix: capitalizing everything: maybe implement in python instead
 
 # FeynHiggs
 
