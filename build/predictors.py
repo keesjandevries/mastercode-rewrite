@@ -31,7 +31,11 @@ feynhiggs = {
         'source_md5': 'c366b7195f8edeefd60d851fc873a8a5',
         'library': 'libFH.a',
         'installed_dir': prefix_dir,
-        'lib_dir': { 'x86_64': 'lib64', 'i386': 'lib'}[platform.machine()],
+        'lib_dir': {
+            'x86_64': 'lib64',
+            'i386': 'lib',
+            'i686': 'lib',
+            }[platform.machine()],
         'src_dir': 'include',
         }
 
