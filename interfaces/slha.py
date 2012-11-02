@@ -8,9 +8,12 @@ _SLHAline__MAX_SLHA_SIZE = 10000
 
 SLHAlib = cdll.LoadLibrary('./libs/libmcslha.so')
 
+# specify pointer return types
 SLHAlib.SLHAline_new.restype = c_void_p
 SLHAlib.SLHAblock_new.restype = c_void_p
 SLHAlib.SLHAfile_new.restype = c_void_p
+SLHAlib.SLHAfile_getblock.restype = c_void_p
+SLHAlib.SLHAblock_getline.restype = c_void_p
 
 def c_str_access(obj, func, max_size):
     c_str_buf = create_string_buffer(max_size)
@@ -34,10 +37,6 @@ def process_slhafile(slhafile):
                 # is info line
                 slha_info[current_block].append(tuple(fields))
 
-    #for block, lines in slha_info.iteritems():
-        #print 'BLOCK', block
-        #for line in lines:
-            #print '\t', ' '.join(line)
     return slha_info
 
 class SLHAline(object):
@@ -112,6 +111,9 @@ class SLHAblock(object):
         return c_str_access(c_void_p(self._obj), SLHAlib.SLHAblock_getstr,
                 __MAX_SLHA_SIZE)
 
+    #def __getitem__(self, key):
+        #line_obj = SLHAlib.SLHAblock_getline(c_void_p(self._obj), key)
+
     def add_line(self, line):
         SLHAlib.SLHAblock_addline(c_void_p(self._obj), line._obj)
 
@@ -123,6 +125,9 @@ class SLHAfile(object):
     def __str__(self):
         return c_str_access(c_void_p(self._obj), SLHAlib.SLHAfile_getstr,
                 __MAX_SLHA_SIZE)
+
+    #def __getitem__(self, key):
+        #block_obj = SLHAlib.SLHAfile_getblock(c_void_p(self._obj), key)
 
     def read_file(self, filename):
         SLHAlib.SLHAfile_readfile(c_void_p(self._obj), str(filename))

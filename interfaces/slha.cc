@@ -28,6 +28,10 @@ extern "C" {
         buf[len-1]=0;
         return strlen(buf);
     }
+
+    SLHAblock* SLHAfile_getblock(SLHAfile* sf, const char* blockname) {
+        return (*sf)[blockname];
+    }
     
     // SLHA block
     SLHAblock* SLHAblock_new(const char* name) { 
@@ -43,6 +47,10 @@ extern "C" {
         strncpy(buf,sb_cstr,len-1);
         buf[len-1]=0;
         return strlen(buf);
+    }
+
+    SLHAline* SLHAblock_getline(SLHAblock* sb, const char* comment) {
+        return sb->FindComment(comment);
     }
 
     // SLHA line
@@ -116,4 +124,5 @@ extern "C" {
     void SLHAblock_addline(SLHAblock *sb, SLHAline *sl) {
         sb->AddLine(*sl);
     }
+
 }
