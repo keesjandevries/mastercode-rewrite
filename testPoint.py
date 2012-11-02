@@ -15,7 +15,6 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
     slhafile = rge_calc.run(tanb, sgnMu, mgut, mt, boundary_condition, i_vars)
     #slha.process_slhafile(slhafile)
 
-
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
     pipe_name = "/tmp/mc-{host}-{pid}-{time}".format(host=gethostname(),
             pid=os.getpid(), time=t_now)
