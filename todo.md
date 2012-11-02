@@ -1,6 +1,9 @@
 # General
 
 * start writing a makefile
+* abstract out our nice "testPoint" app into :
+    - [slha_generator, slha_modifiers, slha_additions]
+* slha class just used as intermediary: want slha->dict and dict->sql db
 
 # SLHA
 
