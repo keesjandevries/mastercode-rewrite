@@ -3,7 +3,7 @@
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 from collections import OrderedDict
 
-from modules import mcoutput, utils
+from modules import utils
 
 name = 'SuperISO'
 SIlib = cdll.LoadLibrary('./libs/libmcsuperiso.so')
@@ -17,7 +17,7 @@ def get_values(output):
     return {name: d}
 
 def run(filename, file_is_pipe=True) :
-    mcoutput.header('superiso')
+    utils.show_header(name)
     SIout = SuperISOPrecObs()
     # FIXME: to be honest this is stupid: we send our slhafile obj itno a pipe,
     # read it out and onto a tmp file -> maybe feature request in superiso?
