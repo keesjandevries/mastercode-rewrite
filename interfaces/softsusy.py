@@ -2,7 +2,7 @@
 
 from ctypes import cdll, c_int, c_double, c_char_p, c_void_p
 
-from modules import mcoutput
+from modules.utils import show_header
 from interfaces.slha import SLHAfile
 
 name = "SoftSUSY"
@@ -14,12 +14,18 @@ boundaryConditions = [ 'sugraBcs', 'extendedSugraBcs', 'generalBcs',
                        'lvsBcs', 'nonUniGauginos', 'userDefinedBcs',
                        'nonUniGauginos', ]
 
-model_boundary_conditions = {
-        'cMSSM': 'sugraBcs',
+models = {
+        'cMSSM': {
+            'universals': ['m0', 'm12', 'A0'],
+            'fixed_vars': ['tanb', 'sgnMu', 'mgut',],
+            'other_vars': ['mt'],
+            'boundary_condition': 'sugraBcs',
+            'output': 'sugra',
+            },
         }
 
-model_outputs = {
-        'cMSSM': 'sugra',
+qed_qcd_funcs = {
+        'mt': 'setPoleMt'
         }
 
 SPSLHAlib = cdll.LoadLibrary('./libs/libmcsoftsusy_slha.so')
@@ -35,13 +41,13 @@ class DoubleVector(object) :
 class MssmSoftsusy(object) :
     def __init__(self) :
         self._obj = SPlib.MssmSoftsusy_new()
-    def lowOrg(self, model, mxGuess, dv_pars, sgnMu, tanb, qq_oneset,
+    def lowOrg(self, model, mgut, dv_pars, sgnMu, tanb, qq_oneset,
             gaugeUnification, ewsbBCscale = False ) :
-        mxGuess = c_double(mxGuess)
+        mgut = c_double(mgut)
         tanb = c_double(tanb)
-        bCond = model_boundary_conditions[model]
+        bCond = models[model]['boundary_condition']
         bC = boundaryConditions.index(bCond)
-        SPlib.MssmSoftsusy_lowOrg(c_void_p(self._obj), bC, mxGuess,
+        SPlib.MssmSoftsusy_lowOrg(c_void_p(self._obj), bC, mgut,
                 c_void_p(dv_pars._obj), sgnMu, tanb, c_void_p(qq_oneset._obj),
                 gaugeUnification, ewsbBCscale)
     def lesHouchesAccordOutput(self, model, dv_pars, sgnMu, tanb, qMax,
@@ -49,7 +55,7 @@ class MssmSoftsusy(object) :
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
-        model = c_char_p(model_outputs[model])
+        model = c_char_p(models[model]['output'])
         SPlib.MssmSoftsusy_lesHouchesAccordOutput( c_void_p(self._obj), model,
                 c_void_p(dv_pars._obj), sgnMu, tanb, qMax, numPoints, mgut,
                 altEwsb )
@@ -58,7 +64,7 @@ class MssmSoftsusy(object) :
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
-        model = c_char_p(model_outputs[model])
+        model = c_char_p(models[model]['output'])
         SPSLHAlib.MssmSoftsusy_lesHouchesAccordOutputStream(
                 c_void_p(self._obj), model, c_void_p(dv_pars._obj), sgnMu,
                 tanb, qMax, numPoints, mgut, altEwsb, slhafile )
@@ -86,19 +92,34 @@ class QedQcd(object) :
         SPlib.QedQcd_set( dv )
 
 
-def run (tanb, sgnMu, mgut, mt, model, vars):
-    mcoutput.header(name)
-    inputs = DoubleVector(len(vars))
-    for pos in range(len(vars)):
-        inputs[pos] = vars[pos]
+def run(model, **model_inputs):
+    show_header(name, model)
+    n_universals = len(models[model]['universals'])
+    inputs = DoubleVector(n_universals)
+    for pos, var_name in enumerate(models[model]['universals']):
+        inputs[pos] = model_inputs[var_name]
+
+    fixed = {}
+    for var_name in models[model]['fixed_vars']:
+        fixed.update({var_name: model_inputs[var_name]})
+
     r = MssmSoftsusy()
 
     oneset = QedQcd()
-    oneset.setPoleMt(mt)
+    for var, func_name in qed_qcd_funcs.iteritems():
+        # for example
+        #oneset.setPoleMt(mt)
+        if var in model_inputs and var in models[model]:
+            getattr(oneset,func_name)(model_inputs[var])
 
-    r.lowOrg( model, mgut, inputs, sgnMu, tanb, oneset, False )
+    r.lowOrg(model=model, dv_pars=inputs, qq_oneset=oneset,
+            gaugeUnification=False, ewsbBCscale=False, **fixed)
 
     slhafile = SLHAfile()
-    r.lesHouchesAccordOutputStream( model, inputs, sgnMu, tanb, 91.1875,
-            1, mgut, False, c_void_p(slhafile._obj) )
+    #def lesHouchesAccordOutputStream( self, model, dv_pars, sgnMu, tanb, qMax,
+            #numPoints, mgut, altEwsb, slhafile ) :
+    r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs, qMax=91.1875,
+            numPoints=1, altEwsb=False, slhafile=c_void_p(slhafile._obj),
+            **fixed )
+
     return slhafile
