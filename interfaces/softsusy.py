@@ -5,13 +5,22 @@ from ctypes import cdll, c_int, c_double, c_char_p, c_void_p
 from modules import mcoutput
 from interfaces.slha import SLHAfile
 
+name = "SoftSUSY"
 SPlib = cdll.LoadLibrary('./libs/libmcsoftsusy.so')
 # set our return types
 SPlib.DoubleVector_display.restype = c_double
-boundaryConditions = [ "sugraBcs", "extendedSugaBcs", "generalBcs",
-                       "generalBcs2", "amsbBcs", "gmsbBcs", "splitGmsb",
-                       "lvsBcs", "nonUniGauginos", "userDefinedBcs",
-                       "nonUniGauginos", ]
+boundaryConditions = [ 'sugraBcs', 'extendedSugraBcs', 'generalBcs',
+                       'generalBcs2', 'amsbBcs', 'gmsbBcs', 'splitGmsb',
+                       'lvsBcs', 'nonUniGauginos', 'userDefinedBcs',
+                       'nonUniGauginos', ]
+
+model_boundary_conditions = {
+        'cMSSM': 'sugraBcs',
+        }
+
+model_outputs = {
+        'cMSSM': 'sugra',
+        }
 
 SPSLHAlib = cdll.LoadLibrary('./libs/libmcsoftsusy_slha.so')
 
@@ -26,20 +35,21 @@ class DoubleVector(object) :
 class MssmSoftsusy(object) :
     def __init__(self) :
         self._obj = SPlib.MssmSoftsusy_new()
-    def lowOrg(self, bCond, mxGuess, dv_pars, sgnMu, tanb, qq_oneset,
+    def lowOrg(self, model, mxGuess, dv_pars, sgnMu, tanb, qq_oneset,
             gaugeUnification, ewsbBCscale = False ) :
         mxGuess = c_double(mxGuess)
         tanb = c_double(tanb)
-        bC = boundaryConditions.index( bCond )
+        bCond = model_boundary_conditions[model]
+        bC = boundaryConditions.index(bCond)
         SPlib.MssmSoftsusy_lowOrg(c_void_p(self._obj), bC, mxGuess,
                 c_void_p(dv_pars._obj), sgnMu, tanb, c_void_p(qq_oneset._obj),
-                gaugeUnification, ewsbBCscale )
-    def lesHouchesAccordOutput( self, model, dv_pars, sgnMu, tanb, qMax,
-            numPoints, mgut, altEwsb ) :
+                gaugeUnification, ewsbBCscale)
+    def lesHouchesAccordOutput(self, model, dv_pars, sgnMu, tanb, qMax,
+            numPoints, mgut, altEwsb) :
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
-        model = c_char_p( model )
+        model = c_char_p(model_outputs[model])
         SPlib.MssmSoftsusy_lesHouchesAccordOutput( c_void_p(self._obj), model,
                 c_void_p(dv_pars._obj), sgnMu, tanb, qMax, numPoints, mgut,
                 altEwsb )
@@ -48,7 +58,7 @@ class MssmSoftsusy(object) :
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
-        model = c_char_p( model )
+        model = c_char_p(model_outputs[model])
         SPSLHAlib.MssmSoftsusy_lesHouchesAccordOutputStream(
                 c_void_p(self._obj), model, c_void_p(dv_pars._obj), sgnMu,
                 tanb, qMax, numPoints, mgut, altEwsb, slhafile )
@@ -76,8 +86,8 @@ class QedQcd(object) :
         SPlib.QedQcd_set( dv )
 
 
-def run (tanb, sgnMu, mgut, mt, boundary_condition, vars):
-    mcoutput.header('softsusy')
+def run (tanb, sgnMu, mgut, mt, model, vars):
+    mcoutput.header(name)
     inputs = DoubleVector(len(vars))
     for pos in range(len(vars)):
         inputs[pos] = vars[pos]
@@ -85,13 +95,10 @@ def run (tanb, sgnMu, mgut, mt, boundary_condition, vars):
 
     oneset = QedQcd()
     oneset.setPoleMt(mt)
-    oneset.setMass(3,mt)
 
-    r.lowOrg( boundary_condition, mgut, inputs, sgnMu, tanb, oneset, False )
+    r.lowOrg( model, mgut, inputs, sgnMu, tanb, oneset, False )
 
     slhafile = SLHAfile()
-
-    r.lesHouchesAccordOutputStream( "sugra", inputs, sgnMu, tanb, 91.1875,
+    r.lesHouchesAccordOutputStream( model, inputs, sgnMu, tanb, 91.1875,
             1, mgut, False, c_void_p(slhafile._obj) )
-
     return slhafile
