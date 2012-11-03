@@ -9,10 +9,18 @@ from modules import utils
 
 from interfaces import slha
 
+models = {
+        'cMSSM': {
+            'generator': ['softsusy'][0],
+            'inputs': ['m0', 'm12', 'a0', 'tanb', 'sgnMu'],
+            'fixed_vars': ['mgut', 'mt'],
+            }
+        }
+
 predictors = [feynhiggs, micromegas, superiso]
 
-def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
-    slhafile = rge_calc.run(tanb, sgnMu, mgut, mt, boundary_condition, i_vars)
+def run_point(tanb, sgnMu, mgut, mt, model, i_vars) :
+    slhafile = rge_calc.run(tanb, sgnMu, mgut, mt, model, i_vars)
     #slha.process_slhafile(slhafile)
     pipe_name = "/tmp/mc-{u}".format(u=utils.unique_str())
 
@@ -31,7 +39,8 @@ def run_point(tanb, sgnMu, mgut, mt, boundary_condition, i_vars) :
 
 
 if __name__=="__main__" :
+    model = 'cMSSM'
     i_vars = [ 100, 200, 0 ]
     boundary_condition = "sugraBcs"
     run_point(tanb=10., sgnMu=1, mgut=2e16, mt=173.2,
-            boundary_condition=boundary_condition, i_vars=i_vars)
+            model=model, i_vars=i_vars)
