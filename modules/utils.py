@@ -8,6 +8,14 @@ import hashlib
 from socket import gethostname
 from time import gmtime, strftime
 
+def show_header(header, sub=''):
+    print header, sub
+    total_len = len(header) + len(sub)
+    block = "*"*(total_len+4 if not sub else total_len+6)
+    print block
+    print "* {h}{s} *".format(h=header, s=(': '+sub if sub else ''))
+    print block
+
 def unique_str():
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
     ustr = "{host}-{pid}-{time}".format(host=gethostname(),
