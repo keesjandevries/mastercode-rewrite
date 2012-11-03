@@ -1,2 +1,6 @@
 # MasterCode Rewrite
-**Note**: This currently only runs on gcc v4.7.0 or greater
+---
+## Requirements
+* GCC > 4.7.0
+* Python > 2.7
+
