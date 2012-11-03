@@ -9,7 +9,6 @@ from socket import gethostname
 from time import gmtime, strftime
 
 def show_header(header, sub=''):
-    print header, sub
     total_len = len(header) + len(sub)
     block = "*"*(total_len+4 if not sub else total_len+6)
     print block
