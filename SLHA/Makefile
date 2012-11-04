@@ -12,7 +12,7 @@ endif
 INCDIR=\
 	-Iinc
 
-CXXFLAGS=-c --std=c++11 -fPIC -g -DLinux
+CXXFLAGS=-c --std=c++11 -fPIC -g -D$(UNAME)
 
 LDFLAGS=
 LINK=
