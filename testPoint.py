@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 import os
 
 from collections import OrderedDict
@@ -11,7 +11,6 @@ from interfaces import slha
 
 predictors = [feynhiggs, micromegas, superiso]
 
-#def run_point(tanb, sgnMu, mgut, mt, model, i_vars) :
 def run_point(model, **inputs):
     slhafile = slha_generator.run(model, **inputs)
     #slha.process_slhafile(slhafile)
@@ -33,7 +32,7 @@ def run_point(model, **inputs):
 
 if __name__=="__main__" :
     model = 'cMSSM'
-    i_vars = { 'm0': 100, 'm12': 200, 'A0': 0 }
-    boundary_condition = "sugraBcs"
-    run_point(tanb=10., sgnMu=1, mgut=2e16, mt=173.2,
-            model=model, **i_vars)
+    input_vars = { 'm0': 100, 'm12': 200, 'A0': 0, 'tanb':10., 'sgnMu':1 }
+    other_vars = { 'mt': 173.2, 'mgut': 2e16, }
+    m_vars = dict(input_vars.items() + other_vars.items())
+    run_point(model=model, **m_vars)

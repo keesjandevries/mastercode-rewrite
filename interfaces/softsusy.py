@@ -10,22 +10,30 @@ SPlib = cdll.LoadLibrary('./libs/libmcsoftsusy.so')
 # set our return types
 SPlib.DoubleVector_display.restype = c_double
 boundaryConditions = [ 'sugraBcs', 'extendedSugraBcs', 'generalBcs',
-                       'generalBcs2', 'amsbBcs', 'gmsbBcs', 'splitGmsb',
-                       'lvsBcs', 'nonUniGauginos', 'userDefinedBcs',
-                       'nonUniGauginos', ]
+        'generalBcs2', 'amsbBcs', 'gmsbBcs', 'splitGmsb', 'lvsBcs',
+        'nonUniGauginos', 'userDefinedBcs', 'nonUniGauginos', ]
 
 models = {
         'cMSSM': {
             'universals': ['m0', 'm12', 'A0'],
             'fixed_vars': ['tanb', 'sgnMu', 'mgut',],
-            'other_vars': ['mt'],
             'boundary_condition': 'sugraBcs',
             'output': 'sugra',
-            },
+            'other_vars': { # provide defaults
+                'gaugeUnification': False,
+                'ewsbBCscale': False,
+                },
+            }
         }
 
 qed_qcd_funcs = {
         'mt': 'setPoleMt'
+        }
+
+output_opts = {
+        'qMax': 91.1875,
+        'numPoints': 1,
+        'altEwsb': False,
         }
 
 SPSLHAlib = cdll.LoadLibrary('./libs/libmcsoftsusy_slha.so')
@@ -112,14 +120,18 @@ def run(model, **model_inputs):
         if var in model_inputs and var in models[model]:
             getattr(oneset,func_name)(model_inputs[var])
 
-    r.lowOrg(model=model, dv_pars=inputs, qq_oneset=oneset,
-            gaugeUnification=False, ewsbBCscale=False, **fixed)
+    low_args = fixed.copy()
+    for var_name, value in models[model]['other_vars'].iteritems():
+        low_args[var_name] =  model_inputs.get(var_name, value)
+
+    r.lowOrg(model=model, dv_pars=inputs, qq_oneset=oneset, **low_args)
+
+    output_args = fixed.copy()
+    for var_name, value in output_opts.iteritems():
+        output_args[var_name] = model_inputs.get(var_name, value)
 
     slhafile = SLHAfile()
-    #def lesHouchesAccordOutputStream( self, model, dv_pars, sgnMu, tanb, qMax,
-            #numPoints, mgut, altEwsb, slhafile ) :
-    r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs, qMax=91.1875,
-            numPoints=1, altEwsb=False, slhafile=c_void_p(slhafile._obj),
-            **fixed )
+    r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs,
+            slhafile=c_void_p(slhafile._obj), **output_args)
 
     return slhafile
