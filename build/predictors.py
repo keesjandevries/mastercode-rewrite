@@ -6,7 +6,7 @@ import errno
 from modules.utils import fetch_url, extract_tarfile, md5_matches, rm
 
 prefix_dir = 'packages'
-tar_dir = 'tars'
+tar_dir = 'build/tars'
 predictor_dir = 'predictors'
 patch_dir = 'patches'
 
