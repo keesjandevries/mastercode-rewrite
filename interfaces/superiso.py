@@ -6,7 +6,7 @@ from collections import OrderedDict
 from modules import utils
 
 name = 'SuperISO'
-SIlib = cdll.LoadLibrary('./libs/libmcsuperiso.so')
+SIlib = cdll.LoadLibrary('packages/lib/libmcsuperiso.so')
 
 class SuperISOPrecObs(Structure):
     _fields_ = [('SIbsg', c_double), ('SId0', c_double), ('SIgm2', c_double)]

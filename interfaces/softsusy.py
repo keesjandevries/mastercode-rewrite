@@ -6,7 +6,7 @@ from modules.utils import show_header
 from interfaces.slha import SLHAfile
 
 name = "SoftSUSY"
-SPlib = cdll.LoadLibrary('./libs/libmcsoftsusy.so')
+SPlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy.so')
 # set our return types
 SPlib.DoubleVector_display.restype = c_double
 boundaryConditions = [ 'sugraBcs', 'extendedSugraBcs', 'generalBcs',
@@ -36,7 +36,7 @@ output_opts = {
         'altEwsb': False,
         }
 
-SPSLHAlib = cdll.LoadLibrary('./libs/libmcsoftsusy_slha.so')
+SPSLHAlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy_slha.so')
 
 class DoubleVector(object) :
     def __init__(self, size = 0) :

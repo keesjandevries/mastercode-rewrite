@@ -6,7 +6,7 @@ from collections import OrderedDict
 from modules.utils import show_header
 
 name = "Micromegas"
-MOlib = cdll.LoadLibrary('./libs/libmcmicromegas.so')
+MOlib = cdll.LoadLibrary('packages/lib/libmcmicromegas.so')
 
 class MicromegasPrecObs(Structure):
     _fields_ = [('Omega', c_double), ('Bll', c_double), ('Bsg', c_double),

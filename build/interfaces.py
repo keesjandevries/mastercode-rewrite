@@ -45,8 +45,8 @@ superiso = {
 INTERFACES = [ softsusy, slha, softsusy_slha, feynhiggs, micromegas, superiso ]
 
 src_dir = 'interfaces'
-object_dir = 'obj'
-lib_dir = 'libs'
+object_dir = 'build/obj'
+lib_dir = 'packages/lib'
 rpath = 'packages/lib'
 
 compiler=['g++']

@@ -6,7 +6,7 @@ from collections import OrderedDict
 from modules.utils import show_header
 
 name = "FeynHiggs"
-FHlib = cdll.LoadLibrary('./libs/libmcfeynhiggs.so')
+FHlib = cdll.LoadLibrary('packages/lib/libmcfeynhiggs.so')
 
 class FeynHiggsOpts(Structure):
     _fields_ = [('mssmpart', c_int), ('fieldren', c_int), ('tanbren', c_int),
