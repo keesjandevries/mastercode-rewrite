@@ -7,6 +7,5 @@ OPTIONS = {
         'base_dir': os.getcwd(),
         }
 
-#for mod in [predictors, utils, interfaces]:
-for mod in [interfaces]:
+for mod in [predictors, utils, interfaces]:
     mod.compile(**OPTIONS)
