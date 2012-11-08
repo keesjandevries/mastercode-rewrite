@@ -79,7 +79,12 @@ susypope = {
         #'library': 'libisospin.a'
         }
 
-PREDICTORS = [ softsusy, feynhiggs, micromegas, superiso ]
+#bphysics = {
+        #'name': 'bphysics',
+        #'version': '1.0',
+
+#PREDICTORS = [ softsusy, feynhiggs, micromegas, superiso, bphysics ]
+PREDICTORS = [ softsusy, feynhiggs, micromegas, superiso]
 
 
 def fetch_predictors(predictors):
