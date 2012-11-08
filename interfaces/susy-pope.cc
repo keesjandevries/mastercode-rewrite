@@ -7,15 +7,15 @@ struct SUSYPOPEOpts {
 
 struct SUSYPOPEPrecObs {
     double gammaZ, alphaHad
-      gammaZ   = EXTPAR(1)
-      alphaHad = EXTPAR(2)
 };
 
 extern "C" {
     void run_susypope(char slhafilename [], SUSYPOPEOpts* opts,
             SUSYPOPEPrecObs* out) {
         double POPEPRE[50];
-        POPE_INTERFACE( ERROR, slhadata, gammaZ, alphaHad, POPEPRE )
+        //POPE_INTERFACE(ERROR, slhadata, gammaZ, alphaHad, POPEPRE)
+        SetFlags_AMW(error, opts->LoopOption, opts->IterOpt, opts->Observables,
+                opts->SMObsOpt, opts->HiggsOpt, opts->Verbose);
 
     }
 }
@@ -60,25 +60,14 @@ int main() {
       Zmass         = SMInputs_MZ
 
 *     - No phases
-      M2phase   = 0D0
-      M1phase   = 0D0
-      MUEPhase  = 0D0
-      Atphase   = 0D0
-      Abphase   = 0D0
-      Atauphase = 0D0
+      M2phase   = 0D0 M1phase   = 0D0 MUEPhase  = 0D0 Atphase   = 0D0 Abphase   = 0D0 Atauphase = 0D0
 
 *     SUSY-POPE needs pole mass
       MB   = 4.8D0
 *     - Define all other parameters from SLHA input
-      MT   = SMInputs_Mt
-      MTAU = SMInputs_Mtau
-      MW   = Mass_MW
-      TB   = MinPar_TB
+      MT   = SMInputs_Mt MTAU = SMInputs_Mtau MW   = Mass_MW TB   = MinPar_TB
 
-      Mh0  = Mass_Mh0 
-      MHH  = Mass_MHH
-      MA0  = Mass_MA0
-      MHp  = Mass_MHp
+      Mh0  = Mass_Mh0 MHH  = Mass_MHH MA0  = Mass_MA0 MHp  = Mass_MHp
       SAeff = DSIN( DBLE(Alpha_Alpha) )
 
       M1SL = MSoft_MSL(1)
