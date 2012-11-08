@@ -7,4 +7,4 @@ all:
 	$(MAKE) -C utils INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR)
 
 clean:
-	$(MAKE) -C utils clean
+	$(MAKE) clean -C utils
