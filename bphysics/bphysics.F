@@ -363,7 +363,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
 cccccccccccccccccc DUMP INPUT PARAMETERS cccccccccccccccccccccccccccc
-c      GOTO 505
+      GOTO 505
 
       PRINT *, 'tanbeta,mH,mur,mSL,mQL,A0_soft =',tanbeta,mH,mur,mL,mQL,A0
       PRINT *, 'M1tz,M2tz,M3tz =',M1tz,M2tz,M3tz
