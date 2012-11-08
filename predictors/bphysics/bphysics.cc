@@ -30,7 +30,7 @@ int main(){
         BPhysicsObs  obs; 
         BPhysicsObs * pobs = &obs;
 
-        char slhaname[]="000547-slha.out";
+        char slhaname[]="../slhas/test.slha";
 
         run_bphysics(slhaname,pobs);
 
