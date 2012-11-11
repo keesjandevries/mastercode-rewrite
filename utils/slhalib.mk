@@ -23,5 +23,7 @@ slhalib: $(lib)
 .PHONY: clean all
 clean:
 	$(MAKE) -C $(src_dir) clean
+
+tarclean:
 	-rm -f $(tarfile)
 	-rm -rf $(src_dir)
