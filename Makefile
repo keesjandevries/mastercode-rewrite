@@ -18,29 +18,29 @@ predictors=feynhiggs
 all:
 	cd utils ; \
 		for u in $(utils); do \
-			make -f $$u.mk $(MARGS) ; \
+			make -f .make/$$u.mk $(MARGS) ; \
 		done
 	cd predictors ; \
 		for p in $(predictors); do \
-			make -f $$p.mk $(MARGS) ; \
+			make -f .make/$$p.mk $(MARGS) ; \
 		done
 
 clean:
 	cd utils ; \
 		for u in $(utils); do \
-			make -f $$u.mk clean $(MARGS) ; \
+			make -f .make/$$u.mk clean $(MARGS) ; \
 		done
 	cd predictors ; \
 		for p in $(predictors); do \
-			make -f $$p.mk clean $(MARGS) ; \
+			make -f .make/$$p.mk clean $(MARGS) ; \
 		done
 
 tarclean:
 	cd utils ; \
 		for u in $(utils); do \
-			make -f $$u.mk tarclean $(MARGS) ; \
+			make -f .make/$$u.mk tarclean $(MARGS) ; \
 		done
 	cd predictors ; \
 		for p in $(predictors); do \
-			make -f $$p.mk tarclean $(MARGS) ; \
+			make -f .make/$$p.mk tarclean $(MARGS) ; \
 		done
