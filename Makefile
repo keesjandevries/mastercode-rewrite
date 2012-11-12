@@ -11,7 +11,7 @@ slhaclass=utils/slhaclass.mk
 feynhiggs=predcitors/feynhiggs.mk
 
 utils=slhalib slhaclass
-predictors=feynhiggs micromegas softsusy
+predictors=feynhiggs micromegas softsusy superiso
 
 .PHONY: all clean tarclean
 
