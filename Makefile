@@ -13,6 +13,8 @@ feynhiggs=predcitors/feynhiggs.mk
 utils=slhalib slhaclass
 predictors=feynhiggs
 
+.PHONY: all clean tarclean
+
 all:
 	cd utils ; \
 		for u in $(utils); do \
