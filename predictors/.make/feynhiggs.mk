@@ -14,8 +14,6 @@ remote=$(remote_url)/$(tar_name)
 tarfile=$(TAR_DIR)/$(tar_name)
 
 $(lib):
-	echo $(machine)
-	echo $(lib_dir)
 ifeq ($(wildcard $(tarfile)),)
 	wget -N -P $(TAR_DIR) $(remote)
 endif

@@ -1,14 +1,31 @@
-VERSION=2.4.5
-SRC_TAR=micromegas_$(VERSION).tgz
-URL=http://lapth.in2p3.fr/micromegas/downloadarea/code/
-SRC_REMOTE=$(URL)/$(SRC_TAR)
-SRC_DIR=$(SRCDIR)/micromegas_$(VERSION)/
-LIBDIR=$(MICORMEGAS_SRC_DIR)/sources/
-LIB=micromegas.a
+version=2.4.5
+name=micromegas_$(version)
+src_dir=$(name)
+lib=$(src_dir)/sources/micromegas.a
+tar_name=$(name).tgz
+remote_url=http://lapth.in2p3.fr/micromegas/downloadarea/code/
+remote=$(remote_url)/$(tar_name)
+tarfile=$(TAR_DIR)/$(tar_name)
 
-SRC_TAR:
-	if [ ! -e $$(TAR_DIR) ]; then \
-		wget $$(SRC_REMOTE)
-	#wget -N -P $(TAR_DIR) $(SRC_REMOTE)
+$(lib):
+ifeq ($(wildcard $(tarfile)),)
+	wget -N -P $(TAR_DIR) $(remote)
+endif
+ifeq ($(wildcard $(src_dir)),)
+	tar -xf $(tarfile)
+endif
+	$(MAKE) -C $(src_dir)
+	$(MAKE) -C $(src_dir)/MSSM
 
-MICROMEGAS: $(TAR_DIR)/$(SRC_TAR) 
+micromegas: $(lib)
+
+.PHONY: clean all
+
+clean:
+	$(MAKE) -C $(src_dir)/MSSM clean
+	$(MAKE) -C $(src_dir) clean
+	-rm -f $(lib)
+
+tarclean:
+	-rm -f $(tarfile)
+	-rm -rf $(src_dir)
