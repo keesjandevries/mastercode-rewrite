@@ -1,5 +1,4 @@
-src_dir=SLHA
-lib=$(src_dir)/libs/libSLHAfile.so
+include $(DEF_DIR)/slhaclass.mk
 
 $(lib):
 	$(MAKE) -C $(src_dir)
