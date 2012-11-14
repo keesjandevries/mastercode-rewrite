@@ -9,7 +9,9 @@ UTIL_DIR=$(PWD)/utils
 INTERFACE_DIR=$(PWD)/interfaces
 
 MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
-	  INCLUDE_DIR=$(INSTALL_DIR)/include DEF_DIR=$(DEF_DIR)
+	  INCLUDE_DIR=$(INSTALL_DIR)/include DEF_DIR=$(DEF_DIR) \
+	  PREDICTOR_DIR=$(PREDICTOR_DIR) UTIL_DIR=$(UTIL_DIR) \
+	  INTERFACE_DIR=$(INTERFACE_DIR)
 
 #utils=slhaclass slhalib
 slhalib=utils/slhalib.mk 

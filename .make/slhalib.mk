@@ -5,7 +5,7 @@ ifeq ($(wildcard $(tarfile)),)
 	wget -N -P $(TAR_DIR) $(remote)
 endif
 ifeq ($(wildcard $(src_dir)),)
-	tar -xf $(tarfile)
+	tar -C $(UTIL_DIR) -xf $(tarfile)
 endif
 	cd $(src_dir); \
 		./configure --prefix=$(INSTALL_DIR);

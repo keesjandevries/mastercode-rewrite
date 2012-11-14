@@ -1,6 +1,6 @@
 version=2.9.4
 name=FeynHiggs-$(version)
-src_dir=$(name)
+src_dir=$(PREDICTOR_DIR)/$(name)
 machine=$(shell uname -m)
 ifeq ($(machine), x86_64)
 	lib_dir=lib64

@@ -4,9 +4,9 @@ ifeq ($(wildcard $(tarfile)),)
 	wget -N -P $(TAR_DIR) $(remote)
 endif
 ifeq ($(wildcard $(src_dir)),)
-	tar -xf $(tarfile)
+	tar -C $(PREDICTOR_DIR) -xf $(tarfile)
 endif
-	-patch -N -p2 -i $(PATCH_DIR)/SuperISO.patch
+	-patch -N -p1 -i $(PATCH_DIR)/SuperISO.patch
 	$(MAKE) -C $(src_dir)
 
 superiso: $(lib)

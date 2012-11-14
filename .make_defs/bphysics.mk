@@ -1,6 +1,6 @@
 version=1.0
 name=bphysics
-src_dir=private/$(name)
+src_dir=$(PREDICTOR_DIR)/private/$(name)
 obj=$(src_dir)/bphysics.o
 
 fc=gfortran

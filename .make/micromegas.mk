@@ -5,7 +5,7 @@ ifeq ($(wildcard $(tarfile)),)
 	wget -N -P $(TAR_DIR) $(remote)
 endif
 ifeq ($(wildcard $(src_dir)),)
-	tar -xf $(tarfile)
+	tar -C $(PREDICTOR_DIR) -xf $(tarfile)
 endif
 	$(MAKE) -C $(src_dir)
 	$(MAKE) -C $(src_dir)/MSSM

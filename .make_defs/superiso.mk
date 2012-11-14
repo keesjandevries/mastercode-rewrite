@@ -1,6 +1,6 @@
 version=3.3
 name=superiso_v$(version)
-src_dir=$(name)
+src_dir=$(PREDICTOR_DIR)/$(name)
 machine=$(shell uname -m)
 lib=$(src_dir)/src/libisospin.a
 tar_name=$(name).tgz
