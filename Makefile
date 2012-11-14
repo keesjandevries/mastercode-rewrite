@@ -3,11 +3,12 @@
 INSTALL_DIR=$(PWD)/packages
 TAR_DIR=$(PWD)/build/tars
 PATCH_DIR=$(PWD)/patches
+DEF_DIR=.make_defs
 MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
-	  INCLUDE_DIR=$(INSTALL_DIR)/include
+	  INCLUDE_DIR=$(INSTALL_DIR)/include DEF_DIR=$(DEF_DIR)
 
 #utils=slhaclass slhalib
-slhalib=utils/slhalib.mk
+slhalib=utils/slhalib.mk 
 slhaclass=utils/slhaclass.mk
 feynhiggs=predcitors/feynhiggs.mk
 
@@ -18,35 +19,28 @@ interfaces=feynhiggs
 .PHONY: all clean tarclean
 
 all:
-	cd utils ; \
-		for u in $(utils); do \
-			make -f .make/$$u.mk $(MARGS) ; \
-		done
-	cd predictors ; \
-		for p in $(predictors); do \
-			make -f .make/$$p.mk $(MARGS) ; \
-		done
-	cd predictors ; \
-		for i in $(interfaces); do \
-			make -f .make/$$i.mk $(MARGS) ; \
-		done
+	for u in $(utils); do \
+		make -f .make/$$u.mk $(MARGS) ; \
+	done
+	for p in $(predictors); do \
+		make -f .make/$$p.mk $(MARGS) ; \
+	done
+	for i in $(interfaces); do \
+		make -f .make/$$i.mk $(MARGS) ; \
+	done
 
 clean:
-	cd utils ; \
-		for u in $(utils); do \
-			make -f .make/$$u.mk clean $(MARGS) ; \
-		done
-	cd predictors ; \
-		for p in $(predictors); do \
-			make -f .make/$$p.mk clean $(MARGS) ; \
-		done
+	for u in $(utils); do \
+		make -f .make/$$u.mk clean $(MARGS) ; \
+	done
+	for p in $(predictors); do \
+		make -f .make/$$p.mk clean $(MARGS) ; \
+	done
 
 tarclean:
-	cd utils ; \
-		for u in $(utils); do \
-			make -f .make/$$u.mk tarclean $(MARGS) ; \
-		done
-	cd predictors ; \
-		for p in $(predictors); do \
-			make -f .make/$$p.mk tarclean $(MARGS) ; \
-		done
+	for u in $(utils); do \
+		make -f .make/$$u.mk tarclean $(MARGS) ; \
+	done
+	for p in $(predictors); do \
+		make -f .make/$$p.mk tarclean $(MARGS) ; \
+	done
