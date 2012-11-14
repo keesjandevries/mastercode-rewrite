@@ -1,4 +1,4 @@
-include ../.make_defs/feynhiggs.mk
+include $(DEF_DIR)/feynhiggs.mk
 
 $(lib):
 ifeq ($(wildcard $(tarfile)),)
