@@ -1,25 +1,16 @@
 include $(DEF_DIR)/feynhiggs.mk
 
-$(lib):
-ifeq ($(wildcard $(tarfile)),)
-	wget -N -P $(TAR_DIR) $(remote)
-endif
-ifeq ($(wildcard $(src_dir)),)
-	tar -xf $(tarfile)
-endif
-	-patch -N -p1 -i $(PATCH_DIR)/FeynHiggs.patch
-	cd $(src_dir); \
-		./configure --prefix=$(INSTALL_DIR);
-	$(MAKE) -C $(src_dir)
-	$(MAKE) -C $(src_dir) install
+interface_obj=$(interface_file:.cc=.o)
+interface_obj:
+	$(cc) -c -fPIC -o $(interface_obj) $(interface_file) \
+		-I$(INCLUDE_DIR)
+	
+$(interface_lib): $(interface_obj)
+	$(cc) -shared -Wl,-soname,libmcfeynhiggs.so -o $(interface_lib) \
+		$(interface_obj) -L$(lib) -lgfortran
 
-fennhiggs: $(lib)
+fennhiggs_interface: $(interface_lib)
 
 .PHONY: clean all
 clean:
-	-$(MAKE) -C $(src_dir) clean
-	-rm -f $(lib)
-
-tarclean:
-	-rm -f $(tarfile)
-	-rm -rf $(src_dir)
+	-rm -f $(interface_obj) $(interface_lib)
