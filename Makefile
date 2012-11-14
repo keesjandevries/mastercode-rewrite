@@ -3,7 +3,11 @@
 INSTALL_DIR=$(PWD)/packages
 TAR_DIR=$(PWD)/build/tars
 PATCH_DIR=$(PWD)/patches
-DEF_DIR=.make_defs
+DEF_DIR=$(PWD)/.make_defs
+PREDICTOR_DIR=$(PWD)/predictors
+UTIL_DIR=$(PWD)/utils
+INTERFACE_DIR=$(PWD)/interfaces
+
 MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
 	  INCLUDE_DIR=$(INSTALL_DIR)/include DEF_DIR=$(DEF_DIR)
 
