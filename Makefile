@@ -20,33 +20,18 @@ feynhiggs=predcitors/feynhiggs.mk
 
 utils=slhalib slhaclass
 predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
-interfaces=feynhiggs
+interfaces=feynhiggs_interface
+
+targets=$(predictors) $(utils) $(interfaces)
 
 .PHONY: all clean tarclean
 
 all:
-	for u in $(utils); do \
-		make -f .make/$$u.mk $(MARGS) ; \
-	done
-	for p in $(predictors); do \
-		make -f .make/$$p.mk $(MARGS) ; \
-	done
-	for i in $(interfaces); do \
-		make -f .make/$$i.mk $(MARGS) ; \
+	for t in $(targets); do \
+		make -f .make/$$t.mk $(MARGS) ; \
 	done
 
-clean:
-	for u in $(utils); do \
-		make -f .make/$$u.mk clean $(MARGS) ; \
-	done
-	for p in $(predictors); do \
-		make -f .make/$$p.mk clean $(MARGS) ; \
-	done
-
-tarclean:
-	for u in $(utils); do \
-		make -f .make/$$u.mk tarclean $(MARGS) ; \
-	done
-	for p in $(predictors); do \
-		make -f .make/$$p.mk tarclean $(MARGS) ; \
+%:
+	for t in $(targets); do \
+		make -f .make/$$t.mk $@ $(MARGS) ; \
 	done
