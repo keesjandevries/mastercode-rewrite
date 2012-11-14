@@ -3,7 +3,8 @@
 INSTALL_DIR=$(PWD)/packages
 TAR_DIR=$(PWD)/build/tars
 PATCH_DIR=$(PWD)/patches
-MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR)
+MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
+	  INCLUDE_DIR=$(INSTALL_DIR)/include
 
 #utils=slhaclass slhalib
 slhalib=utils/slhalib.mk
@@ -11,7 +12,7 @@ slhaclass=utils/slhaclass.mk
 feynhiggs=predcitors/feynhiggs.mk
 
 utils=slhalib slhaclass
-predictors=feynhiggs micromegas softsusy superiso susypope
+predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
 
 .PHONY: all clean tarclean
 
