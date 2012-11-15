@@ -26,7 +26,7 @@ targets=$(predictors) $(utils) $(interfaces)
 
 all:
 	for t in $(targets); do \
-		make -f .make/$$t.mk $(MARGS) ; \
+		make $$t ; \
 	done
 
 clean:
