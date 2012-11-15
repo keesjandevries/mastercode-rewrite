@@ -1,38 +1,43 @@
-TARDIR=tars/
-SRCDIR=predictors/
+.PHONY: all clean
 
-# FeynHiggs
-FEYNHIGGS_VERSION=2.9.4
-FEYNHIGGS_SRC_TAR=FeynHiggs-$(FEYNHIGGS_VERSION).tar.gz
-FEYNHIGGS_URL=http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/newversion/
-FEYNHIGGS_SRC_REMOTE=$(FEYNHIGGS_URL)/$(FEYNHIGGS_SRC_TAR)
-FEYNHIGGS_SRC_DIR=$(SRCDIR)/FeynHiggs-$(FEYNHIGGS_VERSION)/
-FEYNHIGGS_LIBDIR=packages/lib64/
-FEYNHIGGS_LIB=libFH.a
+INSTALL_DIR=$(PWD)/packages
+LIB_DIR=$(INSTALL_DIR)/lib
+PATCH_DIR=$(PWD)/patches
+DEF_DIR=$(PWD)/.make_defs
+PREDICTOR_DIR=$(PWD)/predictors
+TAR_DIR=$(PREDICTOR_DIR)/.tars
+UTIL_DIR=$(PWD)/utils
+INTERFACE_DIR=$(PWD)/interfaces
+INCLUDE_DIR=$(INSTALL_DIR)/include
 
-FEYNHIGGS_SRC_TAR:
-	ifeq($(wildcard $(TARDIR)/$(FEYNHIGGS_SRC_TAR),)
-		wget -N -P $(TARDIR) $(FEYNHIGGS_SRC_REMOTE)
-	endif
+MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
+	  INCLUDE_DIR=$(INCLUDE_DIR) DEF_DIR=$(DEF_DIR) \
+	  PREDICTOR_DIR=$(PREDICTOR_DIR) UTIL_DIR=$(UTIL_DIR) \
+	  INTERFACE_DIR=$(INTERFACE_DIR) LIB_DIR=$(LIB_DIR)
 
-FEYNHIGGS: $(TARDIR)/$(FEYNHIGGS_SRC_TAR) 
+utils=slhalib slhaclass
+predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
+interfaces=feynhiggs_interface softsusy_interface micromegas_interface \
+		   slhaclass_interface softsusy_slha_interface superiso_interface
 
+targets=$(predictors) $(utils) $(interfaces)
 
-# MicrOmegas
-MICROMEGAS_VERSION=2.4.5
-MICROMEGAS_SRC_TAR=micromegas_$(MICROMEGAS_VERSION).tgz
-MICROMEGAS_URL=http://lapth.in2p3.fr/micromegas/downloadarea/code/
-MICROMEGAS_SRC_REMOTE=$(MICROMEGAS_URL)/$(MICROMEGAS_SRC_TAR)
-MICROMEGAS_SRC_DIR=$(SRCDIR)/micromegas_$(MICROMEGAS_VERSION)/
-MICROMEGAS_LIBDIR=$(MICORMEGAS_SRC_DIR)/sources/
-MICROMEGAS_LIB=micromegas.a
+.PHONY: all clean tarclean
 
-MICROMEGAS_SRC_TAR:
-	if [ ! -e $$(TARDIR) ]; then \
-		echo wget $$(MICROMEGAS_SRC_REMOTE)
-		wget $$(MICROMEGAS_SRC_REMOTE)
-	#wget -N -P $(TARDIR) $(MICROMEGAS_SRC_REMOTE)
+all:
+	for t in $(targets); do \
+		make $$t ; \
+	done
 
-MICROMEGAS: $(TARDIR)/$(MICROMEGAS_SRC_TAR) 
+clean:
+	for t in $(targets); do \
+		make -f .make/$$t.mk $@ $(MARGS) ; \
+	done
 
-PREDICTORS=$(FEYNHIGGS) $(MICROMEGAS)
+tarclean:
+	for t in $(targets); do \
+		make -f .make/$$t.mk $@ $(MARGS) ; \
+	done
+
+%:
+	make -f .make/$@.mk $(MARGS) ; \

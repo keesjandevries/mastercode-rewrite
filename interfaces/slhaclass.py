@@ -6,7 +6,7 @@ _SLHAfile__MAX_SLHA_SIZE = 10000
 _SLHAblock__MAX_SLHA_SIZE = 10000
 _SLHAline__MAX_SLHA_SIZE = 10000
 
-SLHAlib = cdll.LoadLibrary('packages/lib/libmcslha.so')
+SLHAlib = cdll.LoadLibrary('packages/lib/libmcslhaclass.so')
 
 # specify pointer return types
 SLHAlib.SLHAline_new.restype = c_void_p

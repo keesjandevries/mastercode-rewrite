@@ -7,7 +7,7 @@ from interfaces import softsusy as slha_generator
 from interfaces import feynhiggs, micromegas, superiso
 from modules import utils
 
-from interfaces import slha
+from interfaces import slhaclass
 
 predictors = [feynhiggs, micromegas, superiso]
 

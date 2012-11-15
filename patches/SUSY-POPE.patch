@@ -1,7 +1,7 @@
 diff --git a/Makefile b/Makefile
 index 647ed32..e4d7b31 100755
---- a/predictors/SUSY-POPE-0.1/Makefile
-+++ b/predictors/SUSY-POPE-0.1/Makefile
+--- a/predictors/private/SUSY-POPE-0.1/Makefile
++++ b/predictors/private/SUSY-POPE-0.1/Makefile
 @@ -3,8 +3,8 @@
  .KEEP_STATE:
  

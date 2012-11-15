@@ -47,6 +47,7 @@ $(SLHALIBS):$(OBJ)
 
 clean:
 	@rm obj/*
+	@rm libs/*
 
 force:
 	@make clean
