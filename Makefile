@@ -15,12 +15,10 @@ MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
 	  PREDICTOR_DIR=$(PREDICTOR_DIR) UTIL_DIR=$(UTIL_DIR) \
 	  INTERFACE_DIR=$(INTERFACE_DIR) LIB_DIR=$(LIB_DIR)
 
-#utils=slhalib slhaclass
-#predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
-#interfaces=feynhiggs_interface softsusy_interface micromegas_interface
-utils=slhaclass
-predictors=softsusy
-interfaces=softsusy_slha_interface softsusy_interface feynhiggs_interface superiso_interface micromegas_interface slhaclass_interface
+utils=slhalib slhaclass
+predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
+interfaces=feynhiggs_interface softsusy_interface micromegas_interface \
+		   slhaclass_interface softsusy_slha_interface superiso_interface
 
 targets=$(predictors) $(utils) $(interfaces)
 
