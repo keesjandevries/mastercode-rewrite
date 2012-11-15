@@ -2,7 +2,7 @@ include $(DEF_DIR)/softsusy.mk
 
 .PHONY: clean all
 
-fennhiggs_interface: $(interface_lib)
+softsusy_interface: $(interface_lib)
 
 interface_obj=$(interface_src:.cc=.o)
 
