@@ -1,5 +1,7 @@
 include $(DEF_DIR)/micromegas.mk
 
+micromegas: $(mssm_lib)
+
 $(lib):
 ifeq ($(wildcard $(tarfile)),)
 	wget -N -P $(TAR_DIR) $(remote)
@@ -12,7 +14,6 @@ endif
 $(mssm_lib): $(lib)
 	$(MAKE) -C $(src_dir)/MSSM
 
-micromegas: $(mssm_lib)
 
 .PHONY: clean all
 
