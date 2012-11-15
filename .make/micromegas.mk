@@ -8,9 +8,11 @@ ifeq ($(wildcard $(src_dir)),)
 	tar -C $(PREDICTOR_DIR) -xf $(tarfile)
 endif
 	$(MAKE) -C $(src_dir)
+
+$(mssm_lib): $(lib)
 	$(MAKE) -C $(src_dir)/MSSM
 
-micromegas: $(lib)
+micromegas: $(mssm_lib)
 
 .PHONY: clean all
 
