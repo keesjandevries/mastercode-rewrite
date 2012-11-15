@@ -1,6 +1,6 @@
 include $(DEF_DIR)/bphysics.mk
 
-$(lib):
+$(obj):
 ifeq ($(wildcard $(src_dir)),)
 	git submodule init
 	git submodule update
