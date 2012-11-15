@@ -7,8 +7,9 @@ slhaclass_interface: $(interface_lib)
 interface_obj=$(interface_src:.cc=.o)
 
 $(interface_lib): $(interface_obj)
-	$(cc) -shared -Wl,-soname,libmcslhaclass.so -o $(interface_lib) \
+	$(cc) -shared -Wl,-soname,libmcslhaclass.so \
 		-Wl,-rpath,$(src_dir)/libs \
+		-o $(interface_lib) \
 		$(interface_obj) -L$(lib)
 
 $(interface_obj):

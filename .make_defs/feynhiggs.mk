@@ -3,11 +3,13 @@ name=FeynHiggs-$(version)
 src_dir=$(PREDICTOR_DIR)/$(name)
 machine=$(shell uname -m)
 ifeq ($(machine), x86_64)
-	lib_dir=lib64
+	machine_lib_dir=lib64
 else
-	lib_dir=lib
+	machine_lib_dir=lib
 endif
-lib=$(INSTALL_DIR)/$(lib_dir)/libFH.a
+lib_dir=$(INSTALL_DIR)/$(lib_dir)
+lib=$(lib_dir)/libFH.a
+lib_short=FH
 interface_lib=$(INSTALL_DIR)/lib/libmcfeynhiggs.a
 tar_name=$(name).tar.gz
 remote_url=http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/newversion/

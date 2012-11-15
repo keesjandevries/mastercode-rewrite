@@ -18,7 +18,7 @@ MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
 #utils=slhalib slhaclass
 #predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
 #interfaces=feynhiggs_interface softsusy_interface micromegas_interface
-utils=
+utils=slhaclass
 predictors=softsusy
 interfaces=softsusy_slha_interface
 

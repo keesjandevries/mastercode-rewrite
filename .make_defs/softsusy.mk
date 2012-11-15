@@ -1,7 +1,9 @@
 version=3.3.4
 name=softsusy-$(version)
 src_dir=$(PREDICTOR_DIR)/$(name)
-lib=$(INSTALL_DIR)/lib/libsoft.so
+lib_dir=$(INSTALL_DIR)/lib/
+lib=libsoft.so
+lib_short=soft
 tar_name=$(name).tar.gz
 remote_url=http://www.hepforge.org/archive/softsusy/
 remote=$(remote_url)/$(tar_name)
