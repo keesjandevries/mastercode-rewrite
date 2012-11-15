@@ -10,7 +10,7 @@ $(interface_lib): $(interface_obj)
 	$(cc) -shared -Wl,-soname,libmcslhaclass.so \
 		-Wl,-rpath,$(src_dir)/libs \
 		-o $(interface_lib) \
-		$(interface_obj) -L$(lib)
+		$(interface_obj) -L$(lib_dir) -l$(lib_short)
 
 $(interface_obj):
 	$(cc) -c -fPIC -o $(interface_obj) $(interface_src) \

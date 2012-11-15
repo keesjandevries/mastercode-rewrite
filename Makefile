@@ -20,7 +20,7 @@ MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
 #interfaces=feynhiggs_interface softsusy_interface micromegas_interface
 utils=slhaclass
 predictors=softsusy
-interfaces=softsusy_slha_interface
+interfaces=softsusy_slha_interface softsusy_interface feynhiggs_interface superiso_interface micromegas_interface slhaclass_interface
 
 targets=$(predictors) $(utils) $(interfaces)
 

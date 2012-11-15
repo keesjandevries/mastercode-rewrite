@@ -9,7 +9,7 @@ interface_obj=$(interface_src:.cc=.o)
 $(interface_lib): $(interface_obj)
 	$(cc) -shared -Wl,-soname,libmcfeynhiggs.so -o $(interface_lib) \
 		-Wl,-rpath,$(LIB_DIR) \
-		$(interface_obj) -L$(lib) -lgfortran
+		$(interface_obj) -L$(lib_dir) -l$(lib_short) -lgfortran
 
 $(interface_obj):
 	$(cc) -c -fPIC -o $(interface_obj) $(interface_src) \

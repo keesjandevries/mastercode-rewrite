@@ -7,10 +7,9 @@ ifeq ($(machine), x86_64)
 else
 	machine_lib_dir=lib
 endif
-lib_dir=$(INSTALL_DIR)/$(lib_dir)
+lib_dir=$(INSTALL_DIR)/$(machine_lib_dir)
 lib=$(lib_dir)/libFH.a
 lib_short=FH
-interface_lib=$(INSTALL_DIR)/lib/libmcfeynhiggs.a
 tar_name=$(name).tar.gz
 remote_url=http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/newversion/
 remote=$(remote_url)/$(tar_name)

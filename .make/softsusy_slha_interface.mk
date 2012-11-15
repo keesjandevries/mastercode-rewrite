@@ -1,9 +1,11 @@
 include $(DEF_DIR)/slhaclass.mk
 slhaclass_src_dir:=$(src_dir)
-slhaclass_lib:=$(lib)
+slhaclass_lib_dir:=$(lib_dir)
+slhaclass_lib_short:=$(lib_short)
 include $(DEF_DIR)/softsusy.mk
 softsusy_src_dir:=$(src_dir)
-softsusy_lib:=$(lib)
+softsusy_lib_dir:=$(lib_dir)
+softsusy_lib_short:=$(lib_short)
 
 .PHONY: clean all
 
@@ -16,11 +18,11 @@ interface_obj=$(interface_src:.cc=.o)
 
 $(interface_lib): $(interface_obj)
 	$(cc) -shared -Wl,-soname,libmcsoftsusy_slha.so \
-		-o $(interface_lib)
+		-o $(interface_lib) \
 		-Wl,-rpath,$(slhaclass_src_dir)/libs:$(LIB_DIR) \
-		obj/softsusy_slha.o \
-		-L$(slhaclass_lib) \
-		-L$(softsusy_lib)
+		$(INTERFACE_DIR)/softsusy_slha.o \
+		-L$(slhaclass_lib_dir) -l$(slhaclass_lib_short) \
+		-L$(softsusy_lib_dir) -l$(slhaclass_lib_short)
 
 $(interface_obj):
 	$(cc) -c -fPIC -o $(INTERFACE_DIR)/softsusy_slha.o \
