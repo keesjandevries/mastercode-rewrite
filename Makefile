@@ -31,7 +31,15 @@ all:
 		make -f .make/$$t.mk $(MARGS) ; \
 	done
 
-%:
+clean:
 	for t in $(targets); do \
 		make -f .make/$$t.mk $@ $(MARGS) ; \
 	done
+
+tarclean:
+	for t in $(targets); do \
+		make -f .make/$$t.mk $@ $(MARGS) ; \
+	done
+
+%:
+	make -f .make/$@.mk $(MARGS) ; \
