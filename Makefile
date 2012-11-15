@@ -2,10 +2,10 @@
 
 INSTALL_DIR=$(PWD)/packages
 LIB_DIR=$(INSTALL_DIR)/lib
-TAR_DIR=$(PWD)/build/tars
 PATCH_DIR=$(PWD)/patches
 DEF_DIR=$(PWD)/.make_defs
 PREDICTOR_DIR=$(PWD)/predictors
+TAR_DIR=$(PREDICTOR_DIR)/.tars
 UTIL_DIR=$(PWD)/utils
 INTERFACE_DIR=$(PWD)/interfaces
 INCLUDE_DIR=$(INSTALL_DIR)/include
