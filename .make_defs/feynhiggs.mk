@@ -13,7 +13,7 @@ tar_name=$(name).tar.gz
 remote_url=http://wwwth.mpp.mpg.de/members/heinemey/feynhiggs/newversion/
 remote=$(remote_url)/$(tar_name)
 tarfile=$(TAR_DIR)/$(tar_name)
-interface_file=$(INTERFACE_DIR)/feynhiggs.cc
+interface_src=$(INTERFACE_DIR)/feynhiggs.cc
 interface_lib=$(LIB_DIR)/libmcfeynhiggs.so
 
 cc=g++
