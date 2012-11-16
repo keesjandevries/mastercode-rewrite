@@ -14,3 +14,16 @@ index b9dede0..23391f2 100644
  	cp -p $(FCC) $(PREFIX)/bin
  	cd $(PREFIX)/bin ; ln -s fcc f++
  
+diff --git a/utils/SLHALib-2.2/configure b/utils/SLHALib-2.2/configure
+index 7058799..72b3853 100755
+--- a/utils/SLHALib-2.2/configure
++++ b/utils/SLHALib-2.2/configure
+@@ -259,7 +259,7 @@ DEF = $CONF_DEF
+ UNDERSCORE = $CONF_UNDERSCORE
+ 
+ FC = $CONF_FC
+-FFLAGS = $CONF_FFLAGS
++FFLAGS = $CONF_FFLAGS -fPIC
+ 
+ CC = $CONF_CC
+ CFLAGS = $CONF_CFLAGS
