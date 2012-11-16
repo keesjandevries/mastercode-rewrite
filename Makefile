@@ -31,7 +31,7 @@ all:
 
 clean:
 	for t in $(targets); do \
-		make -f .make/$$t.mk $@ $(MARGS) ; \
+		yes | make -f .make/$$t.mk $@ $(MARGS) ; \
 	done
 
 tarclean:
