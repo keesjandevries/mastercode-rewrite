@@ -1,0 +1,16 @@
+diff --git a/utils/SLHALib-2.2/makefile.in b/utils/SLHALib-2.2/makefile.in
+index b9dede0..23391f2 100644
+--- a/utils/SLHALib-2.2/makefile.in
++++ b/utils/SLHALib-2.2/makefile.in
+@@ -15,9 +15,9 @@ all: default demo
+ 
+ install: default
+ 	-mkdir $(PREFIX)
+-	-mkdir $(PREFIX)/lib $(PREFIX)/include $(PREFIX)/bin
++	-mkdir $(PREFIX)/lib $(PREFIX)/include/SLHALib $(PREFIX)/bin
+ 	cp -p $(LIB) $(PREFIX)/lib
+-	cp -p $(INCLUDE) $(PREFIX)/include
++	cp -p $(INCLUDE) $(PREFIX)/include/SLHALib
+ 	cp -p $(FCC) $(PREFIX)/bin
+ 	cd $(PREFIX)/bin ; ln -s fcc f++
+ 
