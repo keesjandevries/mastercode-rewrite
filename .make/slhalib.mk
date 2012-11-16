@@ -7,6 +7,7 @@ endif
 ifeq ($(wildcard $(src_dir)),)
 	tar -C $(UTIL_DIR) -xf $(tarfile)
 endif
+	-patch -N -p1 -i $(PATCH_DIR)/SLHALib.patch
 	cd $(src_dir); \
 		./configure --prefix=$(INSTALL_DIR);
 	$(MAKE) -C $(src_dir)
