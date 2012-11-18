@@ -7,19 +7,19 @@ from interfaces import softsusy as slha_generator
 from interfaces import feynhiggs, micromegas, superiso
 from modules import utils
 
-from interfaces import slhaclass
+from interfaces import slhaclass as slhamodule
+from interfaces.slhaclass import SLHAfile as slhaobj
 
 predictors = [feynhiggs, micromegas, superiso]
 
 def run_point(model, **inputs):
-    slhafile = slha_generator.run(model, **inputs)
+    slhafile = slhaobj(slha_generator.run(model, **inputs))
     #slha.process_slhafile(slhafile)
-    pipe_name = "/tmp/mc-{u}".format(u=utils.unique_str())
 
     predictor_output = OrderedDict()
     for predictor in predictors:
-        predictor_output.update(utils.pipe_to_function(pipe_name, slhafile,
-                lambda: predictor.run([pipe_name, "slha/test.slha"][0])))
+        predictor_output.update(slhamodule.send_to_predictor(slhafile,
+            predictor))
 
     for block_name, values in predictor_output.iteritems():
         slhafile.add_values(block_name, values)
