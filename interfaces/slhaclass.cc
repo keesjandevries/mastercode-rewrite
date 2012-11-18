@@ -1,4 +1,5 @@
 #include <string.h>
+#include <iostream>
 #include "SLHAfile.hh"
 #include "SLHAblock.hh"
 
@@ -16,6 +17,14 @@ extern "C" {
     bool SLHAfile_readfile(SLHAfile* sf, const char* f) {
         std::string s(f);
         return sf->ReadFile(s);
+    }
+
+    void SLHAfile_readstr(SLHAfile* sf, const char slhafile []) {
+        std::stringstream ss_out( std::stringstream::in |
+                                  std::stringstream::out);
+        ss_out << slhafile;
+        std::istream iss( ss_out.rdbuf() );
+        iss >> (*sf);
     }
 
     int SLHAfile_getstr(SLHAfile* sf, char* buf, int len) {
