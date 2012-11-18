@@ -1,6 +1,12 @@
 #! /usr/bin/env python
 from ctypes import cdll, create_string_buffer, c_double, c_int, c_void_p
 from collections import defaultdict
+from modules import utils
+
+def send_to_predictor(slhafile, predictor):
+    pipe_name = "/tmp/mc-{u}".format(u=utils.unique_str())
+    return utils.pipe_to_function(pipe_name, slhafile,
+            lambda: predictor.run([pipe_name, "slha/test.slha"][0]))
 
 _SLHAfile__MAX_SLHA_SIZE = 10000
 _SLHAblock__MAX_SLHA_SIZE = 10000
@@ -43,12 +49,13 @@ class SLHAline(object):
     def __init__(self,value=0, comment=''):
         self._obj = SLHAlib.SLHAline_new(c_double(value), comment)
         self._value = SLHAlib.SLHAline_getvalue(c_void_p(self._obj))
-        self._comment = c_str_access(c_void_p(self._obj), SLHAlib.SLHAline_getcomment,
-                __MAX_SLHA_SIZE)
+        self._comment = c_str_access(c_void_p(self._obj),
+                SLHAlib.SLHAline_getcomment, __MAX_SLHA_SIZE)
         self._index = 0
 
     def __str__(self):
-        return c_str_access(c_void_p(self._obj), SLHAlib.SLHAline_getstr, __MAX_SLHA_SIZE)
+        return c_str_access(c_void_p(self._obj), SLHAlib.SLHAline_getstr,
+                __MAX_SLHA_SIZE)
 
     def set_value(self, val):
         #try:
@@ -70,7 +77,8 @@ class SLHAline(object):
         self._comment = comment
 
     def get_comment(self):
-        c_str_access(c_void_p(self._obj), SLHAlib.SLHAline_getcomment, __MAX_SLHA_SIZE)
+        c_str_access(c_void_p(self._obj), SLHAlib.SLHAline_getcomment,
+                __MAX_SLHA_SIZE)
 
     def set_index1(self, index):
         #try:
@@ -108,8 +116,8 @@ class SLHAblock(object):
             add_line(line)
 
     def __str__(self):
-        return c_str_access(c_void_p(self._obj), SLHAlib.SLHAblock_getstr,
-                __MAX_SLHA_SIZE)
+        return c_str_access(c_void_p(self._obj),
+                SLHAlib.SLHAblock_getstr, __MAX_SLHA_SIZE)
 
     #def __getitem__(self, key):
         #line_obj = SLHAlib.SLHAblock_getline(c_void_p(self._obj), key)
@@ -119,8 +127,10 @@ class SLHAblock(object):
 
 
 class SLHAfile(object):
-    def __init__(self):
+    def __init__(self, file_str=""):
         self._obj = SLHAlib.SLHAfile_new()
+        if file_str:
+            SLHAlib.SLHAfile_readstr(c_void_p(self._obj), file_str)
 
     def __str__(self):
         return c_str_access(c_void_p(self._obj), SLHAlib.SLHAfile_getstr,
