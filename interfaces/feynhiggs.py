@@ -3,8 +3,6 @@
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 from collections import OrderedDict
 
-from modules.utils import show_header
-
 name = "FeynHiggs"
 FHlib = cdll.LoadLibrary('packages/lib/libmcfeynhiggs.so')
 
@@ -39,9 +37,8 @@ def get_values(output):
 def run(filename, fhopts=None) :
     if fhopts is None:
         fhopts = FeynHiggsOpts(mssmpart=4, fieldren=0, tanbren=0, higgsmix=2,
-            p2approx=0, looplevel=2, tl_running_mt=1, tl_bot_resum=1)
+                p2approx=0, looplevel=2, tl_running_mt=1, tl_bot_resum=1)
 
-    show_header(name)
     FHout = FeynHiggsPrecObs()
     FHlib.run_feynhiggs(filename, byref(FHout), byref(fhopts))
     return get_values(FHout)

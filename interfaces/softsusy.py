@@ -3,7 +3,6 @@
 from ctypes import cdll, c_int, c_double, c_char_p, c_void_p
 from ctypes import create_string_buffer
 
-from modules.utils import show_header
 from interfaces.slhaclass import SLHAfile
 
 name = "SoftSUSY"
@@ -108,7 +107,6 @@ class QedQcd(object) :
 
 
 def run(model, **model_inputs):
-    show_header(name, model)
     n_universals = len(models[model]['universals'])
     inputs = DoubleVector(n_universals)
     for pos, var_name in enumerate(models[model]['universals']):

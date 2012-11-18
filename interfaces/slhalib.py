@@ -3,8 +3,6 @@
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 from collections import OrderedDict
 
-from modules.utils import show_header
-
 name = "FeynHiggs"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')
 nslhadata = SLlib.get_nslhadata()

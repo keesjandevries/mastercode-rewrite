@@ -17,7 +17,6 @@ def get_values(output):
     return {name: d}
 
 def run(filename, file_is_pipe=True) :
-    utils.show_header(name)
     SIout = SuperISOPrecObs()
     # FIXME: to be honest this is stupid: we send our slhafile obj itno a pipe,
     # read it out and onto a tmp file -> maybe feature request in superiso?

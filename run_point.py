@@ -3,13 +3,15 @@ import os
 
 from collections import OrderedDict
 
-from interfaces import softsusy as slha_generator
+from interfaces import softsusy
 from interfaces import feynhiggs, micromegas, superiso
 from modules import utils
 
 from interfaces import slhaclass as slhamodule
 from interfaces.slhaclass import SLHAfile as slhaobj
 
+slha_generator = softsusy
+slha_modifiers = [feynhiggs]
 predictors = [feynhiggs, micromegas, superiso]
 
 def run_point(model, **inputs):
@@ -18,8 +20,10 @@ def run_point(model, **inputs):
 
     predictor_output = OrderedDict()
     for predictor in predictors:
+        utils.show_header(predictor.name)
         predictor_output.update(slhamodule.send_to_predictor(slhafile,
             predictor))
+            #predictor, True if predictor in slha_modifiers else False))
 
     for block_name, values in predictor_output.iteritems():
         slhafile.add_values(block_name, values)

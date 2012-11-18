@@ -3,8 +3,6 @@
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 from collections import OrderedDict
 
-from modules.utils import show_header
-
 name = "Micromegas"
 MOlib = cdll.LoadLibrary('packages/lib/libmcmicromegas.so')
 
@@ -18,7 +16,6 @@ def get_values(output):
     return {name: d}
 
 def run(filename) :
-    show_header(name)
     MOout = MicromegasPrecObs()
     MOlib.run_micromegas(filename, byref(MOout))
     return get_values(MOout)

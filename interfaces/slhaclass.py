@@ -3,11 +3,6 @@ from ctypes import cdll, create_string_buffer, c_double, c_int, c_void_p
 from collections import defaultdict
 from modules import utils
 
-def send_to_predictor(slhafile, predictor):
-    pipe_name = "/tmp/mc-{u}".format(u=utils.unique_str())
-    return utils.pipe_to_function(pipe_name, slhafile,
-            lambda: predictor.run([pipe_name, "slha/test.slha"][0]))
-
 _SLHAfile__MAX_SLHA_SIZE = 10000
 _SLHAblock__MAX_SLHA_SIZE = 10000
 _SLHAline__MAX_SLHA_SIZE = 10000
@@ -20,6 +15,11 @@ SLHAlib.SLHAblock_new.restype = c_void_p
 SLHAlib.SLHAfile_new.restype = c_void_p
 SLHAlib.SLHAfile_getblock.restype = c_void_p
 SLHAlib.SLHAblock_getline.restype = c_void_p
+
+def send_to_predictor(slhafile, predictor):
+    pipe_name = "/tmp/mc-{u}".format(u=utils.unique_str())
+    return utils.pipe_to_function(pipe_name, slhafile,
+            lambda: predictor.run([pipe_name, "slha/test.slha"][0]))
 
 def c_str_access(obj, func, max_size):
     c_str_buf = create_string_buffer(max_size)
