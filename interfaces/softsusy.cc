@@ -2,6 +2,8 @@
 #include "softsusy.h"
 #include "lowe.h"
 #include <iostream>
+#include <sstream>
+#include <string>
 
 /*--------------------*/
 /* BoundaryConditions */
@@ -104,19 +106,35 @@ extern "C"
     }
 
     void MssmSoftsusy_lowOrg( MssmSoftsusy* mss, int bCond, double mxGuess,
-                              DoubleVector *pars, int sgnMu, double tanb,
-                              QedQcd *oneset, bool gaugeUnification,
-                              bool ewsbBCscale = false) {
+            DoubleVector *pars, int sgnMu, double tanb, QedQcd *oneset,
+            bool gaugeUnification, bool ewsbBCscale = false) {
         void (*bC)( MssmSoftsusy &, const DoubleVector &) = 
             boundaryCondition( bCond );
         mss->lowOrg(bC, mxGuess, *pars, sgnMu, tanb, *oneset, 
                     gaugeUnification, ewsbBCscale);
     }
 
-    void MssmSoftsusy_lesHouchesAccordOutput( MssmSoftsusy* mss, const char model[], 
-					  DoubleVector *pars, int sgnMu, double tanb, double qMax, 
-					  int numPoints, double mgut, bool altEwsb ) {
+    void MssmSoftsusy_lesHouchesAccordOutput( MssmSoftsusy* mss,
+            const char model[], DoubleVector *pars, int sgnMu, double tanb,
+            double qMax, int numPoints, double mgut, bool altEwsb ) {
         mss->lesHouchesAccordOutput( std::cout, model, *pars, sgnMu, tanb, qMax,
                                      numPoints, mgut, altEwsb );
+    }
+
+    int MssmSoftsusy_lesHouchesAccordOutputStream( MssmSoftsusy* mss,
+            const char model[], DoubleVector *pars, int sgnMu, double tanb,
+            double qMax, int numPoints, double mgut, bool altEwsb, char* buf,
+            int len ) {
+        std::stringstream ss_out( std::stringstream::in |
+                                  std::stringstream::out );
+        mss->lesHouchesAccordOutput( ss_out, model, *pars, sgnMu, tanb, qMax,
+                                     numPoints, mgut, altEwsb );
+        std::string ss_str(
+                static_cast<std::stringstream const&>(std::stringstream() <<
+                ss_out.rdbuf()).str());
+        const char* ss_cstr = ss_str.c_str();
+        strncpy(buf,ss_cstr,len-1);
+        buf[len-1]=0;
+        return strlen(buf);
     }
 } 

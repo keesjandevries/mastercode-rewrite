@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from ctypes import cdll, c_int, c_double, c_char_p, c_void_p
+from ctypes import create_string_buffer
 
 from modules.utils import show_header
 from interfaces.slhaclass import SLHAfile
@@ -36,7 +37,9 @@ output_opts = {
         'altEwsb': False,
         }
 
-SPSLHAlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy_slha.so')
+#SPSLHAlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy_slha.so')
+
+SLHA_MAX_SIZE = 10000
 
 class DoubleVector(object) :
     def __init__(self, size = 0) :
@@ -68,14 +71,18 @@ class MssmSoftsusy(object) :
                 c_void_p(dv_pars._obj), sgnMu, tanb, qMax, numPoints, mgut,
                 altEwsb )
     def lesHouchesAccordOutputStream( self, model, dv_pars, sgnMu, tanb, qMax,
-            numPoints, mgut, altEwsb, slhafile ) :
+            numPoints, mgut, altEwsb ):
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
         model = c_char_p(models[model]['output'])
-        SPSLHAlib.MssmSoftsusy_lesHouchesAccordOutputStream(
+        c_str_buf = create_string_buffer(SLHA_MAX_SIZE)
+        sz = SPlib.MssmSoftsusy_lesHouchesAccordOutputStream(
                 c_void_p(self._obj), model, c_void_p(dv_pars._obj), sgnMu,
-                tanb, qMax, numPoints, mgut, altEwsb, slhafile )
+                tanb, qMax, numPoints, mgut, altEwsb, c_str_buf, SLHA_MAX_SIZE)
+        if sz >= SLHA_MAX_SIZE:
+            print "*** WARNING: string access has been truncated in softsusy"
+        return c_str_buf.value
 
 
 class QedQcd(object) :
@@ -130,8 +137,7 @@ def run(model, **model_inputs):
     for var_name, value in output_opts.iteritems():
         output_args[var_name] = model_inputs.get(var_name, value)
 
-    slhafile = SLHAfile()
-    r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs,
-            slhafile=c_void_p(slhafile._obj), **output_args)
+    slhafile = r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs,
+            **output_args)
 
     return slhafile
