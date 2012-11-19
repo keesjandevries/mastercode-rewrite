@@ -24,10 +24,18 @@ struct FeynHiggsPrecObs {
 };
 
 extern "C" {
-    void run_feynhiggs(const char slhafilename [], FeynHiggsPrecObs* out,
-            FeynHiggsOpts* opts, bool updateSLHA=false) {
+    int get_nslhadata() {
+        return nslhadata;
+    }
 
-        COMPLEX slhadata[nslhadata]; // stupid typedefs: not a true constructor
+    int write_slha(const char slhafilename [], COMPLEX* slhadata) {
+        int error;
+        SLHAWrite(&error, slhadata, slhafilename);
+        return error;
+    }
+    void run_feynhiggs(const char slhafilename [], FeynHiggsPrecObs* out,
+            FeynHiggsOpts* opts, COMPLEX* slhadata ) {
+
         int error;
         const int abort(0);
         FHSetDebug(0);
