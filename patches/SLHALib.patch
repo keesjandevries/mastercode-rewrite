@@ -27,3 +27,17 @@ index 7058799..72b3853 100755
  
  CC = $CONF_CC
  CFLAGS = $CONF_CFLAGS
+
+diff --git a/utils/SLHALib-2.2/src/SLHARead.F b/utils/SLHALib-2.2/src/SLHARead.F
+index c07fd1e..d10b80b 100644
+--- a/utils/SLHALib-2.2/src/SLHARead.F
++++ b/utils/SLHALib-2.2/src/SLHARead.F
+@@ -63,7 +63,7 @@ read(line, *, err=997, end=997)
+ 	  unit = 5
+ 	  if( lineno .ne. 0 ) goto 501
+ 	else
+-	  open(10, file=filename, status="old", err=996)
++	  open(10, file=filename, status="old", err=996, action='read')
+ 	  unit = 10
+ 	  lineno = 0
+ 	endif
