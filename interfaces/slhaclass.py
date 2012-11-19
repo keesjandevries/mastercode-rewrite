@@ -16,10 +16,21 @@ SLHAlib.SLHAfile_new.restype = c_void_p
 SLHAlib.SLHAfile_getblock.restype = c_void_p
 SLHAlib.SLHAblock_getline.restype = c_void_p
 
-def send_to_predictor(slhafile, predictor):
+def send_to_predictor(slhafile, predictor, update=False):
     pipe_name = "/tmp/mc-{u}".format(u=utils.unique_str())
-    return utils.pipe_to_function(pipe_name, slhafile,
+    p_out = utils.pipe_object_to_function(pipe_name, slhafile,
             lambda: predictor.run([pipe_name, "slha/test.slha"][0]))
+    if update:
+        ## FIXME: currently http://gcc.gnu.org/bugzilla/show_bug.cgi?id=30162
+        # this bug prevents gfortran correctly treating pipes.  It is aimed to
+        # be fixed by gcc4.7.3 so we have to wait for that update
+        #utils.setup_pipe(pipe_name, lambda: slhafile.read_file(pipe_name),
+                #lambda: predictor.write_slha(pipe_name))
+        pipe_name = "/tmp/mc-{u}_2".format(u=utils.unique_str())
+        predictor.write_slha(pipe_name)
+        slhafile.read_file(pipe_name)
+        print slhafile
+    return p_out
 
 def c_str_access(obj, func, max_size):
     c_str_buf = create_string_buffer(max_size)
