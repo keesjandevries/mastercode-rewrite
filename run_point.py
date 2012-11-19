@@ -27,8 +27,10 @@ def run_point(model, **inputs):
 
     print """
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    * ================================================================= *
     * WARNING, currently FeynHiggs does not seem to write the HiggsCorr *
     * values to its slha file when using SLHAWrite                      *
+    * ================================================================= *
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     """
 

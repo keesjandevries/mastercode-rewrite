@@ -21,6 +21,14 @@ def send_to_predictor(slhafile, predictor, update=False):
     p_out = utils.pipe_object_to_function(pipe_name, slhafile,
             lambda: predictor.run([pipe_name, "slha/test.slha"][0]))
     if update:
+        print """
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    * =============================================================== *
+    * WARNING, http://gcc.gnu.org/bugzilla/show_bug.cgi?id=30162a     *
+    * gfortran currently doesn't write formatted data to named pipes  *
+    * =============================================================== *
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    """
         ## FIXME: currently http://gcc.gnu.org/bugzilla/show_bug.cgi?id=30162
         # this bug prevents gfortran correctly treating pipes.  It is aimed to
         # be fixed by gcc4.7.3 so we have to wait for that update
