@@ -12,7 +12,7 @@ from interfaces.slhaclass import SLHAfile as slhaobj
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
-predictors = [feynhiggs, micromegas, superiso]
+predictors = slha_modifiers + [micromegas, superiso]
 
 def run_point(model, **inputs):
     utils.show_header(slha_generator.name)
@@ -23,13 +23,12 @@ def run_point(model, **inputs):
     for predictor in predictors:
         utils.show_header(predictor.name)
         predictor_output.update(slhamodule.send_to_predictor(slhafile,
-            predictor))
-            #predictor, True if predictor in slha_modifiers else False))
+            predictor, True if predictor in slha_modifiers else False))
 
     for block_name, values in predictor_output.iteritems():
         slhafile.add_values(block_name, values)
 
-    #print>>open('slhas/testPoint_output.slha','w'), slhafile
+    print>>open('slhas/testPoint_output_fh.slha','w'), slhafile
     #utils.pickle_object(slhafile, 'slhas/testPoint_output.pickled')
     #unpickled = utils.open_pickled_file('slhas/testPoint_output.pickled')
     #print unpickled
