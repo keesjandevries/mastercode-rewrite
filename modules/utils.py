@@ -7,6 +7,10 @@ import hashlib
 
 from socket import gethostname
 from time import gmtime, strftime
+from ctypes import Structure, c_double
+
+class c_complex(Structure):
+    _fields_ = [('re', c_double), ('im', c_double)]
 
 def show_header(header, sub=''):
     total_len = len(header) + len(sub)
@@ -21,7 +25,27 @@ def unique_str():
             pid=os.getpid(), time=t_now)
     return ustr
 
-def pipe_to_function(pipe_name, obj, function):
+def setup_pipe(pipe_name, reader, writer):
+    try:
+        os.mkfifo(pipe_name)
+    except OSError, e:
+        print("Failed to create FIFO: %s" % e)
+        exit()
+
+    child_pid = os.fork()
+    if child_pid == 0 :
+    # child process
+        reader()
+        os._exit(child_pid)
+    else:
+    # parent process
+        output = writer()
+        os.unlink(pipe_name)
+        os.waitpid(child_pid,0)
+        return output
+
+
+def pipe_object_to_function(pipe_name, obj, function):
     try:
         os.mkfifo(pipe_name)
     except OSError, e:
