@@ -2,7 +2,7 @@
 
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 from collections import OrderedDict
-from module.utils import c_complex
+from modules.utils import c_complex
 
 name = "FeynHiggs"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')
