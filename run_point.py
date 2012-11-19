@@ -25,17 +25,10 @@ def run_point(model, **inputs):
         predictor_output.update(slhamodule.send_to_predictor(slhafile,
             predictor, True if predictor in slha_modifiers else False))
 
-    print """
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    * ================================================================= *
-    * WARNING, currently FeynHiggs does not seem to write the HiggsCorr *
-    * values to its slha file when using SLHAWrite                      *
-    * ================================================================= *
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    """
-
     for block_name, values in predictor_output.iteritems():
         slhafile.add_values(block_name, values)
+
+    #print slhafile
 
     #print>>open('slhas/testPoint_output_fh.slha','w'), slhafile
     #utils.pickle_object(slhafile, 'slhas/testPoint_output.pickled')
