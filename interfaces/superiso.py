@@ -19,8 +19,7 @@ def get_values(output):
 def run(slhadata, update=False) :
     SIout = SuperISOPrecObs()
     fname = "/tmp/mc-{u}".format(u=utils.unique_str())
-    fo = open(fname, 'w')
-    fo.write(str(slhadata))
+    slhadata.write(fname)
     SIlib.run_superiso(fname, byref(SIout))
     utils.rm(fname)
     return get_values(SIout)

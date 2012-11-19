@@ -25,7 +25,7 @@ def unique_str():
             pid=os.getpid(), time=t_now)
     return ustr
 
-def setup_pipe(reader, writer, pipe_name):
+def setup_pipe(reader, writer, pipe_name=None):
     if pipe_name is None:
         pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     try:

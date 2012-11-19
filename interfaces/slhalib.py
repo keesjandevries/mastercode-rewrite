@@ -21,10 +21,13 @@ class SLHA(object):
 
     def __str__(self):
         tmp_name = "/tmp/mc-{u}".format(u=unique_str())
-        SLlib.write_slha(tmp_name, byref(self.data))
+        self.write(tmp_name)
         return open(tmp_name).read()
 # FIXME: this needs to use pipe to function but at the moment fortran doesnt
 # work with writing to pipes
+
+    def write(self, filename):
+        SLlib.write_slha(filename, byref(self.data))
 
     def read(self, filename):
         self.data = SLHAData()
