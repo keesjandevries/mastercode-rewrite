@@ -28,10 +28,10 @@ def run_point(model, **inputs):
     for block_name, values in predictor_output.iteritems():
         slhafile.add_values(block_name, values)
 
-    print>>open('slhas/testPoint_output.slha','w'), slhafile
-    utils.pickle_object(slhafile, 'slhas/testPoint_output.pickled')
-    unpickled = utils.open_pickled_file('slhas/testPoint_output.pickled')
-    print unpickled
+    #print>>open('slhas/testPoint_output.slha','w'), slhafile
+    #utils.pickle_object(slhafile, 'slhas/testPoint_output.pickled')
+    #unpickled = utils.open_pickled_file('slhas/testPoint_output.pickled')
+    #print unpickled
 
 
 if __name__=="__main__" :
