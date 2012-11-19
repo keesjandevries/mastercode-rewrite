@@ -69,7 +69,7 @@ extern "C" {
         else {
             std::cout << "FH SUCCESS" << std::endl;
             if( write_fh_slha ) {
-                const char fh_slha_name[] = "feyn_out.slha";
+                const char fh_slha_name[] = "slhas/feyn_out.slha";
                 std::cout << "Writing FH SLHA" << std::endl;
                 SLHAWrite(&error, slhadata, fh_slha_name);
                 std::cout << "Wrote FH SLHA" << std::endl;
