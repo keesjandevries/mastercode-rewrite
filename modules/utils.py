@@ -25,7 +25,9 @@ def unique_str():
             pid=os.getpid(), time=t_now)
     return ustr
 
-def setup_pipe(pipe_name, reader, writer):
+def setup_pipe(reader, writer, pipe_name):
+    if pipe_name is None:
+        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     try:
         os.mkfifo(pipe_name)
     except OSError, e:
@@ -35,33 +37,38 @@ def setup_pipe(pipe_name, reader, writer):
     child_pid = os.fork()
     if child_pid == 0 :
     # child process
-        reader()
+        reader(pipe_name)
         os._exit(child_pid)
     else:
     # parent process
-        output = writer()
+        output = writer(pipe_name)
         os.unlink(pipe_name)
         os.waitpid(child_pid,0)
         return output
 
 
-def pipe_object_to_function(pipe_name, obj, function):
+def pipe_object_to_function(obj, function, pipe_name=None):
+    if pipe_name is None:
+        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     try:
         os.mkfifo(pipe_name)
     except OSError, e:
         print("Failed to create FIFO: %s" % e)
         exit()
 
+    print "pipe_name:", pipe_name
     child_pid = os.fork()
     if child_pid == 0 :
     # child process
+        print "writing pipe"
         pipeout = os.open(pipe_name, os.O_WRONLY)
         os.write(pipeout, str(obj))
         os.close(pipeout)
         os._exit(child_pid)
     else:
     # parent process
-        function_out = function()
+        print "reading pipe"
+        function_out = function(pipe_name)
         os.unlink(pipe_name)
         os.waitpid(child_pid,0)
         return function_out
