@@ -3,6 +3,7 @@
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 from collections import OrderedDict
 from modules.utils import c_complex
+from modules.utils import pipe_object_to_function
 
 name = "FeynHiggs"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')
@@ -14,7 +15,12 @@ nslhadata = SLlib.get_nslhadata()
 class SLHAData(Structure):
     _fields_ = [('carray', c_complex * nslhadata)]
 
-def read(filename):
-    data = SLHAData()
-    SLlib.read_slha(filename, byref(data))
-    return data
+class SLHA(object):
+    def __init__(self, data=""):
+        if data:
+            pipe_object_to_function(data, self.read)
+
+    def read(self, filename):
+        print "made it into read function"
+        self.data = SLHAData()
+        SLlib.read_slha(filename, byref(self.data))
