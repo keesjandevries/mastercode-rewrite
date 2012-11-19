@@ -17,7 +17,6 @@ predictors = slha_modifiers + [micromegas, superiso]
 def run_point(model, **inputs):
     utils.show_header(slha_generator.name)
     slhafile = slhaobj(slha_generator.run(model, **inputs))
-    #slha.process_slhafile(slhafile)
 
     predictor_output = OrderedDict()
     for predictor in predictors:
@@ -27,6 +26,11 @@ def run_point(model, **inputs):
 
     for block_name, values in predictor_output.iteritems():
         slhafile.add_values(block_name, values)
+
+    #slha_dict = slhamodule.process_slhafile(slhafile)
+    #for block_name, lines in slha_dict.iteritems():
+        #for line in lines:
+            #print line[-1].lstrip('#'), line[0:-1]
 
     #print slhafile
 
