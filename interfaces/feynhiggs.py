@@ -3,8 +3,17 @@
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 from collections import OrderedDict
 
+from modules.utils import c_complex
+
 name = "FeynHiggs"
 FHlib = cdll.LoadLibrary('packages/lib/libmcfeynhiggs.so')
+
+nslhadata = FHlib.get_nslhadata()
+
+class SLHAData(Structure):
+    _fields_ = [('carray', c_complex * nslhadata)]
+
+slhadata = SLHAData()
 
 class FeynHiggsOpts(Structure):
     _fields_ = [('mssmpart', c_int), ('fieldren', c_int), ('tanbren', c_int),
@@ -33,6 +42,8 @@ def get_values(output):
         output._fields_])
     return {name: d}
 
+def write_slha(filename):
+    FHlib.write_slha(filename, byref(slhadata))
 
 def run(filename, fhopts=None) :
     if fhopts is None:
@@ -40,5 +51,5 @@ def run(filename, fhopts=None) :
                 p2approx=0, looplevel=2, tl_running_mt=1, tl_bot_resum=1)
 
     FHout = FeynHiggsPrecObs()
-    FHlib.run_feynhiggs(filename, byref(FHout), byref(fhopts))
+    FHlib.run_feynhiggs(filename, byref(FHout), byref(fhopts), byref(slhadata))
     return get_values(FHout)
