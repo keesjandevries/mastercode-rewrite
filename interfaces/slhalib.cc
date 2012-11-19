@@ -7,13 +7,19 @@ extern "C" {
     int get_nslhadata() {
         return nslhadata;
     }
+    void write_slha(const char slhafilename [],
+            std::complex<double>* slhadata){
+        int error;
+        SLHAWrite(&error, slhadata, slhafilename);
+        if(error) {
+            exit(error);
+        }
+    }
+
     void read_slha(const char slhafilename [], std::complex<double>* slhadata){
         int error;
         const int abort(0);
         SLHARead(&error, slhadata, slhafilename, abort);
-        //for(int i=0; i<nslhadata; ++i) {
-            //std::cout << slhadata[i] << std::endl;
-            //}
         if(error) {
             exit(error);
         }

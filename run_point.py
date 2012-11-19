@@ -7,8 +7,8 @@ from interfaces import softsusy
 from interfaces import feynhiggs, micromegas, superiso
 from modules import utils
 
-from interfaces import slhaclass as slhamodule
-from interfaces.slhaclass import SLHAfile as slhaobj
+from interfaces import slhalib as slhamodule
+from interfaces.slhalib import SLHA
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
@@ -16,7 +16,7 @@ predictors = slha_modifiers + [micromegas, superiso]
 
 def run_point(model, **inputs):
     utils.show_header(slha_generator.name)
-    slhafile = slhaobj(slha_generator.run(model, **inputs))
+    slhafile = SLHA(slha_generator.run(model, **inputs))
 
     predictor_output = OrderedDict()
     for predictor in predictors:
@@ -24,13 +24,6 @@ def run_point(model, **inputs):
         predictor_output.update(slhamodule.send_to_predictor(slhafile,
             predictor, True if predictor in slha_modifiers else False))
 
-    for block_name, values in predictor_output.iteritems():
-        slhafile.add_values(block_name, values)
-
-    #slha_dict = slhamodule.process_slhafile(slhafile)
-    #for block_name, lines in slha_dict.iteritems():
-        #for line in lines:
-            #print line[-1].lstrip('#'), line[0:-1]
 
     #print slhafile
 

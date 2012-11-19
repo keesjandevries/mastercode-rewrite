@@ -56,18 +56,15 @@ def pipe_object_to_function(obj, function, pipe_name=None):
         print("Failed to create FIFO: %s" % e)
         exit()
 
-    print "pipe_name:", pipe_name
     child_pid = os.fork()
     if child_pid == 0 :
     # child process
-        print "writing pipe"
         pipeout = os.open(pipe_name, os.O_WRONLY)
         os.write(pipeout, str(obj))
         os.close(pipeout)
         os._exit(child_pid)
     else:
     # parent process
-        print "reading pipe"
         function_out = function(pipe_name)
         os.unlink(pipe_name)
         os.waitpid(child_pid,0)

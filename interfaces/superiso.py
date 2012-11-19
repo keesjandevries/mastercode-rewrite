@@ -16,12 +16,11 @@ def get_values(output):
         output._fields_])
     return {name: d}
 
-def run(filename, file_is_pipe=True) :
+def run(slhadata, update=False) :
     SIout = SuperISOPrecObs()
-    # FIXME: to be honest this is stupid: we send our slhafile obj itno a pipe,
-    # read it out and onto a tmp file -> maybe feature request in superiso?
-    if file_is_pipe:
-        filename = utils.make_file_from_pipe(filename)
-    SIlib.run_superiso(filename, byref(SIout))
-    utils.rm(filename)
+    fname = "/tmp/mc-{u}".format(u=utils.unique_str())
+    fo = open(fname, 'w')
+    fo.write(str(slhadata))
+    SIlib.run_superiso(fname, byref(SIout))
+    utils.rm(fname)
     return get_values(SIout)
