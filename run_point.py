@@ -15,6 +15,7 @@ slha_modifiers = [feynhiggs]
 predictors = [feynhiggs, micromegas, superiso]
 
 def run_point(model, **inputs):
+    utils.show_header(slha_generator.name)
     slhafile = slhaobj(slha_generator.run(model, **inputs))
     #slha.process_slhafile(slhafile)
 
