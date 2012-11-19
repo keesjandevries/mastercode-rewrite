@@ -29,7 +29,6 @@ def send_to_predictor(slhafile, predictor, update=False):
         pipe_name = "/tmp/mc-{u}_2".format(u=utils.unique_str())
         predictor.write_slha(pipe_name)
         slhafile.read_file(pipe_name)
-        print slhafile
     return p_out
 
 def c_str_access(obj, func, max_size):
