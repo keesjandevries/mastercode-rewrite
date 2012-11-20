@@ -10,11 +10,6 @@ FHlib = cdll.LoadLibrary('packages/lib/libmcfeynhiggs.so')
 
 nslhadata = FHlib.get_nslhadata()
 
-class SLHAData(Structure):
-    _fields_ = [('carray', c_complex * nslhadata)]
-
-#slhadata = SLHAData()
-
 class FeynHiggsOpts(Structure):
     _fields_ = [('mssmpart', c_int), ('fieldren', c_int), ('tanbren', c_int),
             ('higgsmix', c_int), ('p2approx', c_int), ('looplevel', c_int),
@@ -43,6 +38,7 @@ def get_values(output):
     return {name: d}
 
 def run(slhadata, update=False, fhopts=None) :
+    assert len(slhadata.data) == nslhadata
     if fhopts is None:
         fhopts = FeynHiggsOpts(mssmpart=4, fieldren=0, tanbren=0, higgsmix=2,
                 p2approx=0, looplevel=2, tl_running_mt=1, tl_bot_resum=1)

@@ -4,27 +4,31 @@
 #include "CSLHA.h"
 
 
-struct susypopeIn {
+struct SUSYPOPEOpts {
     double gammaZ, alphaHad;
 };
 
-struct susypopeObs {
+struct SUSYPOPEObs {
     double MSSMObs[35], SMObs[35];
-    double MW, sin_theta_eff, Gamma_z, Rl, Rb, Rc, Afb_b, Afb_c, Ab_16, Ac_17, Al, Al_fb, sigma_had;
+    double MW, sin_theta_eff, Gamma_z, Rl, Rb, Rc, Afb_b, Afb_c, Ab_16, Ac_17,
+           Al, Al_fb, sigma_had;
 };
 
 extern "C" {
 
-    void pope_interface_(int &, std::complex<double> *, double &, double &, double *, double*);
+    void pope_interface_(int &, std::complex<double> *, double &, double &,
+            double *, double*);
 
-    void run_susypope(char slhafilename [], susypopeIn * in, susypopeObs * out ) {
+    void run_susypope(char slhafilename [], SUSYPOPEOpts* in,
+            SUSYPOPEObs* out) {
         // read the slha file
         int ERROR=0;
         std::complex<double>  slhadata[nslhadata];
         const int abort(0);
         SLHARead(&ERROR, slhadata, slhafilename , abort);
         //
-        pope_interface_(ERROR, slhadata, in->gammaZ, in->alphaHad,out->MSSMObs,out->SMObs );
+        pope_interface_(ERROR, slhadata, in->gammaZ, in->alphaHad, 
+                out->MSSMObs,out->SMObs );
         // extract observables in more readable terms
         out->MW             =  out->SMObs[0 ];
         out->sin_theta_eff  =  out->SMObs[26];
