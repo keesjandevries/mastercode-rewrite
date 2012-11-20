@@ -1,28 +1,75 @@
-#include "SLHA.h"
+#include <iostream>
+#include <complex>
 
-struct SUSYPOPEOpts {
-    int LoopOption, IterOpt, Observables, HiggsOpt, Verbose, HiggsOpt,
-        SMObsOpt;
+#include "CSLHA.h"
+
+
+struct susypopeIn {
+    double gammaZ, alphaHad;
 };
 
-struct SUSYPOPEPrecObs {
-    double gammaZ, alphaHad
+struct susypopeObs {
+    double MSSMObs[35], SMObs[35];
+    double MW, sin_theta_eff, Gamma_z, Rl, Rb, Rc, Afb_b, Afb_c, Ab_16, Ac_17, Al, Al_fb, sigma_had;
 };
 
 extern "C" {
-    void run_susypope(char slhafilename [], SUSYPOPEOpts* opts,
-            SUSYPOPEPrecObs* out) {
-        double POPEPRE[50];
-        //POPE_INTERFACE(ERROR, slhadata, gammaZ, alphaHad, POPEPRE)
-        SetFlags_AMW(error, opts->LoopOption, opts->IterOpt, opts->Observables,
-                opts->SMObsOpt, opts->HiggsOpt, opts->Verbose);
+
+    void pope_interface_(int &, std::complex<double> *, double &, double &, double *, double*);
+
+    void run_susypope(char slhafilename [], susypopeIn * in, susypopeObs * out ) {
+        // read the slha file
+        int ERROR=0;
+        std::complex<double>  slhadata[nslhadata];
+        const int abort(0);
+        SLHARead(&ERROR, slhadata, slhafilename , abort);
+        //
+        pope_interface_(ERROR, slhadata, in->gammaZ, in->alphaHad,out->MSSMObs,out->SMObs );
+        // extract observables in more readable terms
+        out->MW             =  out->SMObs[0 ];
+        out->sin_theta_eff  =  out->SMObs[26];
+        out->Gamma_z        =  out->SMObs[10];
+        out->Rl             =  out->SMObs[21];
+        out->Rb             =  out->SMObs[25];
+        out->Rc             =  out->SMObs[24];
+        out->Afb_b          =  out->SMObs[33];
+        out->Afb_c          =  out->SMObs[34];
+        out->Ab_16          =  out->SMObs[30];
+        out->Ac_17          =  out->SMObs[31];
+        out->Al             =  out->SMObs[29];
+        out->Al_fb          =  out->SMObs[33];
+        out->sigma_had      =  out->SMObs[20];
 
     }
 }
 
 int main() {
-    SUSYPOPEOpts opts(5,1,1,1,1,1,1);
-    SUSYPOPEPrecObs obs;
+    susypopeObs  obs; 
+    susypopeObs * pobs = &obs;
+    susypopeIn inp;
+    susypopeIn * pinp = &inp;
+    inp.gammaZ=2.4952;
+    inp.alphaHad=0.02749;
+
+    char slhaname[]="000547-slha.out";
+
+    run_susypope(slhaname,pinp,pobs);
+
+//    std::cout << "MW =  "<< pobs->MSSMObs[0] << std::endl ; 
+    std::cout <<  "MW           : " <<  pobs->MW            << std::endl ;
+    std::cout <<  "sin_theta_eff: " <<  pobs->sin_theta_eff << std::endl ;
+    std::cout <<  "Gamma_z      : " <<  pobs->Gamma_z       << std::endl ;
+    std::cout <<  "Rl           : " <<  pobs->Rl            << std::endl ;
+    std::cout <<  "Rb           : " <<  pobs->Rb            << std::endl ;
+    std::cout <<  "Rc           : " <<  pobs->Rc            << std::endl ;
+    std::cout <<  "Afb_b        : " <<  pobs->Afb_b         << std::endl ;
+    std::cout <<  "Afb_c        : " <<  pobs->Afb_c         << std::endl ;
+    std::cout <<  "Ab_16        : " <<  pobs->Ab_16         << std::endl ;
+    std::cout <<  "Ac_17        : " <<  pobs->Ac_17         << std::endl ;
+    std::cout <<  "Al           : " <<  pobs->Al            << std::endl ;
+    std::cout <<  "Al_fb        : " <<  pobs->Al_fb         << std::endl ;
+    std::cout <<  "sigma_had    : " <<  pobs->sigma_had     << std::endl ;
+
 }
 
 /* double precision 
@@ -60,14 +107,25 @@ int main() {
       Zmass         = SMInputs_MZ
 
 *     - No phases
-      M2phase   = 0D0 M1phase   = 0D0 MUEPhase  = 0D0 Atphase   = 0D0 Abphase   = 0D0 Atauphase = 0D0
+      M2phase   = 0D0
+      M1phase   = 0D0
+      MUEPhase  = 0D0
+      Atphase   = 0D0
+      Abphase   = 0D0
+      Atauphase = 0D0
 
 *     SUSY-POPE needs pole mass
       MB   = 4.8D0
 *     - Define all other parameters from SLHA input
-      MT   = SMInputs_Mt MTAU = SMInputs_Mtau MW   = Mass_MW TB   = MinPar_TB
+      MT   = SMInputs_Mt
+      MTAU = SMInputs_Mtau
+      MW   = Mass_MW
+      TB   = MinPar_TB
 
-      Mh0  = Mass_Mh0 MHH  = Mass_MHH MA0  = Mass_MA0 MHp  = Mass_MHp
+      Mh0  = Mass_Mh0 
+      MHH  = Mass_MHH
+      MA0  = Mass_MA0
+      MHp  = Mass_MHp
       SAeff = DSIN( DBLE(Alpha_Alpha) )
 
       M1SL = MSoft_MSL(1)
