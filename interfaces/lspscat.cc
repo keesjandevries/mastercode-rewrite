@@ -73,10 +73,10 @@ extern "C" {
                 nm41, nm42, nm43, nm44, lhiggs, shiggs, halpha, sbeta, mtin,
                 mbin, ul, ur, dl, dr, b1, b2, t1, t2, tt, tb);
 
-        out->s2out  =fcom_.s2out;
-        out->ss2out =fcom_.ss2out;
-        out->s3out  =fcom_.s3out ;
-        out->ss3out =fcom_.ss3out;
+        out->s2out  = fcom_.s2out;
+        out->ss2out = fcom_.ss2out;
+        out->s3out  = fcom_.s3out ;
+        out->ss3out = fcom_.ss3out;
     }
 }
 
