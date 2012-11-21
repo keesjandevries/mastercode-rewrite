@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
+from ctypes import cdll, c_double, byref, Structure
 from collections import OrderedDict
 
 name = "BPhysics"
