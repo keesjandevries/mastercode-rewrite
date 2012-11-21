@@ -25,6 +25,5 @@ def run(slhadata, update=False):
     LSPout = lspscatObs()
     LSPin = lspscatInputs(50,14)
     LSPlib.run_lspscat(byref(slhadata.data), byref(LSPin), byref(LSPout))
-    print LSPout.s2out
     return get_values(LSPout)
 
