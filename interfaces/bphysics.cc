@@ -27,16 +27,15 @@ extern "C"{
 
                                           
 int main(){
-        BPhysicsObs obs; 
+    BPhysicsObs obs; 
 
-        char slhaname[]="../slhas/test.slha";
+    char slhaname[]="../slhas/test.slha";
 
-        int error(0), abort(0);
-        std::complex<double> slhadata[nslhadata];
-        SLHARead(&error, slhadata, slhaname, abort);
-        run_bphysics(slhadata,&obs);
+    int error(0), abort(0);
+    std::complex<double> slhadata[nslhadata];
+    SLHARead(&error, slhadata, slhaname, abort);
+    run_bphysics(slhadata,&obs);
 
-        std::cout << "Bs->mu mu: " << obs.Psll << std::endl;
-        return 0;
+    std::cout << "Bs->mu mu: " << obs.Psll << std::endl;
+    return 0;
 }
-
