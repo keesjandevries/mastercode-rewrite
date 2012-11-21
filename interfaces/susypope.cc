@@ -1,3 +1,4 @@
+//g++ -o susypope.x susypope.cc -I../packages/include/SLHALib -L../packages/lib -lSLHA -L../predictors/private/SUSY-POPE-0.1/ -lAMWObs -lgfortran
 #include <iostream>
 #include <complex>
 #include <cmath>
