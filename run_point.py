@@ -4,7 +4,7 @@ import os
 from collections import OrderedDict
 
 from interfaces import softsusy
-from interfaces import feynhiggs, micromegas, superiso, bphysics
+from interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
 from modules import utils
 
 from interfaces import slhalib as slhamodule
@@ -12,7 +12,7 @@ from interfaces.slhalib import SLHA
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
-predictors = slha_modifiers + [micromegas, superiso, bphysics]
+predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat]
 
 def run_point(model, **inputs):
     utils.show_header(slha_generator.name)
