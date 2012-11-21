@@ -27,7 +27,7 @@ def run_point(model, **inputs):
 
     for predictor, obs in predictor_output.iteritems():
         print
-        print predictor
+        print utils.ansi_bold(predictor)
         print "="*len(predictor)
         x = max([len(n) for n,_ in obs.iteritems()])
         f_str = "{{n:{x}}} = {{p}}".format(x=x)

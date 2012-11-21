@@ -12,6 +12,9 @@ from ctypes import Structure, c_double
 class c_complex(Structure):
     _fields_ = [('re', c_double), ('im', c_double)]
 
+def ansi_bold(s):
+    return "\033[1m{0}\033[0m".format(s)
+
 def show_header(header, sub=''):
     total_len = len(header) + len(sub)
     block = "*"*(total_len+4 if not sub else total_len+6)
