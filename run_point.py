@@ -17,6 +17,7 @@ predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat]
 def run_point(model, **inputs):
     utils.show_header(slha_generator.name)
     slhafile = SLHA(slha_generator.run(model, **inputs))
+    #print>>open('slhas/test.slha','w'), slhafile
 
     predictor_output = OrderedDict()
     for predictor in predictors:
