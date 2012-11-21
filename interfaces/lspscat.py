@@ -12,6 +12,9 @@ class lspscatObs(Structure):
 
 class lspscatInputs(Structure):
     _fields_ = [('SigmaPiN', c_double), ('SigmaPiNerr', c_double)]
+    def __init__(self, SigmaPiN, SigmaPiNerr):
+        self.SigmaPiN = SigmaPiN
+        self.SigmaPiNerr = SigmaPiNerr
 
 def get_values(output):
     d = OrderedDict([(attr, getattr(output,attr)) for (attr, a_type) in
@@ -20,6 +23,8 @@ def get_values(output):
 
 def run(slhadata, update=False):
     LSPout = lspscatObs()
-    LSPlib.run_lspscat(byref(slhadata.data), byref(LSPout))
+    LSPin = lspscatInputs(50,14)
+    LSPlib.run_lspscat(byref(slhadata.data), byref(LSPin), byref(LSPout))
+    print LSPout.s2out
     return get_values(LSPout)
 
