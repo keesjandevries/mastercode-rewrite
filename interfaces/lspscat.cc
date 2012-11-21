@@ -11,21 +11,16 @@ struct lspscatObs {
     double s2out, ss2out, s3out, ss3out;
 };
 
-struct fortran_common { 
-    double s2out, ss2out, s3out, ss3out; 
-} ;
-
 // This global variable gets the values from the common block containing the
 // values from lspscat
-extern fortran_common fcom_;
 
 extern "C" { 
     double lspscat_( double&, double&, double&, double&, double&, double&, 
         double&, double&, double&, double&, double&, double&, double&, double&, 
         double&, double&, double&, double&, double&, double&, double&, double&,
         double&, double&, double&, double&, double&, double&, double&, double&,
-        double&, double&, double&, double&, double&, double&, double&, double&
-        );
+        double&, double&, double&, double&, double&, double&, double&, double&,
+        double&, double&, double&, double&);
 
     void run_lspscat(std::complex<double>* slhadata, lspscatInputs* in,
             lspscatObs* out ) {
@@ -71,12 +66,9 @@ extern "C" {
         lspscat_(in->SigmaPiN, in->SigmaPiNerr, n1, n2, n3, n4, nm11, nm12,
                 nm13, nm14, nm21, nm22, nm23, nm24, nm31, nm32, nm33, nm34,
                 nm41, nm42, nm43, nm44, lhiggs, shiggs, halpha, sbeta, mtin,
-                mbin, ul, ur, dl, dr, b1, b2, t1, t2, tt, tb);
+                mbin, ul, ur, dl, dr, b1, b2, t1, t2, tt, tb, out->s2out,
+                out->ss2out, out->s3out, out->ss3out);
 
-        out->s2out  = fcom_.s2out;
-        out->ss2out = fcom_.ss2out;
-        out->s3out  = fcom_.s3out ;
-        out->ss3out = fcom_.ss3out;
     }
 }
 
@@ -87,7 +79,7 @@ int main(){
     inp.SigmaPiN=50.0;
     inp.SigmaPiNerr=14.0;
 
-    char slhaname[]="000547-slha.out";
+    char slhaname[]="../slhas/test.slha";
     int error(0), abort(0);
     std::complex<double> slhadata[nslhadata];
     SLHARead(&error, slhadata, slhaname, abort);
