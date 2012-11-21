@@ -46,5 +46,5 @@ def send_to_predictor(slhadata, predictor, update=False):
 def run(*args, **kwargs):
     assert "filename" in kwargs
     slha = SLHA()
-    slha.read(kwargs[filename])
+    slha.read(kwargs['filename'])
     return slha
