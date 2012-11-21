@@ -19,7 +19,7 @@ def get_values(output):
     return {name: d}
 
 def run(slhadata, update=False):
-    LSPout = lspscatPrecObs()
+    LSPout = lspscatObs()
     LSPlib.run_lspscat(byref(slhadata.data), byref(LSPout))
     return get_values(LSPout)
 
