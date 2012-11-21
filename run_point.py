@@ -4,7 +4,7 @@ import os
 from collections import OrderedDict
 
 from interfaces import softsusy
-from interfaces import feynhiggs, micromegas, superiso
+from interfaces import feynhiggs, micromegas, superiso, bphysics
 from modules import utils
 
 from interfaces import slhalib as slhamodule
@@ -12,7 +12,7 @@ from interfaces.slhalib import SLHA
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
-predictors = slha_modifiers + [micromegas, superiso]
+predictors = slha_modifiers + [micromegas, superiso, bphysics]
 
 def run_point(model, **inputs):
     utils.show_header(slha_generator.name)
@@ -24,6 +24,14 @@ def run_point(model, **inputs):
         predictor_output.update(slhamodule.send_to_predictor(slhafile,
             predictor, True if predictor in slha_modifiers else False))
 
+    for predictor, obs in predictor_output.iteritems():
+        print
+        print predictor
+        print "="*len(predictor)
+        x = max([len(n) for n,_ in obs.iteritems()])
+        f_str = "{{n:{x}}} = {{p}}".format(x=x)
+        for name,value in obs.iteritems():
+            print f_str.format(n=name, p=value)
 
     #print slhafile
 

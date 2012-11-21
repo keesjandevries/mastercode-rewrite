@@ -1,9 +1,7 @@
 #! /usr/bin/env python
 
-from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
+from ctypes import cdll, c_int, c_double, byref, Structure
 from collections import OrderedDict
-
-from modules.utils import c_complex
 
 name = "FeynHiggs"
 FHlib = cdll.LoadLibrary('packages/lib/libmcfeynhiggs.so')
@@ -38,7 +36,7 @@ def get_values(output):
     return {name: d}
 
 def run(slhadata, update=False, fhopts=None) :
-    assert len(slhadata.data) == nslhadata
+    assert len(slhadata) == nslhadata
     if fhopts is None:
         fhopts = FeynHiggsOpts(mssmpart=4, fieldren=0, tanbren=0, higgsmix=2,
                 p2approx=0, looplevel=2, tl_running_mt=1, tl_bot_resum=1)

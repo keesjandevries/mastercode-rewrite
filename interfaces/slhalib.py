@@ -14,6 +14,10 @@ nslhadata = SLlib.get_nslhadata()
 class SLHAData(Structure):
     _fields_ = [('carray', c_complex * nslhadata)]
 
+    def __len__(self):
+        return len(self.carray)
+
+
 class SLHA(object):
     def __init__(self, data=""):
         if data:
@@ -23,6 +27,9 @@ class SLHA(object):
         tmp_name = "/tmp/mc-{u}".format(u=unique_str())
         self.write(tmp_name)
         return open(tmp_name).read()
+
+    def __len__(self):
+        return len(self.data)
 # FIXME: this needs to use pipe to function but at the moment fortran doesnt
 # work with writing to pipes
 

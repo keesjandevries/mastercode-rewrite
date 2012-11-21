@@ -6,35 +6,37 @@
 
 
 struct BPhysicsObs {
-        double BRbsg, BRKpnn , RDMb , RDMs, RDMK, BRXsll, BRbtn, BRKl2 ,Psll, Pdll, Pllsapx;
+        double BRbsg, BRKpnn, RDMb, RDMs, RDMK, BRXsll, BRbtn, BRKl2, Psll,
+               Pdll, Pllsapx;
 };
 
 extern "C"{
-    void bphysicsinterface_(  int &,  double_complex*,  double&, double &,  double&,  double&, double&, double&,
-           double&, double&, double&, double&, double& );
+    void bphysicsinterface_( int &, double_complex*, double&, double &,
+            double&, double&, double&, double&, double&, double&, double&,
+            double&, double& );
 
-    void run_bphysics(char slhafilename[], BPhysicsObs * out){
+    void run_bphysics(std::complex<double>* slhadata, BPhysicsObs* out){
         int ERROR=0;
-        double_complex  slhadata[nslhadata];
         const int abort(0);
 
-        SLHARead(&ERROR, slhadata, slhafilename , abort);
-
-        bphysicsinterface_( ERROR,    slhadata,   out->BRbsg,   out->BRKpnn,   out->RDMb,   out->RDMs,   
-                        out->RDMK,   out->BRXsll,   out->BRbtn,   out->BRKl2,   out->Psll,   out->Pdll,   out->Pllsapx );
+        bphysicsinterface_( ERROR, slhadata, out->BRbsg, out->BRKpnn,
+                out->RDMb, out->RDMs, out->RDMK, out->BRXsll, out->BRbtn,
+                out->BRKl2, out->Psll, out->Pdll, out->Pllsapx );
     }
 }
 
                                           
 int main(){
-        BPhysicsObs  obs; 
-        BPhysicsObs * pobs = &obs;
+        BPhysicsObs obs; 
 
         char slhaname[]="../slhas/test.slha";
 
-        run_bphysics(slhaname,pobs);
+        int error(0), abort(0);
+        std::complex<double> slhadata[nslhadata];
+        SLHARead(&error, slhadata, slhaname, abort);
+        run_bphysics(slhadata,&obs);
 
-        std::cout << "Bs->mu mu: " << pobs->Psll << std::endl;
+        std::cout << "Bs->mu mu: " << obs.Psll << std::endl;
         return 0;
 }
 
