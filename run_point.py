@@ -5,6 +5,7 @@ from collections import OrderedDict
 
 from interfaces import softsusy
 from interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
+from interfaces import susypope
 from modules import utils
 
 from interfaces import slhalib as slhamodule
@@ -12,7 +13,8 @@ from interfaces.slhalib import SLHA
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
-predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat]
+predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,
+        susypope]
 
 def run_point(model, **inputs):
     utils.show_header(slha_generator.name)
@@ -24,6 +26,8 @@ def run_point(model, **inputs):
         utils.show_header(predictor.name)
         predictor_output.update(slhamodule.send_to_predictor(slhafile,
             predictor, True if predictor in slha_modifiers else False))
+        #if predictor in slha_modifiers:
+            #print>>open('slhas/sp_test.slha','w'), slhafile
 
     for predictor, obs in predictor_output.iteritems():
         print
