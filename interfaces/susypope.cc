@@ -1,34 +1,168 @@
 #include <iostream>
 #include <complex>
+#include <cmath>
 
 #include "CSLHA.h"
 
-
-struct SUSYPOPEOpts {
-    double gammaZ, alphaHad;
+// struct that contains the flags for susypope
+//      LoopOption  : 5 only:
+//      IterOpt     : 1 = Standard iteration, 2 = Iteration optimised for speed (almost perfect accuracy),
+//                           3 = very fast iteration (good accuracy for well chosen starting value of iteration)
+//      Observables : 1 = all the Z Observables, 2 = Sin^2(theta)_eff only, 3 = MW only
+//      HiggsOpt    : 1 = directly insert Higgs masses, 2 = born Higgs, 3 = FH
+//      Verbose     : 1 = no information printed to screen, 2 = some information, 3 = lots of information)
+//      SMObsOpt    : ??????????????
+struct susypopeFlags{
+    int LoopOption, IterOpt, Observables, HiggsOpt, Verbose,  SMObsOpt;
+    // constructors
+    susypopeFlags(){}
+    susypopeFlags(int lOpt, int iOpt, int obs, int hOpt, int v, int smOpt):
+        LoopOption(lOpt), IterOpt(iOpt), Observables(obs), HiggsOpt(hOpt),
+        Verbose(v), SMObsOpt(smOpt){}
 };
 
-struct SUSYPOPEObs {
+// some of the imput parameters are not contained in the slha file 
+// this struct collects all of them
+struct susypopeNoneSLHA {
+    double DeltaAlfa5had, DeltaAlfaQED, ZWidthexp, M2phase, M1phase, MUEPhase,
+           Atphase, Abphase, Atauphase, MB; 
+};
+
+// combination of flags and non-slha inputs
+struct susypopeIn {
+    susypopeNoneSLHA n_slha;
+    susypopeFlags flags;
+};
+
+// output
+struct susypopeObs {
     double MSSMObs[35], SMObs[35];
     double MW, sin_theta_eff, Gamma_z, Rl, Rb, Rc, Afb_b, Afb_c, Ab_16, Ac_17,
            Al, Al_fb, sigma_had;
 };
 
 extern "C" {
+// functions from SUSY-POPE (Fortran)
+// set flags
+    void setflags_amw_( int&, int&, int&, int&, int&, int&, int&);
+// set paramters from slha and non-slha data
+    void setpara_amw_(int&, double&, double&, double&, double&, double&,
+            double&, double&, double&, double&, double&, double&, double&,
+            double&, std::complex<double>&, double*,
+            std::complex<double> a[][4], double&, double&, double&, double&,
+            double&, double&, double&, double&, double&, double&, double&,
+            double&, double&, double&, double&, std::complex<double>&, double&, 
+            std::complex<double>&, std::complex<double>&,
+            std::complex<double>&, std::complex<double>&,
+            std::complex<double>&, std::complex<double>&,
+            std::complex<double>&, std::complex<double>&,
+            std::complex<double>&, double&, double&, double &, 
+            std::complex<double>&, std::complex<double>&,
+            std::complex<double>&, double&, double&, double&, double&,
+            double&);
+// calculate the observables
+    void calcobs_amw_(int&, double*, double*);
+}
 
-    void pope_interface_(int &, std::complex<double> *, double &, double &,
-            double *, double*);
 
-    void run_susypope(char slhafilename [], SUSYPOPEOpts* in,
-            SUSYPOPEObs* out) {
-        // read the slha file
-        int ERROR=0;
-        std::complex<double>  slhadata[nslhadata];
-        const int abort(0);
-        SLHARead(&ERROR, slhadata, slhafilename , abort);
-        //
-        pope_interface_(ERROR, slhadata, in->gammaZ, in->alphaHad, 
-                out->MSSMObs,out->SMObs );
+int set_parameters(std::complex<double>* slhadata, susypopeNoneSLHA* n_slha){
+      int error=0;
+      double DeltaAlfa5had = n_slha->DeltaAlfa5had;
+      double DeltaAlfaQED  = n_slha->DeltaAlfaQED ;
+      double ZWidthexp     = n_slha->ZWidthexp    ;
+
+      double M2phase       = n_slha->M2phase      ;
+      double M1phase       = n_slha->M1phase      ;
+      double MUEPhase      = n_slha->MUEPhase     ;
+      double Atphase       = n_slha->Atphase      ;
+      double Abphase       = n_slha->Abphase      ;
+      double Atauphase     = n_slha->Atauphase    ;
+
+      double MB            = n_slha->MB           ;
+
+// inputs from slha 
+      double Zmass=std::real( SMInputs_MZ);
+      double MT   =std::real( SMInputs_Mt);
+      double MTAU =std::real( SMInputs_Mtau);
+      double MW   =std::real( Mass_MW);
+      double TB   =std::real( MinPar_TB);
+
+      double Mh0  =std::real( Mass_Mh0 );
+      double MHH  =std::real( Mass_MHH);
+      double MA0  =std::real( Mass_MA0);
+      double MHp  =std::real( Mass_MHp);
+      std::complex<double> SAeff( sin( std::real(Alpha_Alpha )), 0.0 ) ;
+
+      double M1SL =std::real( MSoft_MSL(1));
+      double M2SL =std::real( MSoft_MSL(2));
+      double M3SL =std::real( MSoft_MSL(3));
+      double M1SE =std::real( MSoft_MSE(1));
+      double M2SE =std::real( MSoft_MSE(2));
+      double M3SE =std::real( MSoft_MSE(3));
+      double M1SQ =std::real( MSoft_MSQ(1));
+      double M2SQ =std::real( MSoft_MSQ(2));
+      double M3SQ =std::real( MSoft_MSQ(3));
+      double M1SU =std::real( MSoft_MSU(1));
+      double M2SU =std::real( MSoft_MSU(2));
+      double M3SU =std::real( MSoft_MSU(3));
+      double M1SD =std::real( MSoft_MSD(1));
+      double M2SD =std::real( MSoft_MSD(2));
+      double M3SD =std::real( MSoft_MSD(3));
+      std::complex<double> MUE  = HMix_MUE;
+      std::complex<double> Atau = Ae_Atau;
+      std::complex<double> At   = Au_At;
+      std::complex<double> Ab   = Ad_Ab;
+      std::complex<double> Amu  = Ae_Atau;
+      std::complex<double> Ac   = Au_At;
+      std::complex<double> As   = Ad_Ab;
+      std::complex<double> Ae   = Ae_Atau;
+      std::complex<double> Au   = Au_At;
+      std::complex<double> Ad   = Ad_Ab;
+      std::complex<double> M_1  = MSoft_M1;
+      std::complex<double> M_2  = MSoft_M2;
+      std::complex<double> M_3  = MSoft_M3;
+      double Qtau =std::real( HMix_Q);
+      double Qt   =std::real( HMix_Q);
+      double Qb   =std::real( HMix_Q);
+      
+      double MHiggs[]={0.,0.,0.,0.}; // yes hard coded, could be promoted to non-slha inputs
+      std::complex<double> UHiggs[4][4];
+
+
+      for (int I=0; I<4 ; I++){
+        for (int J=0; J<4 ; J++){
+            UHiggs[I][J] = CVHMix_UH(I+1,J+1); // FIXME: now sure if the matrix is transposed here...
+        }
+      }
+
+      setpara_amw_(error, MT, MB, MTAU, MW, Zmass, DeltaAlfa5had, DeltaAlfaQED,
+              ZWidthexp, TB, MA0, MHp, Mh0, MHH, SAeff, MHiggs, UHiggs, M3SL,
+              M3SE, M3SQ, M3SU, M3SD, M2SL, M2SE, M2SQ, M2SU, M2SD, M1SL, M1SE,
+              M1SQ, M1SU, M1SD, MUE, MUEPhase, Atau, At, Ab, Amu, Ac, As, Ae,
+              Au, Ad, Atphase, Abphase, Atauphase, M_1, M_2, M_3, M2phase,
+              M1phase, Qtau, Qt, Qb);
+      return error;
+}
+
+int set_flags(susypopeFlags * flags){
+    int error;
+    setflags_amw_(error,flags->LoopOption, flags->IterOpt, flags->Observables, 
+              flags->SMObsOpt , flags->HiggsOpt, flags->Verbose );
+    return error;
+}
+
+extern "C" {
+
+    void run_susypope(std::complex<double>* slhadata, susypopeIn* in,
+            susypopeObs* out) {
+        out->SMObs[0];
+        int error(0);
+        error = set_flags(&(in->flags));
+        if (error) std::cout << "set flags failed" << std::endl;
+        error = set_parameters(slhadata, &in->n_slha);
+        if (error) std::cout << "set parameters failed" << std::endl;
+        calcobs_amw_(error, out->MSSMObs, out->SMObs);
+
         // extract observables in more readable terms
         out->MW             =  out->SMObs[0 ];
         out->sin_theta_eff  =  out->SMObs[26];
@@ -47,20 +181,40 @@ extern "C" {
     }
 }
 
+
+
 int main() {
     susypopeObs  obs; 
     susypopeObs * pobs = &obs;
     susypopeIn inp;
     susypopeIn * pinp = &inp;
-    inp.gammaZ=2.4952;
-    inp.alphaHad=0.02749;
+//    inp.gammaZ=2.4952;
+//    inp.alphaHad=0.02749;
+    susypopeFlags opts(5,1,1,1,1,1);
+    inp.flags=opts;
+    inp.n_slha.DeltaAlfa5had = 0.02749;
+    inp.n_slha.DeltaAlfaQED  = 0.031497637;
+    inp.n_slha.ZWidthexp     = 2.4952;
 
-    char slhaname[]="000547-slha.out";
+    inp.n_slha.M2phase   = 0.0;
+    inp.n_slha.M1phase   = 0.0;
+    inp.n_slha.MUEPhase  = 0.0;
+    inp.n_slha.Atphase   = 0.0;
+    inp.n_slha.Abphase   = 0.0;
+    inp.n_slha.Atauphase = 0.0;
 
-    run_susypope(slhaname,pinp,pobs);
+    inp.n_slha.MB   = 4.8;
 
-//    std::cout << "MW =  "<< pobs->MSSMObs[0] << std::endl ; 
-    std::cout <<  "MW           : " <<  pobs->MW            << std::endl ;
+    char slhaname[]="../slhas/test.slha";
+    // read the slha file
+    int error=0;
+    std::complex<double>  slhadata[nslhadata];
+    const int abort(0);
+    SLHARead(&error, slhadata, slhaname , abort);
+
+    run_susypope(slhadata,pinp,pobs);
+
+    std::cout <<  "MW           : " <<  pobs->SMObs[0]      << std::endl ;
     std::cout <<  "sin_theta_eff: " <<  pobs->sin_theta_eff << std::endl ;
     std::cout <<  "Gamma_z      : " <<  pobs->Gamma_z       << std::endl ;
     std::cout <<  "Rl           : " <<  pobs->Rl            << std::endl ;
@@ -76,174 +230,44 @@ int main() {
 
 }
 
-/* double precision 
- * MT, MB,MTAU, MW, gammaZ, alphaHad, DeltaAlfa5had, DeltaAlfaQED, ZWidthexp, 
- * Zmass, TB, MA0, MHp, Mh0, MHH, MHiggs(4), M3SL, M3SE, M3SQ, M3SU, M3SD,
- * M2SL, M2SE, M2SQ, M2SU, M2SD, M1SL, M1SE, M1SQ, M1SU, M1SD, Qtau, Qt, Qb,
- * Atphase, Abphase, Atauphase, M2phase, M1phase, MUEphase ,PRE(50),
- * MSSMObs(35), SMObs(35)
- */
-
-/* double complex
- * UHiggs(4,4), SAeff, MUE, M_1, M_2, M_3, At, Ab, Atau, Ac, As,
- * Amu, Au, Ad, Ae, slhadata(nslhadata)
- */
-      
-/* Integer 
- * error,I,J, LoopOption, IterOpt, Observables,HiggsOpt,Verbose,SMObsOpt,
- * observables
- */
-
-/*
-      DO I=8,18
-         PRE(I)=-1.
-      ENDDO   
-      Call SetFlags_AMW(error,LoopOption,IterOpt,Observables,SMObsOpt,HiggsOpt,Verbose)
-      IF ( error.NE.0 ) THEN
-         PRINT *, '*** Error SetFlags_AMW:',error
-         RETURN
-      ENDIF
-
-*     - Additional EW parameters
-      DeltaAlfa5had = alphaHad
-      DeltaAlfaQED  = 0.031497637D0
-      ZWidthexp     = gammaZ
-      Zmass         = SMInputs_MZ
-
-*     - No phases
-      M2phase   = 0D0
-      M1phase   = 0D0
-      MUEPhase  = 0D0
-      Atphase   = 0D0
-      Abphase   = 0D0
-      Atauphase = 0D0
-
-*     SUSY-POPE needs pole mass
-      MB   = 4.8D0
-*     - Define all other parameters from SLHA input
-      MT   = SMInputs_Mt
-      MTAU = SMInputs_Mtau
-      MW   = Mass_MW
-      TB   = MinPar_TB
-
-      Mh0  = Mass_Mh0 
-      MHH  = Mass_MHH
-      MA0  = Mass_MA0
-      MHp  = Mass_MHp
-      SAeff = DSIN( DBLE(Alpha_Alpha) )
-
-      M1SL = MSoft_MSL(1)
-      M2SL = MSoft_MSL(2)
-      M3SL = MSoft_MSL(3)
-      M1SE = MSoft_MSE(1)
-      M2SE = MSoft_MSE(2)
-      M3SE = MSoft_MSE(3)
-      M1SQ = MSoft_MSQ(1)
-      M2SQ = MSoft_MSQ(2)
-      M3SQ = MSoft_MSQ(3)
-      M1SU = MSoft_MSU(1)
-      M2SU = MSoft_MSU(2)
-      M3SU = MSoft_MSU(3)
-      M1SD = MSoft_MSD(1)
-      M2SD = MSoft_MSD(2)
-      M3SD = MSoft_MSD(3)
-      MUE  = HMix_MUE
-      Atau = Ae_Atau
-      At   = Au_At
-      Ab   = Ad_Ab
-      Amu  = Ae_Atau
-      Ac   = Au_At
-      As   = Ad_Ab
-      Ae   = Ae_Atau
-      Au   = Au_At
-      Ad   = Ad_Ab
-      M_1  = MSoft_M1
-      M_2  = MSoft_M2
-      M_3  = MSoft_M3
-      Qtau = HMix_Q
-      Qt   = HMix_Q
-      Qb   = HMix_Q
-
-      DO I=1,4
-         DO J=1,4
-            UHiggs(I,J) = CVHMix_UH(I,J)
-         ENDDO
-      ENDDO
-      
-      CALL SetPara_AMW(error,
-     &     MT, MB, MTAU, MW, Zmass,
-     &     DeltaAlfa5had, DeltaAlfaQED,ZWidthexp, 
-     &     TB, MA0, MHp, 
-     &     Mh0, MHH,SAeff,
-     &     MHiggs,              ! Note: if MHiggs is 0, MA0, MHp Mh0 and MHH are used instead 
-     &     UHiggs,              ! Only used if Mh0<0
-     &     M3SL, M3SE, M3SQ, M3SU, M3SD,
-     &     M2SL, M2SE, M2SQ, M2SU, M2SD,
-     &     M1SL, M1SE, M1SQ, M1SU, M1SD,
-     &     MUE, MUEPhase,
-     &     Atau, At, Ab, Amu, Ac, As, Ae, Au, Ad, 
-     &     Atphase, Abphase, Atauphase,
-     &     M_1, M_2, M_3, 
-     &     M2phase, M1phase,
-     &     Qtau, Qt, Qb)
-
-      IF ( error.NE.0 ) THEN
-         PRINT *, '*** Error SetPara_AMW:',error
-         RETURN
-      ENDIF
-
-      goto 1234
-      Print*,'=================================first'
-      print*,'MT, MB, ML, MW, MZ',MT, MB, MTAU, MW, Zmass
-      print*, 'DeltaAlfa5had, DeltaAlfaQED, ZWidthexp',
-     &     DeltaAlfa5had, DeltaAlfaQED, ZWidthexp
-      print*, 'TB, MA0, MHp, Mh0, MHH, SA',TB, MA0, MHp, Mh0, 
-     &     MHH, SAeff
-      print*,'M3SL, M3SE, M3SQ, M3SU, M3SD',M3SL, M3SE, M3SQ, 
-     &     M3SU, M3SD
-      print*, 'M2SL, M2SE, M2SQ, M2SU, M2SD',M2SL, M2SE, M2SQ, 
-     &     M2SU, M2SD
-      print*, 'M1SL, M1SE, M1SQ, M1SU, M1SD',M1SL, M1SE, M1SQ, 
-     &     M1SU, M1SD
-      print*, 'MUE, MUEPhase',MUE, MUEPhase
-      print*,  'Atau, At, Ab, Amu, Ac, As, Ae, Au, Ad',
-     &     Atau, At, Ab, Amu, Ac, As, Ae, Au, Ad
-      print*,'Atphase, Abphase, Atauphase',Atphase, Abphase,Atauphase
-      print*, 'M_1, M_2, M_3',M_1, M_2, M_3
-      print*, 'M2phase, M1phase',M2phase, M1phase
-      print*, 'Qtau, Qt, Qb',Qtau, Qt, Qb
-      Print*,'===================================second'
- 1234 continue
-
-      Call CalcObs_AMW(error,MSSMObs,SMObs)
-      IF (error.EQ.0) THEN
-         
-         PRE(8) = MSSMObs(1)
-         PRE(9) = MSSMObs(27)
-         PRE(10) = MSSMObs(11)
-         IF (ABS(MSSMObs(11)-MSSMObs(12)).GT.10E-4) THEN
-            PRINT*,'Gamma_Z not equal 10E-4', MSSMObs(11),MSSMObs(12)
-         ENDIF   
-         
-         PRE(11) = MSSMObs(22)
-         PRE(12) = MSSMObs(26)
-         PRE(13) = MSSMObs(25)
-         PRE(14) = MSSMObs(34)
-         PRE(15) = MSSMObs(35)
-         PRE(16) = MSSMObs(31)
-         PRE(17) = MSSMObs(32)
-         PRE(18) = MSSMObs(30)
-         PRE(21) = MSSMObs(30)
-         PRE(22) = MSSMObs(33)
-         PRE(23) = MSSMObs(21)
-
-      ELSE
-         DO I=8,18
-            PRE(I)=-1.
-         ENDDO   
-      ENDIF
-      
-      RETURN
-      END
-*/      
-
+//      std::cout << "Zmass" << Zmass << std::endl;
+//      std::cout << "MT   " << MT    << std::endl;
+//      std::cout << "MTAU " << MTAU  << std::endl;
+//      std::cout << "MW   " << MW    << std::endl;
+//      std::cout << "TB   " << TB    << std::endl;
+//      std::cout << "Mh0  " << Mh0   << std::endl;
+//      std::cout << "MHH  " << MHH   << std::endl;
+//      std::cout << "MA0  " << MA0   << std::endl;
+//      std::cout << "MHp  " << MHp   << std::endl;
+//      std::cout << "SAeff" << SAeff << std::endl;
+//      std::cout << "M1SL " << M1SL  << std::endl;
+//      std::cout << "M2SL " << M2SL  << std::endl;
+//      std::cout << "M3SL " << M3SL  << std::endl;
+//      std::cout << "M1SE " << M1SE  << std::endl;
+//      std::cout << "M2SE " << M2SE  << std::endl;
+//      std::cout << "M3SE " << M3SE  << std::endl;
+//      std::cout << "M1SQ " << M1SQ  << std::endl;
+//      std::cout << "M2SQ " << M2SQ  << std::endl;
+//      std::cout << "M3SQ " << M3SQ  << std::endl;
+//      std::cout << "M1SU " << M1SU  << std::endl;
+//      std::cout << "M2SU " << M2SU  << std::endl;
+//      std::cout << "M3SU " << M3SU  << std::endl;
+//      std::cout << "M1SD " << M1SD  << std::endl;
+//      std::cout << "M2SD " << M2SD  << std::endl;
+//      std::cout << "M3SD " << M3SD  << std::endl;
+//      std::cout << "MUE  " << MUE   << std::endl;
+//      std::cout << "Atau " << Atau  << std::endl;
+//      std::cout << "At   " << At    << std::endl;
+//      std::cout << "Ab   " << Ab    << std::endl;
+//      std::cout << "Amu  " << Amu   << std::endl;
+//      std::cout << "Ac   " << Ac    << std::endl;
+//      std::cout << "As   " << As    << std::endl;
+//      std::cout << "Ae   " << Ae    << std::endl;
+//      std::cout << "Au   " << Au    << std::endl;
+//      std::cout << "Ad   " << Ad    << std::endl;
+//      std::cout << "M_1  " << M_1   << std::endl;
+//      std::cout << "M_2  " << M_2   << std::endl;
+//      std::cout << "M_3  " << M_3   << std::endl;
+//      std::cout << "Qtau " << Qtau  << std::endl;
+//      std::cout << "Qt   " << Qt    << std::endl;
+//      std::cout << "Qb   " << Qb    << std::endl;
