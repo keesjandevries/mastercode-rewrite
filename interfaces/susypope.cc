@@ -204,6 +204,13 @@ int main() {
     SLHARead(&error, slhadata, slhaname , abort);
 
     run_susypope(slhadata,&n_slha,&flags,&obs);
+    //C0i = Ccache(cgetr + id)
+    // cgetr
+    // -----
+    // Correct =  5379
+    // Error Causing = 8928284
+    // Getting different memory address styles between the susypope executable
+    // that is tied up against libAMWObs and hte one that uses libmcsoftsusy
 
     std::cout <<  "MW           : " <<  obs.SMObs[0]      << std::endl ;
     std::cout <<  "sin_theta_eff: " <<  obs.sin_theta_eff << std::endl ;
