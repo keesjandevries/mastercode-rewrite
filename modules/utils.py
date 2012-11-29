@@ -12,6 +12,9 @@ from ctypes import Structure, c_double
 class c_complex(Structure):
     _fields_ = [('re', c_double), ('im', c_double)]
 
+def ansi_bold(s):
+    return "\033[1m{0}\033[0m".format(s)
+
 def show_header(header, sub=''):
     total_len = len(header) + len(sub)
     block = "*"*(total_len+4 if not sub else total_len+6)
@@ -25,7 +28,9 @@ def unique_str():
             pid=os.getpid(), time=t_now)
     return ustr
 
-def setup_pipe(pipe_name, reader, writer):
+def setup_pipe(reader, writer, pipe_name=None):
+    if pipe_name is None:
+        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     try:
         os.mkfifo(pipe_name)
     except OSError, e:
@@ -35,17 +40,19 @@ def setup_pipe(pipe_name, reader, writer):
     child_pid = os.fork()
     if child_pid == 0 :
     # child process
-        reader()
+        reader(pipe_name)
         os._exit(child_pid)
     else:
     # parent process
-        output = writer()
+        output = writer(pipe_name)
         os.unlink(pipe_name)
         os.waitpid(child_pid,0)
         return output
 
 
-def pipe_object_to_function(pipe_name, obj, function):
+def pipe_object_to_function(obj, function, pipe_name=None):
+    if pipe_name is None:
+        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     try:
         os.mkfifo(pipe_name)
     except OSError, e:
@@ -61,7 +68,7 @@ def pipe_object_to_function(pipe_name, obj, function):
         os._exit(child_pid)
     else:
     # parent process
-        function_out = function()
+        function_out = function(pipe_name)
         os.unlink(pipe_name)
         os.waitpid(child_pid,0)
         return function_out

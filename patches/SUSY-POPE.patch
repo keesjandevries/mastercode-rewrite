@@ -1,15 +1,22 @@
-diff --git a/Makefile b/Makefile
-index 647ed32..e4d7b31 100755
+diff --git a/predictors/private/SUSY-POPE-0.1/Makefile b/predictors/private/SUSY-POPE-0.1/Makefile
+index e4d7b31..5980fb5 100755
 --- a/predictors/private/SUSY-POPE-0.1/Makefile
 +++ b/predictors/private/SUSY-POPE-0.1/Makefile
-@@ -3,8 +3,8 @@
- .KEEP_STATE:
+@@ -14,7 +14,7 @@ FC=	gfortran
  
- # Choose your compilers here
--FF=     g77
--FC=	g77
-+FF=     gfortran
-+FC=	gfortran
- #FF= 	pgf77
- #FC=	pgf77
+ #FC = g77 
+ CC = gcc
+-CFLAGS = -O2 -fomit-frame-pointer -DHAVE_UNDERSCORE 
++CFLAGS = -fPIC -O2 -fomit-frame-pointer -DHAVE_UNDERSCORE 
+ 
+ .f.o:
+ 	$(FF) $(FFLAGS) -c $< 
+@@ -31,7 +31,7 @@ CFLAGS = -O2 -fomit-frame-pointer -DHAVE_UNDERSCORE
+ #FFLAGS = -g  -O0 -ftree-vectorize  -ffixed-line-length-none 
+ #FFLAGS2 = -g -O0 -ftree-vectorize  -ffixed-line-length-none 
+ OPT    = -O0
+-FFLAGS0 =  -IOneLoop/ff -ffixed-line-length-none -fno-second-underscore
++FFLAGS0 =  -IOneLoop/ff -ffixed-line-length-none -fno-second-underscore -fPIC
+ FFLAGS  = $(FFLAGS0) $(OPT) #f77
+ FFLAGS2 = $(FFLAGS0) -O0 
  

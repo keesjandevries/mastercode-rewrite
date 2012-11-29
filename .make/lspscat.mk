@@ -5,7 +5,7 @@ ifeq ($(wildcard $(src_dir)),)
 	git submodule init
 	git submodule update
 endif
-	$(FC) -c -o $(obj) $(FFLAGS) $(src_dir)/lspscat8o.f
+	$(FC) -fPIC -c -o $(obj) $(FFLAGS) $(src_dir)/lspscat8o.f
 
 lspscat8o:  $(obj)
 

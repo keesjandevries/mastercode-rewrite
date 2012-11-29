@@ -1,19 +1,12 @@
 #! /usr/bin/env python
 
-from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
+from ctypes import cdll, c_int, c_double, byref, Structure
 from collections import OrderedDict
-
-from modules.utils import c_complex
 
 name = "FeynHiggs"
 FHlib = cdll.LoadLibrary('packages/lib/libmcfeynhiggs.so')
 
 nslhadata = FHlib.get_nslhadata()
-
-class SLHAData(Structure):
-    _fields_ = [('carray', c_complex * nslhadata)]
-
-slhadata = SLHAData()
 
 class FeynHiggsOpts(Structure):
     _fields_ = [('mssmpart', c_int), ('fieldren', c_int), ('tanbren', c_int),
@@ -42,14 +35,13 @@ def get_values(output):
         output._fields_])
     return {name: d}
 
-def write_slha(filename):
-    FHlib.write_slha(filename, byref(slhadata))
-
-def run(filename, fhopts=None) :
+def run(slhadata, update=False, fhopts=None) :
+    assert len(slhadata) == nslhadata
     if fhopts is None:
         fhopts = FeynHiggsOpts(mssmpart=4, fieldren=0, tanbren=0, higgsmix=2,
                 p2approx=0, looplevel=2, tl_running_mt=1, tl_bot_resum=1)
 
     FHout = FeynHiggsPrecObs()
-    FHlib.run_feynhiggs(filename, byref(FHout), byref(fhopts), byref(slhadata))
+    FHlib.run_feynhiggs(byref(FHout), byref(fhopts), byref(slhadata.data),
+            update)
     return get_values(FHout)
