@@ -3,8 +3,6 @@
 from ctypes import cdll, c_int, c_double, c_char_p, c_void_p
 from ctypes import create_string_buffer
 
-from interfaces.slhaclass import SLHAfile
-
 name = "SoftSUSY"
 SPlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy.so')
 # set our return types
