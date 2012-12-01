@@ -13,7 +13,7 @@ from interfaces.slhalib import SLHA
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
-predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,
+predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
         susypope]
 
 def run_point(model, **inputs):
