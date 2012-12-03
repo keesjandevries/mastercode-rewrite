@@ -7,4 +7,4 @@ interface_lib=$(LIB_DIR)/libmcbphysics.so
 
 cc=g++
 fc=gfortran
-fflags=-ffixed-line-length-none -I$(INCLUDE_DIR) -m32
+fflags=-ffixed-line-length-none -I$(INCLUDE_DIR)

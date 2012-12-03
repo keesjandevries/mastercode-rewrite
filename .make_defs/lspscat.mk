@@ -7,4 +7,4 @@ interface_lib=$(LIB_DIR)/libmclspscat.so
 
 cc=g++
 FC=gfortran
-FFLAGS=-fPIC -ffixed-line-length-none -m32
+FFLAGS=-fPIC -ffixed-line-length-none
