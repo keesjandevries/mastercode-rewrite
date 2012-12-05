@@ -1,5 +1,7 @@
 import os
+import sys
 import time
+import select
 import urllib2
 import tarfile
 import pickle
@@ -84,6 +86,16 @@ def pipe_object_to_function(obj, function, pipe_name=None):
         os.waitpid(child_pid,0)
         return function_out
 
+def check_pipe(pipe):
+    r, _, _ = select.select([pipe], [], [], 0)
+    return bool(r)
+
+def read_pipe(pipe):
+    out = ''
+    while check_pipe(pipe):
+        out += os.read(pipe, 1024)
+    return out
+
 def make_file_from_pipe(pipe_name):
     pipe_in = open(pipe_name,'r').read()
     new_filename = pipe_name+"_P"
@@ -161,3 +173,29 @@ def pickle_object(obj, filename):
 def open_pickled_file(filename):
     f = open(filename,'r')
     return pickle.load(f)
+
+def get_ctypes_streams(func, args=[], kwargs={}):
+    sys.stdout.flush()
+    pipe_out, pipe_in = os.pipe()
+    stdout = os.dup(1)
+    os.dup2(pipe_in, 1)
+    ret = func(*args, **kwargs)
+    os.dup2(stdout, 1)
+    p_stdout = read_pipe(pipe_out)
+    return (ret, p_stdout)
+
+
+class RedirectStdStreams(object):
+    def __init__(self, stdout=None, stderr=None):
+        self._stdout = stdout or sys.stdout
+        self._stderr = stderr or sys.stderr
+
+    def __enter__(self):
+        self.old_stdout, self.old_stderr = os.dup(1), os.dup(2)
+        self.old_stdout.flush(); self.old_stderr.flush()
+        sys.stdout, sys.stderr = self._stdout, self._stderr
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._stdout.flush(); self._stderr.flush()
+        sys.stdout = self.old_stdout
+        sys.stderr = self.old_stderr
