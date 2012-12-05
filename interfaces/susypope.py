@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 
 from ctypes import cdll, c_int, c_double, byref, Structure
-from collections import OrderedDict
+
+from modules.utils import ctypes_field_values
 
 name = "SUSY-POPE"
 SPlib = cdll.LoadLibrary('packages/lib/libmcsusypope.so')
@@ -49,10 +50,10 @@ class susypopeObs(Structure):
             ('Ab_16', c_double), ('Ac_17', c_double), ('Al', c_double),
             ('Al_fb', c_double), ('sigma_had', c_double)]
 
-
 def run(slhadata, update=False):
     n_slha = susypopeNoneSLHA()
     flags = susypopeFlags()
     spout = susypopeObs()
     SPlib.run_susypope(byref(slhadata.data), byref(n_slha), byref(flags),
             byref(spout))
+    return ctypes_field_values(spout, name)

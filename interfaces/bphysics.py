@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from ctypes import cdll, c_double, byref, Structure
-from collections import OrderedDict
+from modules.utils import ctypes_field_values
 
 name = "BPhysics"
 BPlib = cdll.LoadLibrary('packages/lib/libmcbphysics.so')
@@ -12,12 +12,7 @@ class BPhysicsPrecObs(Structure):
             ('BRbtn', c_double), ('BRKl2', c_double), ('Psll', c_double),
             ('Pdll', c_double), ('Pllsapx', c_double)]
 
-def get_values(output):
-    d = OrderedDict([(attr, getattr(output,attr)) for (attr, a_type) in
-        output._fields_])
-    return {name: d}
-
 def run(slhadata, update=False):
     BPout = BPhysicsPrecObs()
     BPlib.run_bphysics(byref(slhadata.data), byref(BPout))
-    return get_values(BPout)
+    return ctypes_field_values(BPout, name)
