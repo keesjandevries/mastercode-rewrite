@@ -9,7 +9,7 @@ ifeq ($(wildcard $(src_dir)),)
 endif
 	-patch -N -p1 -i $(PATCH_DIR)/SLHALib.patch
 	cd $(src_dir); \
-		./configure --prefix=$(INSTALL_DIR) FC=gfortran;
+		./configure --prefix=$(INSTALL_DIR) FC=$(fc);
 	$(MAKE) -C $(src_dir)
 	$(MAKE) -C $(src_dir) install
 

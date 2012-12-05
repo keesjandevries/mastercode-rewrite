@@ -11,3 +11,4 @@ interface_src=$(INTERFACE_DIR)/slhalib.cc
 interface_lib=$(LIB_DIR)/libmcslhalib.so
 
 cc=g++
+fc=gfortran
