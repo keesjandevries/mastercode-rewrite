@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 
 from ctypes import cdll, c_int, c_double, byref, Structure
-from collections import OrderedDict
+
+from modules.utils import ctypes_field_values
 
 name = "FeynHiggs"
 FHlib = cdll.LoadLibrary('packages/lib/libmcfeynhiggs.so')
@@ -30,11 +31,6 @@ class FeynHiggsPrecObs(Structure):
             ('EDMHg', c_double), ('mh', c_double), ('mH', c_double),
             ('mA', c_double), ('mHpm', c_double)]
 
-def get_values(output):
-    d = OrderedDict([(attr, getattr(output,attr)) for (attr, a_type) in
-        output._fields_])
-    return {name: d}
-
 def run(slhadata, update=False, fhopts=None) :
     assert len(slhadata) == nslhadata
     if fhopts is None:
@@ -44,4 +40,4 @@ def run(slhadata, update=False, fhopts=None) :
     FHout = FeynHiggsPrecObs()
     FHlib.run_feynhiggs(byref(FHout), byref(fhopts), byref(slhadata.data),
             update)
-    return get_values(FHout)
+    return ctypes_field_values(FHout, name)

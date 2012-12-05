@@ -13,7 +13,7 @@ from interfaces.slhalib import SLHA
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
-predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,
+predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
         susypope]
 
 def run_point(model, **inputs):
@@ -36,7 +36,11 @@ def run_point(model, **inputs):
         x = max([len(n) for n,_ in obs.iteritems()])
         f_str = "{{n:{x}}} = {{p}}".format(x=x)
         for name,value in obs.iteritems():
-            print f_str.format(n=name, p=value)
+            if type(value) is not list:
+                print f_str.format(n=name, p=value)
+            else:
+                print f_str.format(n=name, p="[{0},...{1}][{2}]".format(
+                    value[0],value[-1],len(value)))
 
     #print slhafile
 

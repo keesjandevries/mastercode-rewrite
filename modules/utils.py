@@ -8,9 +8,20 @@ import hashlib
 from socket import gethostname
 from time import gmtime, strftime
 from ctypes import Structure, c_double
+from collections import OrderedDict
 
 class c_complex(Structure):
     _fields_ = [('re', c_double), ('im', c_double)]
+
+def ctypes_field_values(obj, title):
+    d = OrderedDict([(attr, getattr(obj,attr)) for (attr, a_type) in
+        obj._fields_])
+    for (attr, a_type) in obj._fields_:
+        if 'ctypes' in str(a_type._type_):
+            c_obj = getattr(obj, attr)
+            d[attr] = c_obj[:]
+    return {title: d}
+
 
 def ansi_bold(s):
     return "\033[1m{0}\033[0m".format(s)

@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
-from collections import OrderedDict
 from modules.utils import c_complex, pipe_object_to_function, unique_str
 
 name = "SLHALib"

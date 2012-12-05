@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 
 from ctypes import cdll, c_double, byref, Structure
-from collections import OrderedDict
+
+from modules.utils import ctypes_field_values
 
 name = "LSP scattering"
 LSPlib = cdll.LoadLibrary('packages/lib/libmclspscat.so')
@@ -16,14 +17,8 @@ class lspscatInputs(Structure):
         self.SigmaPiN = SigmaPiN
         self.SigmaPiNerr = SigmaPiNerr
 
-def get_values(output):
-    d = OrderedDict([(attr, getattr(output,attr)) for (attr, a_type) in
-        output._fields_])
-    return {name: d}
-
 def run(slhadata, update=False):
     LSPout = lspscatObs()
     LSPin = lspscatInputs(50,14)
     LSPlib.run_lspscat(byref(slhadata.data), byref(LSPin), byref(LSPout))
-    return get_values(LSPout)
-
+    return ctypes_field_values(LSPout, name)
