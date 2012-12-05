@@ -1,7 +1,8 @@
 #! /usr/bin/env python2
-import os
+import os, sys, select
 
 from collections import OrderedDict
+from multiprocessing import Process, get_logger
 
 from interfaces import softsusy
 from interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
@@ -11,23 +12,34 @@ from modules import utils
 from interfaces import slhalib as slhamodule
 from interfaces.slhalib import SLHA
 
+DEBUG = False
+
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
 predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
         susypope]
 
 def run_point(model, **inputs):
-    utils.show_header(slha_generator.name)
-    slhafile = SLHA(slha_generator.run(model, **inputs))
+    stdouts = OrderedDict()
+
+    print "Generating SLHA file...",
+    obj, stdout = utils.get_ctypes_streams(func=slha_generator.run,
+            args=[model], kwargs=inputs)
+    stdouts.update({slhamodule.name: stdout})
+    slhafile = SLHA(obj)
+    print "Done"
     #print>>open('slhas/test.slha','w'), slhafile
 
     predictor_output = OrderedDict()
     for predictor in predictors:
-        utils.show_header(predictor.name)
-        predictor_output.update(slhamodule.send_to_predictor(slhafile,
-            predictor, True if predictor in slha_modifiers else False))
-        #if predictor in slha_modifiers:
-            #print>>open('slhas/sp_test.slha','w'), slhafile
+        print "Running {n}...".format(n=predictor.name),
+        is_modifier = predictor in slha_modifiers
+        result, stdout = utils.get_ctypes_streams(
+                func=slhamodule.send_to_predictor,
+                args=[slhafile,predictor, is_modifier])
+        predictor_output.update(result)
+        stdouts.update({predictor.name: stdout})
+        print "Done"
 
     for predictor, obs in predictor_output.iteritems():
         print
