@@ -22,24 +22,24 @@ predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
 def run_point(model, **inputs):
     stdouts = OrderedDict()
 
-    print "Generating SLHA file...",
+    #print "Generating SLHA file...",
     obj, stdout = utils.get_ctypes_streams(func=slha_generator.run,
             args=[model], kwargs=inputs)
     stdouts.update({slhamodule.name: stdout})
     slhafile = SLHA(obj)
-    print "Done"
+    #print "Done"
     #print>>open('slhas/test.slha','w'), slhafile
 
     predictor_output = OrderedDict()
     for predictor in predictors:
-        print "Running {n}...".format(n=predictor.name),
+        #print "Running {n}...".format(n=predictor.name),
         is_modifier = predictor in slha_modifiers
         result, stdout = utils.get_ctypes_streams(
                 func=slhamodule.send_to_predictor,
                 args=[slhafile,predictor, is_modifier])
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
-        print "Done"
+        #print "Done"
 
     for predictor, obs in predictor_output.iteritems():
         print

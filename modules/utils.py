@@ -175,6 +175,7 @@ def open_pickled_file(filename):
     return pickle.load(f)
 
 def get_ctypes_streams(func, args=[], kwargs={}):
+    sys.stdout.write(' \b')
     sys.stdout.flush()
     pipe_out, pipe_in = os.pipe()
     stdout = os.dup(1)
