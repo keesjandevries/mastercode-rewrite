@@ -13,7 +13,7 @@ boundaryConditions = [ 'sugraBcs', 'extendedSugraBcs', 'generalBcs',
 
 models = {
         'cMSSM': {
-            'universals': ['m0', 'm12', 'A0'],
+            'universals': [('m0',1), ('m12',2), ('A0',3)],
             'fixed_vars': ['tanb', 'sgnMu', 'mgut',],
             'boundary_condition': 'sugraBcs',
             'output': 'sugra',
@@ -21,6 +21,21 @@ models = {
                 'gaugeUnification': False,
                 'ewsbBCscale': False,
                 },
+            },
+        'pMSSM': {
+            'universals': [('M_1', 1), ('M_2', 2), ('M_3', 3), ('At', 11),
+                ('Ab', 12), ('Atau', 13), ('mu', 23),('mA', 26), ('meL', 31),
+                ('mmuL', 32),('mtauL', 33),('meR', 34),('mmuR', 35),
+                ('mtauR', 36), ('mqL1', 41), ('mqL2', 42), ('mqL3', 43),
+                ('muR', 44), ('mcR', 45), ('mtR', 46), ('mdR', 47),
+                ('msR', 48), ('mbR', 49)],
+            'fixed_vars': ['tanb', 'sgnMu', 'mgut',],
+            'boundary_condition': 'extendedSugraBcs',
+            'output': 'nonUniversal',
+            'other_vars': {
+                'gaugeUnification': False,
+                'ewsbBCscale': True,
+                }
             }
         }
 
@@ -31,7 +46,7 @@ qed_qcd_funcs = {
 output_opts = {
         'qMax': 91.1875,
         'numPoints': 1,
-        'altEwsb': False,
+        'ewsbBCscale': False,
         }
 
 #SPSLHAlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy_slha.so')
@@ -59,16 +74,16 @@ class MssmSoftsusy(object) :
                 c_void_p(dv_pars._obj), sgnMu, tanb, c_void_p(qq_oneset._obj),
                 gaugeUnification, ewsbBCscale)
     def lesHouchesAccordOutput(self, model, dv_pars, sgnMu, tanb, qMax,
-            numPoints, mgut, altEwsb) :
+            numPoints, mgut, ewsbBCscale) :
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
         model = c_char_p(models[model]['output'])
         SPlib.MssmSoftsusy_lesHouchesAccordOutput( c_void_p(self._obj), model,
                 c_void_p(dv_pars._obj), sgnMu, tanb, qMax, numPoints, mgut,
-                altEwsb )
+                ewsbBCscale )
     def lesHouchesAccordOutputStream( self, model, dv_pars, sgnMu, tanb, qMax,
-            numPoints, mgut, altEwsb ):
+            numPoints, mgut, ewsbBCscale ):
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
@@ -76,7 +91,8 @@ class MssmSoftsusy(object) :
         c_str_buf = create_string_buffer(SLHA_MAX_SIZE)
         sz = SPlib.MssmSoftsusy_lesHouchesAccordOutputStream(
                 c_void_p(self._obj), model, c_void_p(dv_pars._obj), sgnMu,
-                tanb, qMax, numPoints, mgut, altEwsb, c_str_buf, SLHA_MAX_SIZE)
+                tanb, qMax, numPoints, mgut, ewsbBCscale, c_str_buf,
+                SLHA_MAX_SIZE)
         if sz >= SLHA_MAX_SIZE:
             print "*** WARNING: string access has been truncated in softsusy"
         return c_str_buf.value
@@ -105,9 +121,9 @@ class QedQcd(object) :
 
 
 def run(model, **model_inputs):
-    n_universals = len(models[model]['universals'])
+    n_universals = max([pos for (_, pos) in models[model]['universals']])
     inputs = DoubleVector(n_universals)
-    for pos, var_name in enumerate(models[model]['universals']):
+    for (var_name, pos) in models[model]['universals']:
         inputs[pos] = model_inputs[var_name]
 
     fixed = {}
