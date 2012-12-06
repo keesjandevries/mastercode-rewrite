@@ -12,7 +12,7 @@ $(interface_lib): $(interface_obj)
 		$(interface_obj) $(obj) -L$(LIB_DIR) -lSLHA \
 		-lgfortran
 
-$(interface_obj):
+$(interface_obj): $(interface_src)
 	$(cc) -c -fPIC -o $(interface_obj) $(interface_src) \
 		-I$(INCLUDE_DIR)/SLHALib
 
