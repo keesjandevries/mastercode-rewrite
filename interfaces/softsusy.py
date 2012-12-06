@@ -73,6 +73,14 @@ class MssmSoftsusy(object) :
         self._obj = SPlib.MssmSoftsusy_new()
     def useAlternativeEwsb(self):
         SPlib.MssmSoftSusy_useAlternativeEwsb(c_void_p(self._obj))
+    def setSetTbAtMX(self,b_value):
+        SPlib.MssmSoftSusy_setSetTbAtMX(c_void_p(self._obj),b_value)
+    def setMuCond(self,b_value):
+        SPlib.MssmSoftSusy_setMuCond(c_void_p(self._obj),b_value)
+    def setSusyMu(self,b_value):
+        SPlib.MssmSoftSusy_setSusyMu(c_void_p(self._obj),b_value)
+    def setMaCond(self,b_value):
+        SPlib.MssmSoftSusy_setMaCond(c_void_p(self._obj),b_value)
     def lowOrg(self, model, mgut, dv_pars, sgnMu, tanb, qq_oneset,
             gaugeUnification, ewsbBCscale = False ) :
         mgut = c_double(mgut)
@@ -152,7 +160,12 @@ def run(model, **model_inputs):
     for var_name, value in models[model]['other_vars'].iteritems():
         low_args[var_name] =  model_inputs.get(var_name, value)
 
-    r.useAlternativeEwsb()
+#    r.useAlternativeEwsb()
+    
+#    r.setSetTbAtMX(True)
+    r.setMuCond(True)
+    r.setSusyMu(True)
+    r.setMaCond(True)
     r.lowOrg(model=model, dv_pars=inputs, qq_oneset=oneset, **low_args)
 
     output_args = fixed.copy()
