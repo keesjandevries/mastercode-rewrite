@@ -44,9 +44,16 @@ qed_qcd_funcs = {
         }
 
 output_opts = {
-        'qMax': 91.1875,
-        'numPoints': 1,
-        'ewsbBCscale': False,
+        'cMSSM': {
+            'qMax': 91.1875,
+            'numPoints': 1,
+            'ewsbBCscale': False,
+            },
+        'pMSSM':{
+            'qMax': 91.1875,
+            'numPoints': 1,
+            'ewsbBCscale': True ,
+            }
         }
 
 #SPSLHAlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy_slha.so')
@@ -146,10 +153,9 @@ def run(model, **model_inputs):
     r.lowOrg(model=model, dv_pars=inputs, qq_oneset=oneset, **low_args)
 
     output_args = fixed.copy()
-    for var_name, value in output_opts.iteritems():
+    for var_name, value in output_opts[model].iteritems():
         output_args[var_name] = model_inputs.get(var_name, value)
 
     slhafile = r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs,
             **output_args)
-
     return slhafile
