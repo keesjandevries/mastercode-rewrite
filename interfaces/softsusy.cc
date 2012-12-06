@@ -61,10 +61,10 @@ extern "C"
         return new DoubleVector(sz);
     }
     double DoubleVector_display( DoubleVector* dv, int pos )  { 
-        return dv->display(pos+1); 
+        return dv->display(pos);
     }
     void DoubleVector_set( DoubleVector* dv, int pos, double val )  { 
-        (*dv)(pos+1) = val;
+        (*dv)(pos) = val;
     }
 
     /*--------*/
