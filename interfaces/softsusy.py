@@ -50,7 +50,7 @@ output_opts = {
             'ewsbBCscale': False,
             },
         'pMSSM':{
-            'qMax': 91.1875,
+            'qMax': 0.0,
             'numPoints': 1,
             'ewsbBCscale': True ,
             }
@@ -75,12 +75,15 @@ class MssmSoftsusy(object) :
         SPlib.MssmSoftSusy_useAlternativeEwsb(c_void_p(self._obj))
     def setSetTbAtMX(self,b_value):
         SPlib.MssmSoftSusy_setSetTbAtMX(c_void_p(self._obj),b_value)
-    def setMuCond(self,b_value):
-        SPlib.MssmSoftSusy_setMuCond(c_void_p(self._obj),b_value)
-    def setSusyMu(self,b_value):
-        SPlib.MssmSoftSusy_setSusyMu(c_void_p(self._obj),b_value)
-    def setMaCond(self,b_value):
-        SPlib.MssmSoftSusy_setMaCond(c_void_p(self._obj),b_value)
+    def setMuCond(self,value):
+        value=c_double(value)
+        SPlib.MssmSoftSusy_setMuCond(c_void_p(self._obj),value)
+    def setSusyMu(self,value):
+        value=c_double(value)
+        SPlib.MssmSoftSusy_setSusyMu(c_void_p(self._obj),value)
+    def setMaCond(self,value):
+        value=c_double(value)
+        SPlib.MssmSoftSusy_setMaCond(c_void_p(self._obj),value)
     def lowOrg(self, model, mgut, dv_pars, sgnMu, tanb, qq_oneset,
             gaugeUnification, ewsbBCscale = False ) :
         mgut = c_double(mgut)
@@ -114,6 +117,8 @@ class MssmSoftsusy(object) :
             print "*** WARNING: string access has been truncated in softsusy"
         return c_str_buf.value
 
+def softsusy_set_MIXING(mixing):
+    SPlib.softsusy_set_MIXING(mixing)
 
 class QedQcd(object) :
     def __init__(self) :
@@ -160,13 +165,18 @@ def run(model, **model_inputs):
     for var_name, value in models[model]['other_vars'].iteritems():
         low_args[var_name] =  model_inputs.get(var_name, value)
 
-#    r.useAlternativeEwsb()
+    softsusy_set_MIXING(0)
+
+    r.useAlternativeEwsb()
     
 #    r.setSetTbAtMX(True)
-    r.setMuCond(True)
-    r.setSusyMu(True)
-    r.setMaCond(True)
+    print model_inputs['mu']
+    r.setMuCond(model_inputs['mu'])
+    r.setSusyMu(model_inputs['mu'])
+    r.setMaCond(model_inputs['mA'])
+
     r.lowOrg(model=model, dv_pars=inputs, qq_oneset=oneset, **low_args)
+
 
     output_args = fixed.copy()
     for var_name, value in output_opts[model].iteritems():

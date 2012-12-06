@@ -1,6 +1,7 @@
 #include "linalg.h"
 #include "softsusy.h"
 #include "lowe.h"
+#include "def.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -97,6 +98,13 @@ extern "C"
     void QedQcd_set(QedQcd *qq, DoubleVector *dv) {
         qq->set(*dv);
     }
+    
+    /*------------------*/
+    /* Global variables */
+    /*------------------*/
+    void softsusy_set_MIXING(int mixing){
+        softsusy::MIXING=mixing;
+    }
 
     /*--------------*/
     /* MssmSoftsusy */
@@ -111,14 +119,14 @@ extern "C"
     void MssmSoftSusy_useAlternativeEwsb(MssmSoftsusy* mss){
         mss->useAlternativeEwsb();
     }
-    void MssmSoftSusy_setMuCond(MssmSoftsusy* mss, bool b_value){
-        mss->setMuCond(b_value);
+    void MssmSoftSusy_setMuCond(MssmSoftsusy* mss, double value){
+        mss->setMuCond(value);
     }
-    void MssmSoftSusy_setSusyMu(MssmSoftsusy* mss, bool b_value){
-        mss->setSusyMu(b_value);
+    void MssmSoftSusy_setSusyMu(MssmSoftsusy* mss, double value){
+        mss->setSusyMu(value);
     }
-    void MssmSoftSusy_setMaCond(MssmSoftsusy* mss, bool b_value){
-        mss->setMaCond(b_value);
+    void MssmSoftSusy_setMaCond(MssmSoftsusy* mss, double value){
+        mss->setMaCond(value);
     }
 
     void MssmSoftsusy_lowOrg( MssmSoftsusy* mss, int bCond, double mxGuess,
