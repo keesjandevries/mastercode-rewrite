@@ -105,6 +105,22 @@ extern "C"
         return new MssmSoftsusy();
     }
 
+    void MssmSoftSusy_setSetTbAtMX(MssmSoftsusy* mss, bool b_value){
+        mss->setSetTbAtMX(b_value);
+    }
+    void MssmSoftSusy_useAlternativeEwsb(MssmSoftsusy* mss){
+        mss->useAlternativeEwsb();
+    }
+    void MssmSoftSusy_setMuCond(MssmSoftsusy* mss, bool b_value){
+        mss->setMuCond(b_value);
+    }
+    void MssmSoftSusy_setSusyMu(MssmSoftsusy* mss, bool b_value){
+        mss->setSusyMu(b_value);
+    }
+    void MssmSoftSusy_setMaCond(MssmSoftsusy* mss, bool b_value){
+        mss->setMaCond(b_value);
+    }
+
     void MssmSoftsusy_lowOrg( MssmSoftsusy* mss, int bCond, double mxGuess,
             DoubleVector *pars, int sgnMu, double tanb, QedQcd *oneset,
             bool gaugeUnification, bool ewsbBCscale = false) {

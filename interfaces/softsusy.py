@@ -71,6 +71,8 @@ class DoubleVector(object) :
 class MssmSoftsusy(object) :
     def __init__(self) :
         self._obj = SPlib.MssmSoftsusy_new()
+    def useAlternativeEwsb(self):
+        SPlib.MssmSoftSusy_useAlternativeEwsb(c_void_p(self._obj))
     def lowOrg(self, model, mgut, dv_pars, sgnMu, tanb, qq_oneset,
             gaugeUnification, ewsbBCscale = False ) :
         mgut = c_double(mgut)
@@ -150,6 +152,7 @@ def run(model, **model_inputs):
     for var_name, value in models[model]['other_vars'].iteritems():
         low_args[var_name] =  model_inputs.get(var_name, value)
 
+    r.useAlternativeEwsb()
     r.lowOrg(model=model, dv_pars=inputs, qq_oneset=oneset, **low_args)
 
     output_args = fixed.copy()
