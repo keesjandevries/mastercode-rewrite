@@ -1,6 +1,7 @@
 #include "linalg.h"
 #include "softsusy.h"
 #include "lowe.h"
+#include "def.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -89,13 +90,20 @@ extern "C"
         qq->setMass(mno,m);
     } 
     void QedQcd_setAlpha(QedQcd *qq, leGauge ai, double ap) {
-        //  typedef enum {mUp=1, mCharm, mTop, mDown, mStrange, mBottom, mElectron,
-        //            mMuon, mTau} mass;
-        //  typedef enum {ALPHA=1, ALPHAS} leGauge;
+        //  typedef enum {mUp=1, mCharm, mTop, mDown, mStrange, mBottom,
+        //  mElectron, mMuon, mTau} mass; typedef enum {ALPHA=1, ALPHAS}
+        //  leGauge;
         qq->setAlpha(ai, ap);
     } 
     void QedQcd_set(QedQcd *qq, DoubleVector *dv) {
         qq->set(*dv);
+    }
+    
+    /*------------------*/
+    /* Global variables */
+    /*------------------*/
+    void set_global_MIXING(int mixing){
+        softsusy::MIXING=mixing;
     }
 
     /*--------------*/
@@ -103,6 +111,22 @@ extern "C"
     /*--------------*/
     MssmSoftsusy* MssmSoftsusy_new() {
         return new MssmSoftsusy();
+    }
+
+    void MssmSoftSusy_setSetTbAtMX(MssmSoftsusy* mss, bool b_value){
+        mss->setSetTbAtMX(b_value);
+    }
+    void MssmSoftSusy_useAlternativeEwsb(MssmSoftsusy* mss){
+        mss->useAlternativeEwsb();
+    }
+    void MssmSoftSusy_setMuCond(MssmSoftsusy* mss, double value){
+        mss->setMuCond(value);
+    }
+    void MssmSoftSusy_setSusyMu(MssmSoftsusy* mss, double value){
+        mss->setSusyMu(value);
+    }
+    void MssmSoftSusy_setMaCond(MssmSoftsusy* mss, double value){
+        mss->setMaCond(value);
     }
 
     void MssmSoftsusy_lowOrg( MssmSoftsusy* mss, int bCond, double mxGuess,

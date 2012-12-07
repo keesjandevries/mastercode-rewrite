@@ -21,6 +21,9 @@ models = {
                 'gaugeUnification': False,
                 'ewsbBCscale': False,
                 },
+            'other_setup':  {
+                'setMixing': [0],
+                }
             },
         'pMSSM': {
             'universals': [('M_1', 1), ('M_2', 2), ('M_3', 3), ('At', 11),
@@ -35,6 +38,10 @@ models = {
             'other_vars': {
                 'gaugeUnification': False,
                 'ewsbBCscale': True,
+                },
+            'other_setup':  {
+                #'setSetTbAtMX': [True],
+                'setMixing': [0],
                 }
             }
         }
@@ -44,9 +51,30 @@ qed_qcd_funcs = {
         }
 
 output_opts = {
-        'qMax': 91.1875,
-        'numPoints': 1,
-        'ewsbBCscale': False,
+        'cMSSM': {
+            'qMax': 91.1875,
+            'numPoints': 1,
+            'ewsbBCscale': False,
+            },
+        'pMSSM':{
+            'qMax': 0.0,
+            'numPoints': 1,
+            'ewsbBCscale': True ,
+            }
+        }
+
+def setup_mu(r, mu):
+    r.useAlternativeEwsb()
+    r.setMuCond(mu)
+    r.setSusyMu(mu)
+
+def setup_ma(r, mA):
+    r.useAlternativeEwsb()
+    r.setMaCond(mA)
+
+setup_functions = { # function( MssmSoftSusy, Value )
+        'mA': setup_ma,
+        'mu': setup_mu,
         }
 
 #SPSLHAlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy_slha.so')
@@ -64,6 +92,19 @@ class DoubleVector(object) :
 class MssmSoftsusy(object) :
     def __init__(self) :
         self._obj = SPlib.MssmSoftsusy_new()
+    def useAlternativeEwsb(self):
+        SPlib.MssmSoftSusy_useAlternativeEwsb(c_void_p(self._obj))
+    def setSetTbAtMX(self,b_value):
+        SPlib.MssmSoftSusy_setSetTbAtMX(c_void_p(self._obj),b_value)
+    def setMuCond(self,value):
+        value=c_double(value)
+        SPlib.MssmSoftSusy_setMuCond(c_void_p(self._obj),value)
+    def setSusyMu(self,value):
+        value=c_double(value)
+        SPlib.MssmSoftSusy_setSusyMu(c_void_p(self._obj),value)
+    def setMaCond(self,value):
+        value=c_double(value)
+        SPlib.MssmSoftSusy_setMaCond(c_void_p(self._obj),value)
     def lowOrg(self, model, mgut, dv_pars, sgnMu, tanb, qq_oneset,
             gaugeUnification, ewsbBCscale = False ) :
         mgut = c_double(mgut)
@@ -96,7 +137,9 @@ class MssmSoftsusy(object) :
         if sz >= SLHA_MAX_SIZE:
             print "*** WARNING: string access has been truncated in softsusy"
         return c_str_buf.value
-
+    def setMixing(self, mixing):
+        # this actually sets a global, but we dont like globals
+        SPlib.set_global_MIXING(mixing)
 
 class QedQcd(object) :
     def __init__(self) :
@@ -143,13 +186,20 @@ def run(model, **model_inputs):
     for var_name, value in models[model]['other_vars'].iteritems():
         low_args[var_name] =  model_inputs.get(var_name, value)
 
+    for var in model_inputs:
+        if var in setup_functions:
+            setup_functions[var](r, model_inputs[var])
+
+    for func_name, args in models[model].get('other_setup',{}).iteritems():
+        getattr(r, func_name)(*args)
+
     r.lowOrg(model=model, dv_pars=inputs, qq_oneset=oneset, **low_args)
 
+
     output_args = fixed.copy()
-    for var_name, value in output_opts.iteritems():
+    for var_name, value in output_opts[model].iteritems():
         output_args[var_name] = model_inputs.get(var_name, value)
 
     slhafile = r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs,
             **output_args)
-
     return slhafile
