@@ -90,9 +90,9 @@ extern "C"
         qq->setMass(mno,m);
     } 
     void QedQcd_setAlpha(QedQcd *qq, leGauge ai, double ap) {
-        //  typedef enum {mUp=1, mCharm, mTop, mDown, mStrange, mBottom, mElectron,
-        //            mMuon, mTau} mass;
-        //  typedef enum {ALPHA=1, ALPHAS} leGauge;
+        //  typedef enum {mUp=1, mCharm, mTop, mDown, mStrange, mBottom,
+        //  mElectron, mMuon, mTau} mass; typedef enum {ALPHA=1, ALPHAS}
+        //  leGauge;
         qq->setAlpha(ai, ap);
     } 
     void QedQcd_set(QedQcd *qq, DoubleVector *dv) {
@@ -102,7 +102,7 @@ extern "C"
     /*------------------*/
     /* Global variables */
     /*------------------*/
-    void softsusy_set_MIXING(int mixing){
+    void set_global_MIXING(int mixing){
         softsusy::MIXING=mixing;
     }
 
