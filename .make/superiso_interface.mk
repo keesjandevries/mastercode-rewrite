@@ -11,7 +11,7 @@ $(interface_lib): $(interface_obj)
 		-Wl,-rpath,$(src_dir) \
 		$(interface_obj) -L$(lib_dir) -l$(lib_short)
 
-$(interface_obj):
+$(interface_obj): $(interface_src)
 	$(cc) -c -fPIC -o $(interface_obj) $(interface_src) \
 		-I$(src_dir)/src
 

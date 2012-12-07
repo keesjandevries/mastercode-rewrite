@@ -19,7 +19,7 @@ $(interface_lib): $(interface_obj)
 		$(src_dir)/CalcHEP_src/lib/serv.a \
 		$(src_dir)/CalcHEP_src/lib/sqme_aux.so \
 		-lX11 -ldl 
-$(interface_obj):
+$(interface_obj): $(interface_src)
 	$(cc) -c -fPIC -o $(interface_obj) $(interface_src) \
 		-I$(src_dir)
 
