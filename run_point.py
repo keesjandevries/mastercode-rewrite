@@ -12,7 +12,7 @@ from modules import utils
 from interfaces import slhalib as slhamodule
 from interfaces.slhalib import SLHA
 
-DEBUG = False
+DEBUG = True
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
@@ -27,6 +27,7 @@ def run_point(model, **inputs):
             args=[model], kwargs=inputs)
     stdouts.update({slhamodule.name: stdout})
     slhafile = SLHA(obj)
+    if DEBUG: print obj
     #print "Done"
     #print>>open('slhas/test.slha','w'), slhafile
 
@@ -39,6 +40,13 @@ def run_point(model, **inputs):
                 args=[slhafile,predictor, is_modifier])
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
+    if DEBUG:
+        for name, stdout in stdouts.iteritems():
+            print "="*80
+            print utils.ansi_bold(name)
+            print "-"*80
+            print stdout
+            print "="*80
         #print "Done"
 
     for predictor, obs in predictor_output.iteritems():
