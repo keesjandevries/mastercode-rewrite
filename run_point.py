@@ -1,5 +1,5 @@
 #! /usr/bin/env python2
-import os, sys, select
+import os, sys, select, argparse
 
 from collections import OrderedDict
 from multiprocessing import Process, get_logger
@@ -12,12 +12,19 @@ from modules import utils
 from interfaces import slhalib as slhamodule
 from interfaces.slhalib import SLHA
 
-DEBUG = True
-
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
 predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
         susypope]
+
+DEBUG = False
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--debug', dest='debug', action='store_true',
+            help='Print debugging information (e.g. stdout from predictors')
+
+    return parser.parse_args()
 
 def run_point(model, **inputs):
     stdouts = OrderedDict()
@@ -71,6 +78,9 @@ def run_point(model, **inputs):
 
 
 if __name__=="__main__" :
+    args = parse_args()
+    DEBUG = args.debug
+
     model = 'pMSSM'
     input_vars = {
             'cMSSM': {
