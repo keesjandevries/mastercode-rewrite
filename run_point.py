@@ -23,6 +23,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--debug', dest='debug', action='store_true',
             help='Print debugging information (e.g. stdout from predictors')
+    parser.add_argument('--model', '-m', dest='model', action='store', type=str,
+            default='cMSSM', help='override model')
 
     return parser.parse_args()
 
@@ -81,7 +83,7 @@ if __name__=="__main__" :
     args = parse_args()
     DEBUG = args.debug
 
-    model = 'pMSSM'
+    model = args.model
     input_vars = {
             'cMSSM': {
                 'm0': 100, 'm12': 200, 'A0': 0, 'tanb': 10., 'sgnMu': 1
