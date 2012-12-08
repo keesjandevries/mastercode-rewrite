@@ -19,7 +19,7 @@ utils=slhalib
 predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
 interfaces=feynhiggs_interface softsusy_interface micromegas_interface \
 		   superiso_interface bphysics_interface lspscat_interface \
-		   slhalib_interface
+		   slhalib_interface susypope_interface
 
 targets=$(predictors) $(utils) $(interfaces)
 
