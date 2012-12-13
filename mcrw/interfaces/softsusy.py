@@ -135,7 +135,7 @@ class MssmSoftsusy(object) :
                 tanb, qMax, numPoints, mgut, ewsbBCscale, c_str_buf,
                 SLHA_MAX_SIZE)
         if sz >= SLHA_MAX_SIZE:
-            print "*** WARNING: string access has been truncated in softsusy"
+            print("*** WARNING: string access has been truncated in softsusy")
         return c_str_buf.value
     def setMixing(self, mixing):
         # this actually sets a global, but we dont like globals

@@ -31,9 +31,9 @@ def ansi_bold(s):
 def show_header(header, sub=''):
     total_len = len(header) + len(sub)
     block = "*"*(total_len+4 if not sub else total_len+6)
-    print block
-    print "* {h}{s} *".format(h=header, s=(': '+sub if sub else ''))
-    print block
+    print(block)
+    print("* {h}{s} *".format(h=header, s=(': '+sub if sub else '')))
+    print(block)
 
 def unique_str():
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
@@ -46,7 +46,7 @@ def setup_pipe(reader, writer, pipe_name=None):
         pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     try:
         os.mkfifo(pipe_name)
-    except OSError, e:
+    except OSError as e:
         print("Failed to create FIFO: %s" % e)
         exit()
 
@@ -99,7 +99,8 @@ def read_pipe(pipe):
 def make_file_from_pipe(pipe_name):
     pipe_in = open(pipe_name,'r').read()
     new_filename = pipe_name+"_P"
-    print>>open(new_filename,'w'), pipe_in
+    with open(new_filename,'w') as f:
+        f.write(pipe_in)
     return new_filename
 
 def rm(filename):
@@ -107,7 +108,7 @@ def rm(filename):
         with open(filename) as f: pass
         os.remove(filename)
     except IOError as e:
-        print "rm: File {0} does not exist"
+        print("rm: File {0} does not exist")
 
 def fetch_url(target, local_path):
     success = False
@@ -119,9 +120,9 @@ def fetch_url(target, local_path):
         local_file.close()
         print("  --> Done")
         success = True
-    except urllib2.HTTPError, e:
+    except urllib2.HTTPError as e:
         print("HTTP Error:", e.code, target)
-    except urllib2.URLError, e:
+    except urllib2.URLError as e:
         print("URL Error:", e.reason, target)
     return success
 
