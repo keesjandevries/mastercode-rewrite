@@ -1,13 +1,14 @@
 .PHONY: all clean
 
-INSTALL_DIR=$(PWD)/packages
-LIB_DIR=$(INSTALL_DIR)/lib
-PATCH_DIR=$(PWD)/patches
-DEF_DIR=$(PWD)/.make_defs
+MCRW_DIR=$(PWD)/mcrw
+PATCH_DIR=$(MCRW_DIR)/.patches
+DEF_DIR=$(MCRW_DIR)/.make_defs
+UTIL_DIR=$(MCRW_DIR)/utils
+INTERFACE_DIR=$(MCRW_DIR)/interfaces
 PREDICTOR_DIR=$(PWD)/predictors
 TAR_DIR=$(PREDICTOR_DIR)/.tars
-UTIL_DIR=$(PWD)/utils
-INTERFACE_DIR=$(PWD)/interfaces
+INSTALL_DIR=$(PWD)/packages
+LIB_DIR=$(INSTALL_DIR)/lib
 INCLUDE_DIR=$(INSTALL_DIR)/include
 
 MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
@@ -32,13 +33,13 @@ all:
 
 clean:
 	for t in $(targets); do \
-		yes | make -f .make/$$t.mk $@ $(MARGS) ; \
+		yes | make -f mcrw/.make/$$t.mk $@ $(MARGS) ; \
 	done
 
 tarclean:
 	for t in $(targets); do \
-		make -f .make/$$t.mk $@ $(MARGS) ; \
+		make -f mcrw/.make/$$t.mk $@ $(MARGS) ; \
 	done
 
 %:
-	make -f .make/$@.mk $(MARGS) ; \
+	make -f mcrw/.make/$@.mk $(MARGS) ; \
