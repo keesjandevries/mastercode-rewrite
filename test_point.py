@@ -15,12 +15,14 @@ def parse_args():
 
 if __name__=="__main__" :
     args = parse_args()
-    DEBUG = args.debug
+    point.DEBUG = args.debug
 
     model = args.model
     input_vars = {
             'cMSSM': {
                 'm0': 100, 'm12': 200, 'A0': 0, 'tanb': 10., 'sgnMu': 1
+                #'m0': 389.50582, 'm12': 853.0322, 'A0': 2664.7922,
+                #'tanb': 14.59729, 'sgnMu': 1
                 },
             'pMSSM': { 'tanb' : 10., 'sgnMu': 1, 'M_1': 3.00e+02,
                 'M_2': 2.50e+03, 'M_3': 3.60e+02, 'At': 0.00e+00,
