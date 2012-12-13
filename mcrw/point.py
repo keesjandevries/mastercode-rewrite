@@ -29,8 +29,8 @@ def run_point(model, **inputs):
     slhafile = SLHA(obj)
     if DEBUG: print(obj)
     #print("Done")
-    #with open('slhas/test.slha','w') as f:
-    #   f.write(slhafile)
+    #with open('slhas/jad.slha','w') as f:
+       #f.write(obj)
 
     predictor_output = OrderedDict()
     for predictor in predictors:
