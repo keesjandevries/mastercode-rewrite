@@ -6,7 +6,7 @@ softsusy_interface: $(interface_lib)
 
 interface_obj=$(interface_src:.cc=.o)
 
-$(interface_lib): $(interface_obj)
+$(interface_lib): $(interface_obj) $(lib)
 	$(cc) -shared -Wl,-soname,libmcsoftsusy.so -o $(interface_lib) \
 		-Wl,-rpath,$(LIB_DIR) \
 		$(interface_obj) -L$(lib_dir) -l$(lib_short)
