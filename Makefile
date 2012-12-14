@@ -3,11 +3,11 @@
 MCRW_DIR=$(PWD)/mcrw
 PATCH_DIR=$(MCRW_DIR)/.patches
 DEF_DIR=$(MCRW_DIR)/.make_defs
-UTIL_DIR=$(MCRW_DIR)/utils
 INTERFACE_DIR=$(MCRW_DIR)/interfaces
+INSTALL_DIR=$(PWD)/packages
+UTIL_DIR=$(PWD)/utils
 PREDICTOR_DIR=$(PWD)/predictors
 TAR_DIR=$(PREDICTOR_DIR)/.tars
-INSTALL_DIR=$(PWD)/packages
 LIB_DIR=$(INSTALL_DIR)/lib
 INCLUDE_DIR=$(INSTALL_DIR)/include
 
