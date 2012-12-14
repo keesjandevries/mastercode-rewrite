@@ -70,5 +70,3 @@ def run_point(model, **inputs):
     #utils.pickle_object(slhafile, 'slhas/testPoint_output.pickled')
     #unpickled = utils.open_pickled_file('slhas/testPoint_output.pickled')
     #print unpickled
-
-
