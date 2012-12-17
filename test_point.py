@@ -2,7 +2,7 @@
 import os, sys, select, argparse
 
 #from mcrw import point
-import mcrw.point
+from mcrw import point
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -39,7 +39,7 @@ if __name__=="__main__" :
             'mt': 173.2,
             'mgut': {'cMSSM': 2e16, 'pMSSM': 1.0e3}[model]
             }
-    m_vars = dict(input_vars.items() + other_vars.items())
+    m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
     slha_file, observations = point.run_point(model=model, **m_vars)
 
     for name,values in slha_file.items():
