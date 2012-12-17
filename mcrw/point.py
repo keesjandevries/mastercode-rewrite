@@ -35,6 +35,8 @@ def run_point(model, **inputs):
                 args=[slhafile,predictor, is_modifier])
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
+        if DEBUG:
+            print(stdout)
 
     if DEBUG:
         for name, stdout in stdouts.items():
