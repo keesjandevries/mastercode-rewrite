@@ -42,7 +42,5 @@ if __name__=="__main__" :
     m_vars = dict(input_vars.items() + other_vars.items())
     slha_file, observations = point.run_point(model=model, **m_vars)
 
-    for block,data in slha_file.items():
-        print(block)
-        for indices, (values, comment) in data.items():
-            print(indices, values, comment)
+    for name,values in slha_file.items():
+        print(name, values)
