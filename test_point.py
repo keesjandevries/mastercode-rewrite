@@ -1,8 +1,8 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python
 import os, sys, select, argparse
 
-from mcrw import point
-
+#from mcrw import point
+import mcrw.point
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
