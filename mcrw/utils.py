@@ -24,6 +24,13 @@ def ctypes_field_values(obj, title):
             d[attr] = c_obj[:]
     return {title: d}
 
+def is_int(s):
+    try:
+        i = int(s)
+    except ValueError:
+        return False
+    else:
+        return True
 
 def ansi_bold(s):
     return "\033[1m{0}\033[0m".format(s)
