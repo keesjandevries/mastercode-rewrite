@@ -40,4 +40,9 @@ if __name__=="__main__" :
             'mgut': {'cMSSM': 2e16, 'pMSSM': 1.0e3}[model]
             }
     m_vars = dict(input_vars.items() + other_vars.items())
-    point.run_point(model=model, **m_vars)
+    slha_file, observations = point.run_point(model=model, **m_vars)
+
+    for block,data in slha_file.items():
+        print(block)
+        for indices, (values, comment) in data.items():
+            print(indices, values, comment)
