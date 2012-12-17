@@ -75,7 +75,7 @@ def pipe_object_to_function(obj, function, pipe_name=None):
         pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     try:
         os.mkfifo(pipe_name)
-    except OSError, e:
+    except OSError as e:
         print("Failed to create FIFO: %s" % e)
         exit()
 
@@ -157,7 +157,7 @@ def extract_tarfile(filename, local_dir):
             print("  --> Done")
         tf.close()
     else:
-        raise IOError, "{f} is not a tar file".format(f=filename)
+        raise IOError("{f} is not a tar file".format(f=filename))
     return output_dir
 
 def find_nth(haystack, needle, n):
