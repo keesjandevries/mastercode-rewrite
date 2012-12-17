@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 
+from collections import OrderedDict
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
-from mcrw.utils import c_complex, pipe_object_to_function, unique_str
+
+from mcrw.utils import c_complex, pipe_object_to_function, unique_str, is_int
 
 name = "SLHALib"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')
@@ -38,6 +40,28 @@ class SLHA(object):
     def read(self, filename):
         self.data = SLHAData()
         SLlib.read_slha(filename, byref(self.data))
+
+    def process(self):
+        s = str(self)
+        data = OrderedDict()
+        block_name = None
+        for line in s.split('\n'):
+            if line.startswith('B'):
+                # is a block
+                block_name = line.split()[1]
+                data[block_name] = OrderedDict()
+            else:
+                items = line.split()
+                if len(items):
+                    first_non_index = next(x for x in items if not is_int(x))
+                    indices_end = items.index(first_non_index)
+                    comment_pos = items.index('#') if '#' in items else 0
+                    indices = tuple([int(x) for x in items[:indices_end]])
+                    values = tuple([float(x) for x in
+                            items[indices_end:comment_pos]])
+                    comment = ' '.join(items[comment_pos:]).lstrip('#')
+                    data[block_name][indices] = (values, comment)
+        return data
 
 def send_to_predictor(slhadata, predictor, update=False):
     return predictor.run(slhadata, update)
