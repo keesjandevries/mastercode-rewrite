@@ -119,7 +119,7 @@ class MssmSoftsusy(object) :
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
-        model = c_char_p(models[model]['output'])
+        model = c_char_p(models[model]['output'].encode('ascii'))
         SPlib.MssmSoftsusy_lesHouchesAccordOutput( c_void_p(self._obj), model,
                 c_void_p(dv_pars._obj), sgnMu, tanb, qMax, numPoints, mgut,
                 ewsbBCscale )
@@ -128,7 +128,7 @@ class MssmSoftsusy(object) :
         tanb = c_double(tanb)
         qMax = c_double(qMax)
         mgut = c_double(mgut)
-        model = c_char_p(models[model]['output'])
+        model = c_char_p(models[model]['output'].encode('ascii'))
         c_str_buf = create_string_buffer(SLHA_MAX_SIZE)
         sz = SPlib.MssmSoftsusy_lesHouchesAccordOutputStream(
                 c_void_p(self._obj), model, c_void_p(dv_pars._obj), sgnMu,
@@ -176,28 +176,28 @@ def run(model, **model_inputs):
     r = MssmSoftsusy()
 
     oneset = QedQcd()
-    for var, func_name in qed_qcd_funcs.iteritems():
+    for var, func_name in qed_qcd_funcs.items():
         # for example
         #oneset.setPoleMt(mt)
         if var in model_inputs and var in models[model]:
             getattr(oneset,func_name)(model_inputs[var])
 
     low_args = fixed.copy()
-    for var_name, value in models[model]['other_vars'].iteritems():
+    for var_name, value in models[model]['other_vars'].items():
         low_args[var_name] =  model_inputs.get(var_name, value)
 
     for var in model_inputs:
         if var in setup_functions:
             setup_functions[var](r, model_inputs[var])
 
-    for func_name, args in models[model].get('other_setup',{}).iteritems():
+    for func_name, args in models[model].get('other_setup',{}).items():
         getattr(r, func_name)(*args)
 
     r.lowOrg(model=model, dv_pars=inputs, qq_oneset=oneset, **low_args)
 
 
     output_args = fixed.copy()
-    for var_name, value in output_opts[model].iteritems():
+    for var_name, value in output_opts[model].items():
         output_args[var_name] = model_inputs.get(var_name, value)
 
     slhafile = r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs,
