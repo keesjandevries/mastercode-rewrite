@@ -2,7 +2,8 @@ import os
 import sys
 import time
 import select
-import urllib2
+import urllib.request
+import urllib.error
 import tarfile
 import pickle
 import hashlib
@@ -120,16 +121,16 @@ def rm(filename):
 def fetch_url(target, local_path):
     success = False
     try:
-        f = urllib2.urlopen(target)
+        f = urllib.request.urlopen(target)
         print("Downloading {0} ...".format(target))
         local_file = open(local_path,'wb')
         local_file.write(f.read())
         local_file.close()
         print("  --> Done")
         success = True
-    except urllib2.HTTPError as e:
+    except urllib.error.HTTPError as e:
         print("HTTP Error:", e.code, target)
-    except urllib2.URLError as e:
+    except urllib.error.URLError as e:
         print("URL Error:", e.reason, target)
     return success
 
