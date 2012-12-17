@@ -1,15 +1,15 @@
 from collections import OrderedDict
 
 # slha represntation
-from interfaces import slhalib as slhamodule
-from interfaces.slhalib import SLHA
+from mcrw.interfaces import slhalib as slhamodule
+from mcrw.interfaces.slhalib import SLHA
 
 # spectrum calculator
-from interfaces import softsusy
-from interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
-from interfaces import susypope
+from mcrw.interfaces import softsusy
+from mcrw.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
+from mcrw.interfaces import susypope
 
-import utils
+from mcrw import utils
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
@@ -37,19 +37,19 @@ def run_point(model, **inputs):
         stdouts.update({predictor.name: stdout})
 
     if DEBUG:
-        for name, stdout in stdouts.iteritems():
+        for name, stdout in stdouts.items():
             print("="*80)
             print(utils.ansi_bold(name))
             print("-"*80)
             print(stdout)
             print("="*80)
-        for predictor, obs in predictor_output.iteritems():
+        for predictor, obs in predictor_output.items():
             print('')
             print(utils.ansi_bold(predictor))
             print("="*len(predictor))
-            x = max([len(n) for n,_ in obs.iteritems()])
+            x = max([len(n) for n,_ in obs.items()])
             f_str = "{{n:{x}}} = {{p}}".format(x=x)
-            for name,value in obs.iteritems():
+            for name,value in obs.items():
                 if type(value) is not list:
                     print(f_str.format(n=name, p=value))
                 else:
