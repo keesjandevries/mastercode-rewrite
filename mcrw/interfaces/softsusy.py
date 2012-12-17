@@ -202,4 +202,4 @@ def run(model, **model_inputs):
 
     slhafile = r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs,
             **output_args)
-    return slhafile
+    return slhafile.decode('utf-8')
