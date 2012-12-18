@@ -40,18 +40,16 @@ if __name__=="__main__" :
     m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
     slha_file, observations = point.run_point(model=model, **m_vars)
 
-    #for name,values in slha_file.items():
-        #print(name, values)
-    for predictor, obs in observations.items():
-        print('')
-        print(ansi_bold(predictor))
-        print("="*len(predictor))
-        x = max([len(n) for n,_ in obs.items()])
-        f_str = "{{n:{x}}} = {{p}}".format(x=x)
-        for name,value in obs.items():
-            if type(value) is not list:
-                print(f_str.format(n=name, p=value))
-            else:
-                print(f_str.format(n=name, p="[{0}, ... , {1}][{2}]".format(
-                    value[0],value[-1],len(value))))
-
+    for objs in (slha_file, observations):
+        for predictor, obs in objs.items():
+            print('')
+            print(ansi_bold(predictor))
+            print("="*len(predictor))
+            x = max([len(n) for n,_ in obs.items()])
+            f_str = "{{n:{x}}} = {{p}}".format(x=x)
+            for name,value in obs.items():
+                if type(value) is not list:
+                    print(f_str.format(n=name, p=value))
+                else:
+                    print(f_str.format(n=name, p="[{0}, ... , {1}][{2}]".format(
+                        value[0],value[-1],len(value))))
