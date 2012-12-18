@@ -2,7 +2,7 @@ include $(DEF_DIR)/bphysics.mk
 
 .PHONY: clean all
 
-bphysics_interface: $(interface_lib)
+bphysics_interface: $(interface_lib) $(interface_src)
 
 interface_obj=$(interface_src:.cc=.o)
 

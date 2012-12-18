@@ -2,7 +2,7 @@ include $(DEF_DIR)/feynhiggs.mk
 
 .PHONY: clean all
 
-feynhiggs_interface: $(interface_lib)
+feynhiggs_interface: $(interface_lib) $(interface_src)
 
 interface_obj=$(interface_src:.cc=.o)
 

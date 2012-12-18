@@ -2,7 +2,7 @@ include $(DEF_DIR)/micromegas.mk
 
 .PHONY: clean all
 
-micromegas_interface: $(interface_lib)
+micromegas_interface: $(interface_lib) $(interface_src)
 
 interface_obj=$(interface_src:.cc=.o)
 

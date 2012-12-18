@@ -2,7 +2,7 @@ include $(DEF_DIR)/superiso.mk
 
 .PHONY: clean all
 
-superiso_interface: $(interface_lib)
+superiso_interface: $(interface_lib) $(interface_src)
 
 interface_obj=$(interface_src:.cc=.o)
 

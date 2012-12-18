@@ -2,7 +2,7 @@ include $(DEF_DIR)/susypope.mk
 
 .PHONY: clean all
 
-susypope_interface: $(interface_lib)
+susypope_interface: $(interface_lib) $(interface_src)
 
 interface_obj=$(interface_src:.cc=.o)
 

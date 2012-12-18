@@ -2,7 +2,7 @@ include $(DEF_DIR)/lspscat.mk
 
 .PHONY: clean all
 
-lspscat_interface: $(interface_lib)
+lspscat_interface: $(interface_lib) $(interface_src)
 
 interface_obj=$(interface_src:.cc=.o)
 
