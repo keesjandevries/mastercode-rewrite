@@ -47,10 +47,10 @@ class SLHA(object):
         block_name = None
         for line in s.split('\n'):
             if line.startswith('B'):
-                pass
                 # is a block
-                #block_name = line.split()[1]
-                #data[block_name] = OrderedDict()
+                block_name = line.split()[1]
+                data[block_name] = OrderedDict()
+                #pass
             else:
                 items = line.split()
                 if len(items):
@@ -64,7 +64,7 @@ class SLHA(object):
                         values = values[0]
                     comment = ' '.join(items[comment_pos:]).lstrip('#').lstrip()
                     #data[block_name][indices] = (values, comment)
-                    data[comment] = values
+                    data[block_name][comment] = values
         return data
 
 def send_to_predictor(slhadata, predictor, update=False):
