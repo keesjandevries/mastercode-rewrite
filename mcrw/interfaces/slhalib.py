@@ -35,11 +35,11 @@ class SLHA(object):
 # work with writing to pipes
 
     def write(self, filename):
-        SLlib.write_slha(filename, byref(self.data))
+        SLlib.write_slha(filename.encode('ascii'), byref(self.data))
 
     def read(self, filename):
         self.data = SLHAData()
-        SLlib.read_slha(filename, byref(self.data))
+        SLlib.read_slha(filename.encode('ascii'), byref(self.data))
 
     def process(self):
         s = str(self)
