@@ -29,14 +29,13 @@ def run_point(model, **inputs):
 
     predictor_output = OrderedDict()
     for predictor in predictors:
+        print(slhafile)
         is_modifier = predictor in slha_modifiers
         result, stdout = utils.get_ctypes_streams(
                 func=slhamodule.send_to_predictor,
                 args=[slhafile,predictor, is_modifier])
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
-        if DEBUG:
-            print(stdout)
 
     if DEBUG:
         for name, stdout in stdouts.items():

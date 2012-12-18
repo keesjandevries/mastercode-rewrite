@@ -83,8 +83,8 @@ def pipe_object_to_function(obj, function, pipe_name=None):
     child_pid = os.fork()
     if child_pid == 0 :
     # child process
-        pipeout = os.open(pipe_name, os.O_WRONLY)
-        os.write(pipeout, str(obj))
+        pipeout = os.open(pipe_name, os.O_WRONLY | os.O_CREAT)
+        os.write(pipeout, str(obj).encode('ascii'))
         os.close(pipeout)
         os._exit(child_pid)
     else:
@@ -101,7 +101,7 @@ def check_pipe(pipe):
 def read_pipe(pipe):
     out = ''
     while check_pipe(pipe):
-        out += os.read(pipe, 1024)
+        out += os.read(pipe, 1024).decode('utf-8')
     return out
 
 def make_file_from_pipe(pipe_name):
