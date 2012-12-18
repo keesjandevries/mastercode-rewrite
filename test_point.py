@@ -3,11 +3,10 @@ import os, sys, select, argparse
 
 #from mcrw import point
 from mcrw import point
+from mcrw.utils import ansi_bold
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--debug', dest='debug', action='store_true',
-            help='Print debugging information (e.g. stdout from predictors')
     parser.add_argument('--model', '-m', dest='model', action='store', type=str,
             default='cMSSM', help='override model')
 
@@ -15,7 +14,6 @@ def parse_args():
 
 if __name__=="__main__" :
     args = parse_args()
-    point.DEBUG = args.debug
 
     model = args.model
     input_vars = {
@@ -42,5 +40,18 @@ if __name__=="__main__" :
     m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
     slha_file, observations = point.run_point(model=model, **m_vars)
 
-    for name,values in slha_file.items():
-        print(name, values)
+    #for name,values in slha_file.items():
+        #print(name, values)
+    for predictor, obs in observations.items():
+        print('')
+        print(ansi_bold(predictor))
+        print("="*len(predictor))
+        x = max([len(n) for n,_ in obs.items()])
+        f_str = "{{n:{x}}} = {{p}}".format(x=x)
+        for name,value in obs.items():
+            if type(value) is not list:
+                print(f_str.format(n=name, p=value))
+            else:
+                print(f_str.format(n=name, p="[{0}, ... , {1}][{2}]".format(
+                    value[0],value[-1],len(value))))
+
