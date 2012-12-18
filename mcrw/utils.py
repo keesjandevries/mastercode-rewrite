@@ -77,14 +77,14 @@ def pipe_object_to_function(obj, function, pipe_name=None):
     try:
         os.mkfifo(pipe_name)
     except OSError as e:
-        print("Failed to create FIFO: %s" % e)
+        print("Failed to create FIFO: {e}".format(e=e))
         exit()
 
     child_pid = os.fork()
     if child_pid == 0 :
     # child process
         pipeout = os.open(pipe_name, os.O_WRONLY | os.O_CREAT)
-        os.write(pipeout, str(obj).encode('ascii'))
+        os.write(pipeout, bytes(str(obj), 'ascii'))
         os.close(pipeout)
         os._exit(child_pid)
     else:
