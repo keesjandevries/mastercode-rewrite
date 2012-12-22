@@ -57,7 +57,10 @@ if __name__=="__main__" :
                         value[0],value[-1],len(value))))
 
     print()
-    print(ansi_bold("Calculating chi-squared"))
+    chi2_title = "Calculating chi-squared"
+    print(ansi_bold("="*len(chi2_title)))
+    print(ansi_bold(chi2_title))
+    print(ansi_bold("="*len(chi2_title)))
 
     for objs in (slha_file, observations):
         for predictors, obj in objs.items():
