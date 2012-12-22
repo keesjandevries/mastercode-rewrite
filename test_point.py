@@ -5,6 +5,8 @@ import os, sys, select, argparse
 from mcrw import point
 from mcrw.utils import ansi_bold
 
+import chi2
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--model', '-m', dest='model', action='store', type=str,
@@ -53,3 +55,13 @@ if __name__=="__main__" :
                 else:
                     print(f_str.format(n=name, p="[{0}, ... , {1}][{2}]".format(
                         value[0],value[-1],len(value))))
+
+    print()
+    print(ansi_bold("Calculating chi-squared"))
+
+    for objs in (slha_file, observations):
+        for predictors, obj in objs.items():
+            for name, value in obj.items():
+                x = chi2.get_chi2(name, value)
+                if x:
+                    print(name,x)
