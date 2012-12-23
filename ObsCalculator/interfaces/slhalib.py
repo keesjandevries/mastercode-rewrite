@@ -3,7 +3,7 @@
 from collections import OrderedDict
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from ObsCalculator.utils import c_complex, pipe_object_to_function, unique_str, is_int
+from tools import c_complex, pipe_object_to_function, unique_str, is_int
 
 name = "SLHALib"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')

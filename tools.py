@@ -194,7 +194,6 @@ def get_ctypes_streams(func, args=[], kwargs={}):
     p_stdout = read_pipe(pipe_out)
     return (ret, p_stdout)
 
-
 class RedirectStdStreams(object):
     def __init__(self, stdout=None, stderr=None):
         self._stdout = stdout or sys.stdout

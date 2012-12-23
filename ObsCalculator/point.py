@@ -1,5 +1,7 @@
 from collections import OrderedDict
 
+import tools
+
 # slha represntation
 from ObsCalculator.interfaces import slhalib as slhamodule
 from ObsCalculator.interfaces.slhalib import SLHA
@@ -9,7 +11,6 @@ from ObsCalculator.interfaces import softsusy
 from ObsCalculator.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
 from ObsCalculator.interfaces import susypope
 
-from ObsCalculator import utils
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
@@ -19,7 +20,7 @@ predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
 def run_point(model, **inputs):
     stdouts = OrderedDict()
 
-    obj, stdout = utils.get_ctypes_streams(func=slha_generator.run,
+    obj, stdout = tools.get_ctypes_streams(func=slha_generator.run,
             args=[model], kwargs=inputs)
     stdouts.update({slhamodule.name: stdout})
     slhafile = SLHA(obj)
@@ -27,7 +28,7 @@ def run_point(model, **inputs):
     predictor_output = OrderedDict()
     for predictor in predictors:
         is_modifier = predictor in slha_modifiers
-        result, stdout = utils.get_ctypes_streams(
+        result, stdout = tools.get_ctypes_streams(
                 func=slhamodule.send_to_predictor,
                 args=[slhafile,predictor, is_modifier])
         predictor_output.update(result)

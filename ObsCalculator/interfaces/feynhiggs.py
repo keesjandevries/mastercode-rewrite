@@ -2,7 +2,7 @@
 
 from ctypes import cdll, c_int, c_double, byref, Structure
 
-from ObsCalculator.utils import ctypes_field_values
+from tools import ctypes_field_values
 
 name = "FeynHiggs"
 FHlib = cdll.LoadLibrary('packages/lib/libmcfeynhiggs.so')

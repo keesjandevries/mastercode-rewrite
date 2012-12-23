@@ -3,7 +3,7 @@ import os, sys, select, argparse
 
 #from ObsCalculator import point
 from ObsCalculator import point
-from ObsCalculator.utils import ansi_bold
+from tools import ansi_bold
 
 from PointAnalyser import Analyse
 
@@ -62,9 +62,7 @@ if __name__=="__main__" :
     print(ansi_bold(chi2_title))
     print(ansi_bold("="*len(chi2_title)))
 
-    for objs in (slha_file, observations):
-        for predictors, obj in objs.items():
-            for name, value in obj.items():
-                x = Analyse.chi2(name, value)
-                if x:
-                    print(name,x)
+    combined_obs = dict(list(slha_file.items()) + list(observations.items()))
+
+    total, breakdown = Analyse.chi2(combined_obs)
+    print("Total chi2 =",total)
