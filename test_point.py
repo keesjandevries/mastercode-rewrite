@@ -5,7 +5,7 @@ import os, sys, select, argparse
 from ObsCalculator import point
 from ObsCalculator.utils import ansi_bold
 
-import chi2
+from PointAnalyser import chi2
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
