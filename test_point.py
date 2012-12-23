@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os, sys, select, argparse
+import os, sys, select, argparse, pprint
 
 #from ObsCalculator import point
 from ObsCalculator import point
@@ -66,3 +66,6 @@ if __name__=="__main__" :
 
     total, breakdown = Analyse.chi2(combined_obs)
     print("Total chi2 =",total)
+
+    pp = pprint.PrettyPrinter(indent=4)
+    print(dir(pp))

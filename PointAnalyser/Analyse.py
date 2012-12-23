@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from PointAnalyser import Constraints
 
-_constraints = Constraints.base_constraints
+_constraints = Constraints.constraints
 
 def set_constraints(d):
     global _constraints
