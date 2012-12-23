@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 import os, sys, select, argparse
 
-#from mcrw import point
-from mcrw import point
-from mcrw.utils import ansi_bold
+#from ObsCalculator import point
+from ObsCalculator import point
+from ObsCalculator.utils import ansi_bold
 
 import chi2
 

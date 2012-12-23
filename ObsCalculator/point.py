@@ -1,15 +1,15 @@
 from collections import OrderedDict
 
 # slha represntation
-from mcrw.interfaces import slhalib as slhamodule
-from mcrw.interfaces.slhalib import SLHA
+from ObsCalculator.interfaces import slhalib as slhamodule
+from ObsCalculator.interfaces.slhalib import SLHA
 
 # spectrum calculator
-from mcrw.interfaces import softsusy
-from mcrw.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
-from mcrw.interfaces import susypope
+from ObsCalculator.interfaces import softsusy
+from ObsCalculator.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
+from ObsCalculator.interfaces import susypope
 
-from mcrw import utils
+from ObsCalculator import utils
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]

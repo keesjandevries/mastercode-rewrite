@@ -2,7 +2,7 @@
 
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from mcrw import utils
+from ObsCalculator import utils
 
 name = 'SuperISO'
 SIlib = cdll.LoadLibrary('packages/lib/libmcsuperiso.so')

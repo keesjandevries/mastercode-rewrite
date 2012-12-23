@@ -1,9 +1,9 @@
 .PHONY: all clean
 
-MCRW_DIR=$(PWD)/mcrw
-PATCH_DIR=$(MCRW_DIR)/.patches
-DEF_DIR=$(MCRW_DIR)/.make_defs
-INTERFACE_DIR=$(MCRW_DIR)/interfaces
+CALC_DIR=$(PWD)/ObsCalculator
+PATCH_DIR=$(CALC_DIR)/.patches
+DEF_DIR=$(CALC_DIR)/.make_defs
+INTERFACE_DIR=$(CALC_DIR)/interfaces
 INSTALL_DIR=$(PWD)/packages
 UTIL_DIR=$(PWD)/utils
 PREDICTOR_DIR=$(PWD)/predictors
@@ -33,13 +33,13 @@ all:
 
 clean:
 	for t in $(targets); do \
-		yes | make -f mcrw/.make/$$t.mk $@ $(MARGS) ; \
+		yes | make -f $(CALC_DIR)/.make/$$t.mk $@ $(MARGS) ; \
 	done
 
 tarclean:
 	for t in $(targets); do \
-		make -f mcrw/.make/$$t.mk $@ $(MARGS) ; \
+		make -f $(CALC_DIR)/.make/$$t.mk $@ $(MARGS) ; \
 	done
 
 %:
-	make -f mcrw/.make/$@.mk $(MARGS) ; \
+	make -f $(CALC_DIR)/.make/$@.mk $(MARGS) ; \

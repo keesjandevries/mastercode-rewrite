@@ -2,7 +2,7 @@
 
 from ctypes import cdll, c_int, c_double, byref, Structure
 
-from mcrw.utils import ctypes_field_values
+from ObsCalculator.utils import ctypes_field_values
 
 name = "SUSY-POPE"
 SPlib = cdll.LoadLibrary('packages/lib/libmcsusypope.so')

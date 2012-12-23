@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from ctypes import cdll, c_double, byref, Structure
-from mcrw.utils import ctypes_field_values
+from ObsCalculator.utils import ctypes_field_values
 
 name = "BPhysics"
 BPlib = cdll.LoadLibrary('packages/lib/libmcbphysics.so')
