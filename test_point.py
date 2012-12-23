@@ -5,7 +5,7 @@ import os, sys, select, argparse
 from ObsCalculator import point
 from ObsCalculator.utils import ansi_bold
 
-from PointAnalyser import chi2
+from PointAnalyser import Analyse
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -65,6 +65,6 @@ if __name__=="__main__" :
     for objs in (slha_file, observations):
         for predictors, obj in objs.items():
             for name, value in obj.items():
-                x = chi2.get_chi2(name, value)
+                x = Analyse.chi2(name, value)
                 if x:
                     print(name,x)
