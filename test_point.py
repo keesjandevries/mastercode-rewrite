@@ -70,4 +70,5 @@ if __name__=="__main__" :
     #pp = pprint.PrettyPrinter(indent=4)
     #print(dir(pp))
     import PointAnalyser
-    PointAnalyser.LikelihoodFunctions.load_contour('PointAnalyser/test.txt')
+    x = PointAnalyser.LikelihoodFunctions.load_contour('PointAnalyser/test.txt')
+    print(x)
