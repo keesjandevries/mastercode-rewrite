@@ -1,3 +1,9 @@
+def load_contour(filename):
+    f = open(filename,'r')
+    for line in f.readlines():
+        x,y = line.split()
+        print(x,y)
+
 def gauss(x, mu, sigma):
     return ((x-mu)/sigma)**2
 

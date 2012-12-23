@@ -65,7 +65,9 @@ if __name__=="__main__" :
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
 
     total, breakdown = Analyse.chi2(combined_obs)
-    print("Total chi2 =",total)
+    #print("Total chi2 =",total)
 
-    pp = pprint.PrettyPrinter(indent=4)
-    print(dir(pp))
+    #pp = pprint.PrettyPrinter(indent=4)
+    #print(dir(pp))
+    import PointAnalyser
+    PointAnalyser.LikelihoodFunctions.load_contour('PointAnalyser/test.txt')
