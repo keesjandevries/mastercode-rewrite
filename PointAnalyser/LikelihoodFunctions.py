@@ -16,3 +16,5 @@ def lowerlimit(x, mu, sigma):
     else:
         chi2 = 0
     return chi2
+
+#def chi2_from_cl(cl):

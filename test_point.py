@@ -63,12 +63,11 @@ if __name__=="__main__" :
     print(ansi_bold("="*len(chi2_title)))
 
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
-
     total, breakdown = Analyse.chi2(combined_obs)
-    #print("Total chi2 =",total)
 
-    #pp = pprint.PrettyPrinter(indent=4)
-    #print(dir(pp))
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(breakdown)
+
     from PointAnalyser import Contours
     point = (1,300)
     contour = Contours.Contour(filename='PointAnalyser/test.txt', mode='radial')
