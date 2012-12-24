@@ -69,6 +69,7 @@ if __name__=="__main__" :
 
     #pp = pprint.PrettyPrinter(indent=4)
     #print(dir(pp))
-    import PointAnalyser
-    contour = PointAnalyser.LikelihoodFunctions.load_contour('PointAnalyser/test.txt')
-    c_range = PointAnalyser.LikelihoodFunctions.radial_segment_range(1,10,contour)
+    from PointAnalyser import Contours
+    point = (1,300)
+    contour = Contours.Contour(filename='PointAnalyser/test.txt', mode='radial')
+    print(contour.point_ratio(point))
