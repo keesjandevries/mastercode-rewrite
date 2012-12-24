@@ -42,16 +42,15 @@ if __name__=="__main__" :
     m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
     slha_file, observations = point.run_point(model=model, **m_vars)
 
-    pp = pprint.PrettyPrinter(indent=4, depth=2)
-    pp.pprint(slha_file)
-    pp.pprint(observations)
-
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
+
+    pp = pprint.PrettyPrinter(indent=4, depth=2)
+    pp.pprint(combined_obs)
+
     total, breakdown = Analyse.chi2(combined_obs)
     pp.pprint(breakdown)
-
 
     from PointAnalyser import Contours
     point = (1,300)
     contour = Contours.Contour(filename='PointAnalyser/test.txt', mode='radial')
-    print(contour.point_ratio(point))
+    #print(contour.point_ratio(point))
