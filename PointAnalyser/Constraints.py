@@ -1,5 +1,8 @@
 from PointAnalyser import LikelihoodFunctions as LF
 
+#Use tuple as key: extract all and pass to function by constructing kwargs
+# basically need to construct contours here, so they're available for lifetime
+
 base_constraints = {
         'Mt'            : (173.2,    [0.9],             LF.gauss      ),
         "MZ"            : (91.1875,  [0.0021],          LF.gauss      ),
