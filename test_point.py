@@ -46,9 +46,11 @@ if __name__=="__main__" :
 
 
     total, breakdown = Analyse.chi2(combined_obs)
+
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
     bpp.pprint(breakdown)
 
+    # test code for Contour analyser
     from PointAnalyser import Contours
     point = (1,300)
     contour = Contours.Contour(filename='PointAnalyser/test.txt', mode='radial')
