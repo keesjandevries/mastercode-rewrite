@@ -91,9 +91,10 @@ def point_ratio(self, point, mode):
     return mode_lookup[mode]['ratio'](point, segment)
 
 class Contour(object):
-    def __init__(self,filename, mode):
-        self.mode = mode
+    def __init__(self,filename, mode, pval):
         self.contour = load_contour(filename,mode)
+        self.mode = mode
+        self.pval = pval
 
     def point_ratio(self,point):
         segment_indices = segment_range(point, self.contour, self.mode)
