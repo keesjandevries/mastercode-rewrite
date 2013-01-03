@@ -17,4 +17,6 @@ def lowerlimit(x, mu, sigma):
         chi2 = 0
     return chi2
 
-#def chi2_from_cl(cl):
+# contour likelihood functions
+def power_4_scaling(bc, r):
+    return bc*((1./r)**4)
