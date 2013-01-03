@@ -1,5 +1,7 @@
 import math
 
+import stats
+
 def load_contour(filename, mode='radial'):
     f = open(filename,'r')
     s_contour = [tuple(x.split()) for x in f.readlines()]
@@ -90,11 +92,17 @@ def point_ratio(self, point, mode):
     segment = segment_range(point, self.contour, self.mode)
     return mode_lookup[mode]['ratio'](point, segment)
 
+def chi2_from_contour(contour, point, chi2func):
+    r = contour.point_ratio(point)
+    return chi2func(contour.chi2, r)
+
 class Contour(object):
-    def __init__(self,filename, mode, pval):
+    def __init__(self,filename, mode, pval, dim=2):
         self.contour = load_contour(filename,mode)
         self.mode = mode
         self.pval = pval
+        self.dim = dim
+        self.chi2 = stats.chi2quantile(self.pval, self.dim)
 
     def point_ratio(self,point):
         segment_indices = segment_range(point, self.contour, self.mode)
