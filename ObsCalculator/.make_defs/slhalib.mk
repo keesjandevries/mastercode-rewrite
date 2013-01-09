@@ -1,7 +1,7 @@
 version=2.2
 name=SLHALib-$(version)
 src_dir=$(UTIL_DIR)/$(name)
-lib_dir=$(src_dir)/build
+lib_dir=$(LIB_DIR)
 lib=$(INSTALL_DIR)/lib/libSLHA.a
 lib_short=SLHA
 tar_name=$(name).tar.gz
