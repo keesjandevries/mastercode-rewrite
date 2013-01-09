@@ -13,7 +13,7 @@ extern "C" {
     void run_micromegas(char slhafilename[], MicromegasPrecObs* out) {
         double omegaMu,bsg, bll, sigppMu;
         // need to check this argument, seems to not do anything anymore
-        int error = readLesH(slhafilename,2);
+        int error = lesHinput(slhafilename);
         if (error != 0) {
             std::cout << "*** Error: micromegas fail to open " <<
                 slhafilename << std::endl;//SLHAFILE

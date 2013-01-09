@@ -18,5 +18,5 @@ def run(slhadata, update=False) :
 
     fname = "/tmp/mc-{u}".format(u=unique_str())
     writer(fname)
-    reader(fname)
+    reader(c_char_p(fname.encode('ascii') ))
     return ctypes_field_values(MOout, name)
