@@ -2,7 +2,7 @@
 
 from ctypes import cdll, c_double, byref, Structure
 
-from modules.utils import ctypes_field_values
+from tools import ctypes_field_values
 
 name = "LSP scattering"
 LSPlib = cdll.LoadLibrary('packages/lib/libmclspscat.so')

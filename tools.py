@@ -2,7 +2,8 @@ import os
 import sys
 import time
 import select
-import urllib2
+import urllib.request
+import urllib.error
 import tarfile
 import pickle
 import hashlib
@@ -24,6 +25,13 @@ def ctypes_field_values(obj, title):
             d[attr] = c_obj[:]
     return {title: d}
 
+def is_int(s):
+    try:
+        i = int(s)
+    except ValueError:
+        return False
+    else:
+        return True
 
 def ansi_bold(s):
     return "\033[1m{0}\033[0m".format(s)
@@ -31,9 +39,9 @@ def ansi_bold(s):
 def show_header(header, sub=''):
     total_len = len(header) + len(sub)
     block = "*"*(total_len+4 if not sub else total_len+6)
-    print block
-    print "* {h}{s} *".format(h=header, s=(': '+sub if sub else ''))
-    print block
+    print(block)
+    print("* {h}{s} *".format(h=header, s=(': '+sub if sub else '')))
+    print(block)
 
 def unique_str():
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
@@ -46,7 +54,7 @@ def setup_pipe(reader, writer, pipe_name=None):
         pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     try:
         os.mkfifo(pipe_name)
-    except OSError, e:
+    except OSError as e:
         print("Failed to create FIFO: %s" % e)
         exit()
 
@@ -68,15 +76,15 @@ def pipe_object_to_function(obj, function, pipe_name=None):
         pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     try:
         os.mkfifo(pipe_name)
-    except OSError, e:
-        print("Failed to create FIFO: %s" % e)
+    except OSError as e:
+        print("Failed to create FIFO: {e}".format(e=e))
         exit()
 
     child_pid = os.fork()
     if child_pid == 0 :
     # child process
-        pipeout = os.open(pipe_name, os.O_WRONLY)
-        os.write(pipeout, str(obj))
+        pipeout = os.open(pipe_name, os.O_WRONLY | os.O_CREAT)
+        os.write(pipeout, bytes(str(obj), 'ascii'))
         os.close(pipeout)
         os._exit(child_pid)
     else:
@@ -93,13 +101,14 @@ def check_pipe(pipe):
 def read_pipe(pipe):
     out = ''
     while check_pipe(pipe):
-        out += os.read(pipe, 1024)
+        out += os.read(pipe, 1024).decode('utf-8')
     return out
 
 def make_file_from_pipe(pipe_name):
     pipe_in = open(pipe_name,'r').read()
     new_filename = pipe_name+"_P"
-    print>>open(new_filename,'w'), pipe_in
+    with open(new_filename,'w') as f:
+        f.write(pipe_in)
     return new_filename
 
 def rm(filename):
@@ -107,21 +116,21 @@ def rm(filename):
         with open(filename) as f: pass
         os.remove(filename)
     except IOError as e:
-        print "rm: File {0} does not exist"
+        print("rm: File {0} does not exist")
 
 def fetch_url(target, local_path):
     success = False
     try:
-        f = urllib2.urlopen(target)
+        f = urllib.request.urlopen(target)
         print("Downloading {0} ...".format(target))
         local_file = open(local_path,'wb')
         local_file.write(f.read())
         local_file.close()
         print("  --> Done")
         success = True
-    except urllib2.HTTPError, e:
+    except urllib.error.HTTPError as e:
         print("HTTP Error:", e.code, target)
-    except urllib2.URLError, e:
+    except urllib.error.URLError as e:
         print("URL Error:", e.reason, target)
     return success
 
@@ -149,7 +158,7 @@ def extract_tarfile(filename, local_dir):
             print("  --> Done")
         tf.close()
     else:
-        raise IOError, "{f} is not a tar file".format(f=filename)
+        raise IOError("{f} is not a tar file".format(f=filename))
     return output_dir
 
 def find_nth(haystack, needle, n):
@@ -184,7 +193,6 @@ def get_ctypes_streams(func, args=[], kwargs={}):
     os.dup2(stdout, 1)
     p_stdout = read_pipe(pipe_out)
     return (ret, p_stdout)
-
 
 class RedirectStdStreams(object):
     def __init__(self, stdout=None, stderr=None):

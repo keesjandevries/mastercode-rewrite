@@ -1,13 +1,14 @@
 .PHONY: all clean
 
+CALC_DIR=$(PWD)/ObsCalculator
+PATCH_DIR=$(CALC_DIR)/.patches
+DEF_DIR=$(CALC_DIR)/.make_defs
+INTERFACE_DIR=$(CALC_DIR)/interfaces
 INSTALL_DIR=$(PWD)/packages
-LIB_DIR=$(INSTALL_DIR)/lib
-PATCH_DIR=$(PWD)/patches
-DEF_DIR=$(PWD)/.make_defs
+UTIL_DIR=$(PWD)/tools
 PREDICTOR_DIR=$(PWD)/predictors
 TAR_DIR=$(PREDICTOR_DIR)/.tars
-UTIL_DIR=$(PWD)/utils
-INTERFACE_DIR=$(PWD)/interfaces
+LIB_DIR=$(INSTALL_DIR)/lib
 INCLUDE_DIR=$(INSTALL_DIR)/include
 
 MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
@@ -32,13 +33,13 @@ all:
 
 clean:
 	for t in $(targets); do \
-		yes | make -f .make/$$t.mk $@ $(MARGS) ; \
+		yes | make -f $(CALC_DIR)/.make/$$t.mk $@ $(MARGS) ; \
 	done
 
 tarclean:
 	for t in $(targets); do \
-		make -f .make/$$t.mk $@ $(MARGS) ; \
+		make -f $(CALC_DIR)/.make/$$t.mk $@ $(MARGS) ; \
 	done
 
 %:
-	make -f .make/$@.mk $(MARGS) ; \
+	make -f $(CALC_DIR)/.make/$@.mk $(MARGS) ; \

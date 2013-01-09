@@ -2,7 +2,7 @@
 
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from modules import utils
+import tools
 
 name = 'SuperISO'
 SIlib = cdll.LoadLibrary('packages/lib/libmcsuperiso.so')
@@ -12,8 +12,8 @@ class SuperISOPrecObs(Structure):
 
 def run(slhadata, update=False) :
     SIout = SuperISOPrecObs()
-    fname = "/tmp/mc-{u}".format(u=utils.unique_str())
+    fname = "/tmp/mc-{u}".format(u=tools.unique_str())
     slhadata.write(fname)
     SIlib.run_superiso(fname, byref(SIout))
-    utils.rm(fname)
-    return utils.ctypes_field_values(SIout, name)
+    tools.rm(fname)
+    return tools.ctypes_field_values(SIout, name)

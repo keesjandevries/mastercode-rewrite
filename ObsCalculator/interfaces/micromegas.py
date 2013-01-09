@@ -2,7 +2,7 @@
 
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from modules.utils import setup_pipe, unique_str, ctypes_field_values
+from tools import setup_pipe, unique_str, ctypes_field_values
 
 name = "Micromegas"
 MOlib = cdll.LoadLibrary('packages/lib/libmcmicromegas.so')
