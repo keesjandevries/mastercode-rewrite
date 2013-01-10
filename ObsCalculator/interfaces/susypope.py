@@ -20,8 +20,8 @@ class susypopeFlags(Structure):
             self.Verbose = 1
             self.SMObsOpt = 1
         else:
-            for attr, value in flags.iteritems():
-                if attr in self.__dict__:
+            for attr, value in flags.items():
+                if attr in [f[0] for f in self._fields_]:
                     setattr(self,attr,value)
 
 class susypopeNoneSLHA(Structure):
@@ -31,14 +31,16 @@ class susypopeNoneSLHA(Structure):
             ('Atphase', c_double), ('Abphase', c_double),
             ('Atauphase', c_double), ('MB', c_double)]
     def __init__(self, flags=None):
+        #FIXME: now defaults are set here, in case they are not set somewhere else
+        # Need to think about whether we want this...
         if flags is None:
             self.DeltaAlfa5had = 0.02749
             self.DeltaAlfaQED = 0.031497637
             self.ZWidthexp = 2.4952
             self.MB = 4.8
         else:
-            for attr, value in flags.iteritems():
-                if attr in self.__dict__:
+            for attr, value in flags.items():
+                if attr in [f[0] for f in self._fields_]:
                     setattr(self,attr,value)
 
 # output
@@ -51,8 +53,14 @@ class susypopeObs(Structure):
             ('Al_fb', c_double), ('sigma_had', c_double)]
 
 def run(slhadata, inputs=None, update=False):
-    n_slha = susypopeNoneSLHA()
-    flags = susypopeFlags()
+    inp=0
+    if inputs is None:
+        n_slha = susypopeNoneSLHA()
+        flags = susypopeFlags()
+    else:
+        n_slha = susypopeNoneSLHA(inputs.get('non_slha_inputs'))
+        flags = susypopeFlags(inputs.get('flags'))
+
     spout = susypopeObs()
     SPlib.run_susypope(byref(slhadata.data), byref(n_slha), byref(flags),
             byref(spout))
