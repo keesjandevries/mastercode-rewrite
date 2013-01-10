@@ -21,7 +21,7 @@ def run_point(model, **inputs):
     stdouts = OrderedDict()
 
     obj, stdout = tools.get_ctypes_streams(func=slha_generator.run,
-            args=[model], kwargs=inputs)
+            args=[model], kwargs=inputs[slha_generator.name])
     stdouts.update({slhamodule.name: stdout})
     slhafile = SLHA(obj)
 
