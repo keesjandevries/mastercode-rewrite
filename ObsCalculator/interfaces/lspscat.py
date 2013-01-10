@@ -19,6 +19,9 @@ class lspscatInputs(Structure):
 
 def run(slhadata, inputs=None, update=False):
     LSPout = lspscatObs()
-    LSPin = lspscatInputs(50,14)
+    if inputs is None:
+        LSPin = lspscatInputs(50,14)
+    else:
+        LSPin = lspscatInputs(**inputs)
     LSPlib.run_lspscat(byref(slhadata.data), byref(LSPin), byref(LSPout))
     return ctypes_field_values(LSPout, name)
