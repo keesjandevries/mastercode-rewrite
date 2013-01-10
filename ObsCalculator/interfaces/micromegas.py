@@ -13,7 +13,7 @@ class MicromegasPrecObs(Structure):
 
 def run(slhadata, update=False) :
     MOout = MicromegasPrecObs()
-    reader = lambda f: MOlib.run_micromegas(f, byref(MOout))
+    reader = lambda f: MOlib.run_micromegas(c_char_p(f.encode('ascii')), byref(MOout))
     writer = lambda f: slhadata.write(f)
 
     fname = "/tmp/mc-{u}".format(u=unique_str())

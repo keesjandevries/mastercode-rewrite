@@ -1,7 +1,7 @@
-diff --git a/utils/SLHALib-2.2/makefile.in b/utils/SLHALib-2.2/makefile.in
+diff --git a/tools/SLHALib-2.2/makefile.in b/tools/SLHALib-2.2/makefile.in
 index b9dede0..23391f2 100644
---- a/utils/SLHALib-2.2/makefile.in
-+++ b/utils/SLHALib-2.2/makefile.in
+--- a/tools/SLHALib-2.2/makefile.in
++++ b/tools/SLHALib-2.2/makefile.in
 @@ -15,9 +15,9 @@ all: default demo
  
  install: default
@@ -14,10 +14,10 @@ index b9dede0..23391f2 100644
  	cp -p $(FCC) $(PREFIX)/bin
  	cd $(PREFIX)/bin ; ln -s fcc f++
  
-diff --git a/utils/SLHALib-2.2/configure b/utils/SLHALib-2.2/configure
+diff --git a/tools/SLHALib-2.2/configure b/tools/SLHALib-2.2/configure
 index 7058799..72b3853 100755
---- a/utils/SLHALib-2.2/configure
-+++ b/utils/SLHALib-2.2/configure
+--- a/tools/SLHALib-2.2/configure
++++ b/tools/SLHALib-2.2/configure
 @@ -259,7 +259,7 @@ DEF = $CONF_DEF
  UNDERSCORE = $CONF_UNDERSCORE
  
@@ -28,10 +28,10 @@ index 7058799..72b3853 100755
  CC = $CONF_CC
  CFLAGS = $CONF_CFLAGS
 
-diff --git a/utils/SLHALib-2.2/src/SLHARead.F b/utils/SLHALib-2.2/src/SLHARead.F
+diff --git a/tools/SLHALib-2.2/src/SLHARead.F b/tools/SLHALib-2.2/src/SLHARead.F
 index c07fd1e..d10b80b 100644
---- a/utils/SLHALib-2.2/src/SLHARead.F
-+++ b/utils/SLHALib-2.2/src/SLHARead.F
+--- a/tools/SLHALib-2.2/src/SLHARead.F
++++ b/tools/SLHALib-2.2/src/SLHARead.F
 @@ -63,7 +63,7 @@ read(line, *, err=997, end=997)
  	  unit = 5
  	  if( lineno .ne. 0 ) goto 501

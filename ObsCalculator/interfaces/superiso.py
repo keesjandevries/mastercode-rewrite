@@ -14,6 +14,6 @@ def run(slhadata, update=False) :
     SIout = SuperISOPrecObs()
     fname = "/tmp/mc-{u}".format(u=tools.unique_str())
     slhadata.write(fname)
-    SIlib.run_superiso(fname, byref(SIout))
+    SIlib.run_superiso(c_char_p(fname.encode('ascii')), byref(SIout))
     tools.rm(fname)
     return tools.ctypes_field_values(SIout, name)
