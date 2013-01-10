@@ -11,14 +11,20 @@ from ObsCalculator.interfaces import softsusy
 from ObsCalculator.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
 from ObsCalculator.interfaces import susypope
 
+# defaults settings all defined in one place
+from ObsCalculator import defaults
 
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
 predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
         susypope]
 
-def run_point(model, **inputs):
+def run_point(model, **input_pars):
     stdouts = OrderedDict()
+
+    inputs=defaults.predictor_defaults
+    for pred, dic in input_pars.items():
+        inputs[pred].update(dic)
 
     obj, stdout = tools.get_ctypes_streams(func=slha_generator.run,
             args=[model], kwargs=inputs[slha_generator.name])
@@ -34,4 +40,4 @@ def run_point(model, **inputs):
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
 
-    return slhafile.process(), predictor_output
+    return slhafile.process(), predictor_output , stdouts

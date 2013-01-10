@@ -3,7 +3,6 @@ import os, sys, select, argparse, pprint
 
 #from ObsCalculator import point
 from ObsCalculator import point
-from ObsCalculator import defaults
 from tools import ansi_bold
 
 from PointAnalyser import Analyse
@@ -42,10 +41,10 @@ if __name__=="__main__" :
             'mgut': {'cMSSM': 2e16, 'pMSSM': 1.0e3}[model]
             }
     m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
-    all_inputs=dict(list({'SoftSUSY':m_vars}.items()) + list(defaults.predictor_defaults.items()) )
+    all_params={'SoftSUSY':m_vars}
     
 
-    slha_file, observations = point.run_point(model=model, **all_inputs)
+    slha_file, observations,stdouts = point.run_point(model=model, **all_params)
 
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
 
@@ -54,7 +53,7 @@ if __name__=="__main__" :
 
     total, breakdown = Analyse.chi2(combined_obs)
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
-    bpp.pprint(breakdown)
+#    bpp.pprint(breakdown)
 
     from PointAnalyser import Contours
     point = (1,300)
