@@ -67,8 +67,8 @@ class SLHA(object):
                     data[block_name][comment] = values
         return data
 
-def send_to_predictor(slhadata, predictor, update=False):
-    return predictor.run(slhadata, update)
+def send_to_predictor(slhadata, inputs ,predictor, update=False):
+    return predictor.run(slhadata, inputs , update)
 
 def run(*args, **kwargs):
     assert "filename" in kwargs

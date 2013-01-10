@@ -30,7 +30,7 @@ def run_point(model, **inputs):
         is_modifier = predictor in slha_modifiers
         result, stdout = tools.get_ctypes_streams(
                 func=slhamodule.send_to_predictor,
-                args=[slhafile,predictor, is_modifier])
+                args=[slhafile,inputs.get(predictor.name),predictor, is_modifier])
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
 

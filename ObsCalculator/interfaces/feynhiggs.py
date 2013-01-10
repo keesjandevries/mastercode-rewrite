@@ -31,7 +31,7 @@ class FeynHiggsPrecObs(Structure):
             ('EDMHg', c_double), ('mh', c_double), ('mH', c_double),
             ('mA', c_double), ('mHpm', c_double)]
 
-def run(slhadata, update=False, fhopts=None) :
+def run(slhadata, inputs=None, update=False, fhopts=None) :
     assert len(slhadata) == nslhadata
     if fhopts is None:
         fhopts = FeynHiggsOpts(mssmpart=4, fieldren=0, tanbren=0, higgsmix=2,

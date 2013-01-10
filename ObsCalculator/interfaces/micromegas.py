@@ -11,7 +11,7 @@ class MicromegasPrecObs(Structure):
     _fields_ = [('Omega', c_double), ('Bll', c_double), ('Bsg', c_double),
             ('SMbsg', c_double)]
 
-def run(slhadata, update=False) :
+def run(slhadata, inputs=None, update=False) :
     MOout = MicromegasPrecObs()
     reader = lambda f: MOlib.run_micromegas(c_char_p(f.encode('ascii')), byref(MOout))
     writer = lambda f: slhadata.write(f)

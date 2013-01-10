@@ -50,7 +50,7 @@ class susypopeObs(Structure):
             ('Ab_16', c_double), ('Ac_17', c_double), ('Al', c_double),
             ('Al_fb', c_double), ('sigma_had', c_double)]
 
-def run(slhadata, update=False):
+def run(slhadata, inputs=None, update=False):
     n_slha = susypopeNoneSLHA()
     flags = susypopeFlags()
     spout = susypopeObs()

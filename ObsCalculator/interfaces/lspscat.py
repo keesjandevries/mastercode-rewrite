@@ -17,7 +17,7 @@ class lspscatInputs(Structure):
         self.SigmaPiN = SigmaPiN
         self.SigmaPiNerr = SigmaPiNerr
 
-def run(slhadata, update=False):
+def run(slhadata, inputs=None, update=False):
     LSPout = lspscatObs()
     LSPin = lspscatInputs(50,14)
     LSPlib.run_lspscat(byref(slhadata.data), byref(LSPin), byref(LSPout))
