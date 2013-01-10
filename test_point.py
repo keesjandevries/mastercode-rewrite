@@ -42,11 +42,14 @@ if __name__=="__main__" :
             'mgut': {'cMSSM': 2e16, 'pMSSM': 1.0e3}[model]
             }
     m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
-    all_inputs={'SoftSUSY':m_vars}
+    all_inputs=dict(list({'SoftSUSY':m_vars}.items()) + list(defaults.predictor_defaults.items()) )
+    
 
     slha_file, observations = point.run_point(model=model, **all_inputs)
 
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
+
+    pprint.PrettyPrinter().pprint(observations)
 
 
     total, breakdown = Analyse.chi2(combined_obs)

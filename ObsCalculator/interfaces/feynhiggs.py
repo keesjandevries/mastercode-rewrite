@@ -31,11 +31,14 @@ class FeynHiggsPrecObs(Structure):
             ('EDMHg', c_double), ('mh', c_double), ('mH', c_double),
             ('mA', c_double), ('mHpm', c_double)]
 
-def run(slhadata, inputs=None, update=False, fhopts=None) :
+def run(slhadata, inputs=None, update=False) :
     assert len(slhadata) == nslhadata
-    if fhopts is None:
+    # FIXME: Default values are still here. In principle want to define all defaults in one place ObsCalculator/defaults.py
+    if inputs is None:
         fhopts = FeynHiggsOpts(mssmpart=4, fieldren=0, tanbren=0, higgsmix=2,
                 p2approx=0, looplevel=2, tl_running_mt=1, tl_bot_resum=1)
+    else:
+        fhopts = FeynHiggsOpts(**inputs)
 
     FHout = FeynHiggsPrecObs()
     FHlib.run_feynhiggs(byref(FHout), byref(fhopts), byref(slhadata.data),
