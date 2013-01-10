@@ -50,11 +50,11 @@ if __name__=="__main__" :
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
     bpp.pprint(breakdown)
 
-    # test code for Contour analyser
-    from PointAnalyser import Contours
-    from PointAnalyser import LikelihoodFunctions
-    testf = LikelihoodFunctions.power_4_scaling
-    point = (1,300)
-    contour = Contours.Contour(filename='PointAnalyser/test.txt', mode='radial',
-            pval=0.95, dim=2)
-    print(Contours.chi2_from_contour(contour, point, testf))
+    ## test code for Contour analyser
+    #from PointAnalyser import Contours
+    #from PointAnalyser import LikelihoodFunctions
+    #testf = LikelihoodFunctions.power_4_scaling
+    #point = (1,300)
+    #contour = Contours.Contour(filename='PointAnalyser/test.txt', mode='radial',
+            #pval=0.95, dim=2)
+    #print(Contours.chi2_from_contour(contour, point, testf))
