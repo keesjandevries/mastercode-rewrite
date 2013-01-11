@@ -18,7 +18,7 @@ models = {
             'boundary_condition': 'sugraBcs',
             'output': 'sugra',
             'other_vars': { # provide defaults
-                'gaugeUnification':False ,
+                'gaugeUnification':True  ,
                 'ewsbBCscale': False,
                 },
             'other_setup':  {
@@ -233,6 +233,7 @@ def run(model, **model_inputs):
 
 
     output_args = fixed.copy()
+    #FIXME: this is not giving the correct mgut
     output_args['mgut']=fin_mgut
     for var_name, value in output_opts[model].items():
         output_args[var_name] = model_inputs.get(var_name, value)
