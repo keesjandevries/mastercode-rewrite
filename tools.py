@@ -210,9 +210,12 @@ class RedirectStdStreams(object):
         sys.stderr = self.old_stderr
 
 def set_obj_inputs_and_defaults(obj,inputs={},defaults={}):
-    for attr, value in inputs.items():
+    #FIXME: this could be improved: not sure if we need to copy 
+    # and we may want to check for fields in the structure
+    if inputs is None:
+        inputs={}
+    values=defaults.copy()
+    values.update(inputs)
+    for attr, value in values.items():
         setattr(obj,attr,value)
-    for attr, value in defaults.items():
-        if not hasattr(obj,attr):
-            setattr(obj,attr,value)
 
