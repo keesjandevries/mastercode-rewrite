@@ -37,12 +37,40 @@ class SLHA(object):
     def __getitem__(self,key):
         return self.process()[key]
 
+    def __setitem__(self,key,value):
+        # takes arguments BLOCKNAME_varname,
+        blockname, varname = key.split('_')
+        self.set_block_var(blockname,varname,value)
+
     def write(self, filename):
         SLlib.write_slha(filename.encode('ascii'), byref(self.data))
 
     def read(self, filename):
         self.data = SLHAData()
         SLlib.read_slha(filename.encode('ascii'), byref(self.data))
+
+    def set_block_var(self,blockname,varname,value):
+        # FIXME: I'm afraid this is the only way to do it :(
+        s=str(self)
+        oldline, newline=None, None
+        inblock=False
+        for line in s.split('\n'):
+            if line.startswith('B'):
+                if  blockname in line:
+                    inblock=True
+                else:
+                    inblock=False
+            if inblock and (varname in line):
+                oldline=line
+                newline=line.replace( line.split('#')[0].split()[-1]  , str(value) )
+                break
+        if oldline and newline:
+            new=s.replace(oldline,newline)
+            pipe_object_to_function(new,self.read)
+        else:
+            print("Couldn't find {b} {v}".format(b=blockname,v=varname))
+            
+
 
     def process(self):
         s = str(self)
