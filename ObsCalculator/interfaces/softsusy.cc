@@ -74,6 +74,9 @@ extern "C"
     QedQcd* QedQcd_new() {
         return new QedQcd();
     }
+    void QedQcd_setMu(QedQcd *qq, double mu) { 
+        qq->setMu(mu); 
+    }
     void QedQcd_setPoleMt(QedQcd *qq, double mt) { 
         qq->setPoleMt(mt); 
     }
@@ -105,6 +108,12 @@ extern "C"
     void set_global_MIXING(int mixing){
         softsusy::MIXING=mixing;
     }
+    void set_global_GMU(double gmu){
+        softsusy::GMU=gmu;
+    }
+    void set_global_MZ(double mz ){
+        softsusy::MZ=mz ;
+    }
 
     /*--------------*/
     /* MssmSoftsusy */
@@ -128,13 +137,16 @@ extern "C"
     void MssmSoftSusy_setMaCond(MssmSoftsusy* mss, double value){
         mss->setMaCond(value);
     }
+    void MssmSoftSusy_setData(MssmSoftsusy* mss, QedQcd * qq){
+        mss->setData(*qq);
+    }
 
-    void MssmSoftsusy_lowOrg( MssmSoftsusy* mss, int bCond, double mxGuess,
+    double MssmSoftsusy_lowOrg( MssmSoftsusy* mss, int bCond, double mxGuess,
             DoubleVector *pars, int sgnMu, double tanb, QedQcd *oneset,
             bool gaugeUnification, bool ewsbBCscale = false) {
         void (*bC)( MssmSoftsusy &, const DoubleVector &) = 
             boundaryCondition( bCond );
-        mss->lowOrg(bC, mxGuess, *pars, sgnMu, tanb, *oneset, 
+        return mss->lowOrg(bC, mxGuess, *pars, sgnMu, tanb, *oneset, 
                     gaugeUnification, ewsbBCscale);
     }
 

@@ -3,9 +3,15 @@
 from ctypes import cdll, c_double, byref, Structure
 
 from tools import ctypes_field_values
+from tools import set_obj_inputs_and_defaults
 
 name = "LSP scattering"
 LSPlib = cdll.LoadLibrary('packages/lib/libmclspscat.so')
+
+default_inputs={
+    'SigmaPiN'      : 50. ,
+    'SigmaPiNerr'   : 14. ,
+    }
 
 class lspscatObs(Structure):
     _fields_ = [('s2out', c_double), ('ss2out', c_double), ('s3out', c_double),
@@ -13,12 +19,11 @@ class lspscatObs(Structure):
 
 class lspscatInputs(Structure):
     _fields_ = [('SigmaPiN', c_double), ('SigmaPiNerr', c_double)]
-    def __init__(self, SigmaPiN, SigmaPiNerr):
-        self.SigmaPiN = SigmaPiN
-        self.SigmaPiNerr = SigmaPiNerr
+    def __init__(self,  defaults, inputs={}):
+        set_obj_inputs_and_defaults(self,inputs,defaults)
 
-def run(slhadata, update=False):
+def run(slhadata, inputs=None, update=False):
     LSPout = lspscatObs()
-    LSPin = lspscatInputs(50,14)
+    LSPin  = lspscatInputs(default_inputs,inputs)
     LSPlib.run_lspscat(byref(slhadata.data), byref(LSPin), byref(LSPout))
     return ctypes_field_values(LSPout, name)

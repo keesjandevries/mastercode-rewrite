@@ -12,7 +12,7 @@ class BPhysicsPrecObs(Structure):
             ('BRbtn', c_double), ('BRKl2', c_double), ('Psll', c_double),
             ('Pdll', c_double), ('Pllsapx', c_double)]
 
-def run(slhadata, update=False):
+def run(slhadata, inputs=None, update=False):
     BPout = BPhysicsPrecObs()
     BPlib.run_bphysics(byref(slhadata.data), byref(BPout))
     return ctypes_field_values(BPout, name)
