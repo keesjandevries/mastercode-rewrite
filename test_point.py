@@ -44,7 +44,9 @@ if __name__=="__main__" :
     all_params={'SoftSUSY':m_vars}
     
 
-    slha_file, observations,stdouts = point.run_point(model=model, **all_params)
+    slha_obj, observations,stdouts = point.run_point(model=model, **all_params)
+
+    slha_file=slha_obj.process()
 
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
 

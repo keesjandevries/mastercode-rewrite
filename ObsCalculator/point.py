@@ -34,4 +34,4 @@ def run_point(model, **input_pars):
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
 
-    return slhafile.process(), predictor_output , stdouts
+    return slhafile, predictor_output , stdouts
