@@ -5,6 +5,18 @@ from ctypes import create_string_buffer
 
 name = "SoftSUSY"
 SPlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy.so')
+
+default_inputs={
+    'alpha_em_inv'  : 1.27908953e2, #MC-old
+    'G_Fermi'       : 1.16639e-5,   #MC-old
+    'alpha_s'       : 1.187e-01,    #MC-old
+    'MZ'            : 9.11876e1,    #MC-old
+    'mt'            : 174.3,        #arbitrary, from web
+    'mb'            : 4.2,          #MC-old
+    'mtau'          : 1.77703,      #MC-old
+        }
+
+
 # set our return types
 SPlib.DoubleVector_display.restype = c_double
 boundaryConditions = [ 'sugraBcs', 'extendedSugraBcs', 'generalBcs',
@@ -83,7 +95,10 @@ setup_functions = { # function( MssmSoftSusy, Value )
         'mu': setup_mu,
         }
 
-def setup_SM_values(oneset,r,values):
+def setup_SM_values(oneset,r,defaults,inputs):
+    values=defaults.copy()
+    if inputs is not None:
+        values.update(inputs)
     #want to crash if one of the values is not there so just use values['...']
     #copy from softpoint.cpp lines
     num_dict={'ALPHA':1, 'ALPHAS':2,
@@ -209,8 +224,9 @@ def run(model, **model_inputs):
     r = MssmSoftsusy()
 
     oneset = QedQcd()
-    if model_inputs.get('SMinputs'):
-        setup_SM_values(oneset,r,model_inputs['SMinputs'])
+#    if model_inputs.get('SMinputs'):
+#    setup_SM_values(oneset,r,default_inputs,model_inputs['SMinputs'])
+    setup_SM_values(oneset,r,default_inputs,None)
         
     #for var, func_name in qed_qcd_funcs.items():
     #    # for example
