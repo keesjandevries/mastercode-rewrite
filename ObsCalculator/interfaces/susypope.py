@@ -3,26 +3,40 @@
 from ctypes import cdll, c_int, c_double, byref, Structure
 
 from tools import ctypes_field_values
+from tools import set_obj_inputs_and_defaults
 
 name = "SUSY-POPE"
 SPlib = cdll.LoadLibrary('packages/lib/libmcsusypope.so')
+
+default_inputs={   
+    'flags': 
+     {  'LoopOption'    : 5,
+        'IterOpt'       : 1,
+        'Observables'   : 1,
+        'HiggsOpt'      : 1,
+        'Verbose'       : 1,
+        'SMObsOpt'      : 1
+     },
+     'non_slha_inputs' : 
+     {  'DeltaAlfa5had' : 0.02749,
+        'DeltaAlfaQED'  : 0.031497637,
+        'ZWidthexp'     : 2.4952,
+        'MB'            : 4.8,
+        'M2phase'       : 0.,
+        'M1phase'       : 0., 
+        'MUEPhase'      : 0.,
+        'Atphase'       : 0., 
+        'Abphase'       : 0.,
+        'Atauphase'     : 0., 
+     },
+}
 
 class susypopeFlags(Structure):
     _fields_ = [('LoopOption', c_int), ('IterOpt', c_int),
             ('Observables', c_int), ('HiggsOpt', c_int), ('Verbose', c_int),
             ('SMObsOpt', c_int)]
-    def __init__(self, flags=None):
-        if flags is None:
-            self.LoopOption = 5
-            self.IterOpt = 1
-            self.Observables = 1
-            self.HiggsOpt = 1
-            self.Verbose = 1
-            self.SMObsOpt = 1
-        else:
-            for attr, value in flags.items():
-                if attr in [f[0] for f in self._fields_]:
-                    setattr(self,attr,value)
+    def __init__(self,  defaults, inputs={}):
+        set_obj_inputs_and_defaults(self,inputs,defaults)
 
 class susypopeNoneSLHA(Structure):
     _fields_ = [('DeltaAlfa5had', c_double), ('DeltaAlfaQED', c_double),
@@ -30,18 +44,8 @@ class susypopeNoneSLHA(Structure):
             ('M1phase', c_double), ('MUEPhase', c_double),
             ('Atphase', c_double), ('Abphase', c_double),
             ('Atauphase', c_double), ('MB', c_double)]
-    def __init__(self, flags=None):
-        #FIXME: now defaults are set here, in case they are not set somewhere else
-        # Need to think about whether we want this...
-        if flags is None:
-            self.DeltaAlfa5had = 0.02749
-            self.DeltaAlfaQED = 0.031497637
-            self.ZWidthexp = 2.4952
-            self.MB = 4.8
-        else:
-            for attr, value in flags.items():
-                if attr in [f[0] for f in self._fields_]:
-                    setattr(self,attr,value)
+    def __init__(self,  defaults, inputs={}):
+        set_obj_inputs_and_defaults(self,inputs,defaults)
 
 # output
 class susypopeObs(Structure):
@@ -53,13 +57,12 @@ class susypopeObs(Structure):
             ('Al_fb', c_double), ('sigma_had', c_double)]
 
 def run(slhadata, inputs=None, update=False):
-    inp=0
+    #FIXME: not entirely sure if this is the most elegant way of doing it.
+    # We somehow need to set the defaults for the susypope flags and none-slhainputs
     if inputs is None:
-        n_slha = susypopeNoneSLHA()
-        flags = susypopeFlags()
-    else:
-        n_slha = susypopeNoneSLHA(inputs.get('non_slha_inputs'))
-        flags = susypopeFlags(inputs.get('flags'))
+        inputs={}
+    flags  = susypopeFlags(default_inputs['flags'],inputs.get('flags'))
+    n_slha = susypopeNoneSLHA(default_inputs['non_slha_inputs'],inputs.get('non_slha_inputs'))
 
     spout = susypopeObs()
     SPlib.run_susypope(byref(slhadata.data), byref(n_slha), byref(flags),
