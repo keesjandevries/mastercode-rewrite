@@ -34,6 +34,9 @@ class SLHA(object):
 # FIXME: this needs to use pipe to function but at the moment fortran doesnt
 # work with writing to pipes
 
+    def __getitem__(self,key):
+        return self.process()[key]
+
     def write(self, filename):
         SLlib.write_slha(filename.encode('ascii'), byref(self.data))
 
