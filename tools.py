@@ -208,3 +208,11 @@ class RedirectStdStreams(object):
         self._stdout.flush(); self._stderr.flush()
         sys.stdout = self.old_stdout
         sys.stderr = self.old_stderr
+
+def set_obj_inputs_and_defaults(obj,inputs={},defaults={}):
+    for attr, value in inputs.items():
+        setattr(obj,attr,value)
+    for attr, value in defaults.items():
+        if not hasattr(obj,attr):
+            setattr(obj,attr,value)
+
