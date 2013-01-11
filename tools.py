@@ -68,13 +68,13 @@ def setup_pipe(reader, writer, pipe_name=None):
         output = writer(pipe_name)
         os.unlink(pipe_name)
         os.waitpid(child_pid,0)
+        rm(pipe_name)
         return output
 
 
 def pipe_object_to_function(obj, function, pipe_name=None):
     if pipe_name is None:
         pipe_name = "/tmp/mc-{u}".format(u=unique_str())
-    remove_file(pipe_name)
     try:
         os.mkfifo(pipe_name)
     except OSError as e:
@@ -220,6 +220,3 @@ def set_obj_inputs_and_defaults(obj,inputs={},defaults={}):
     for attr, value in values.items():
         setattr(obj,attr,value)
 
-def remove_file(filename):
-    if os.path.exists(filename):
-        os.remove(filename)
