@@ -2,13 +2,16 @@ from PointAnalyser import LikelihoodFunctions as LF
 from PointAnalyser.Constraints import Constraint
 
 constraints = {
-        'Mt': Constraint([('SMINPUTS','Mt')], [173.2,0.9], LF.gauss),
-        'M0M12': Constraint([('MINPAR', 'M0'), ('MINPAR', 'M12')],
-            [('PointAnalyser/m0m12.txt', 'radial', 0.95, 2)],
-            LF.power_4_inv_single_contour, mode='contour'),
+#        'Mt': Constraint([('SMINPUTS','Mt')], [173.2,0.9], LF.gauss),
+#        'M0M12': Constraint([('MINPAR', 'M0'), ('MINPAR', 'M12')],
+#            [('PointAnalyser/m0m12.txt', 'radial', 0.95, 2)],
+#            LF.power_4_inv_single_contour, mode='contour'),
         'MATANB' : Constraint([('MASS','MA0'),('MINPAR','TB')],
-            [('PointAnalyser/matanb.txt','x',0.95,2)],
+            [('PointAnalyser/matanb.txt','x',0.95,2,'linear',{'min':'flat'})],
             LF.power_2_single_ma_tanb, mode='contour' ),
+#        'xenon100':Constraint([('MASS','MNeu(1)'),('LSP scattering','s3out')],
+#            [('PointAnalyser/xenon100.txt','x')],
+#            LF.xenon100_jul_2012, mode='contour' ),
         }
         #'Mt':           : [173.2,    ,0.9],             LF.gauss      ),
         #"MZ"            : [91.1875,  ,0.0021],          LF.gauss      ),

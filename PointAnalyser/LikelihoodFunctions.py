@@ -34,17 +34,12 @@ def power_2_single_contour(point,contour):
     return power_n_scaling(contour.chi2,r,2)
 
 def power_2_single_ma_tanb(point,contour):
-    """
-Need to catch the scenario where MA is not in the range.
-if MA below range: take minimum MA
-chi2=0 if MA above range
-    """
     chi2=0.
-    minma=contour.contour[0][0]
-    maxma=contour.contour[-1][0]
-    if point[0] < minma:
-        point=(minma,point[1])
-    if point[0] < maxma:
-        r = contour.point_ratio(point)
+    r = contour.point_ratio(point)
+    print('r is ', r)
+    if r:
         chi2=power_n_scaling(contour.chi2,r,2)
     return chi2
+
+#def xenon100_jul_2012(point,contour)
+    
