@@ -92,17 +92,12 @@ def point_ratio(self, point, mode):
     segment = segment_range(point, self.contour, self.mode)
     return mode_lookup[mode]['ratio'](point, segment)
 
-def chi2_from_contour(point, contour):
-    r = contour.point_ratio(point)
-    return contour.func(contour.chi2, r)
-
 class Contour(object):
-    def __init__(self,filename, mode, pval, dim=2, function=None):
+    def __init__(self,filename, mode, pval, dim=2):
         self.contour = load_contour(filename,mode)
         self.mode = mode
         self.pval = pval
         self.dim = dim
-        self.func = function
         self.chi2 = stats.chi2quantile(self.pval, self.dim)
 
     def point_ratio(self,point):
@@ -110,9 +105,3 @@ class Contour(object):
         segment = (self.contour[segment_indices[0]],
                 self.contour[segment_indices[1]])
         return mode_lookup[self.mode]['ratio'](point, segment)
-
-    def get_chi2(self,point):
-        if function is None:
-            print('chi2 function not assigned for this contour')
-        else:
-            return chi2_from_contour(self, point)

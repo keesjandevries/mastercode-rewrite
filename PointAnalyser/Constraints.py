@@ -1,40 +1,46 @@
+from math import sqrt
+
 from PointAnalyser import LikelihoodFunctions as LF
-from PointAnalyser.Contours import chi2_from_contour
 from PointAnalyser.Contours import Contour
 
 class Constraint(object):
-    def __init__(self, inputs, fixed_values, func):
-        self._inputs = inputs
-        self._args = fixed_values
+    def __init__(self, ids, data, func, mode='simple'):
+        """ 
+In the case of from_files = True:
+    args = [ ('filename', pval), ... ]
+Otherwise,
+    args = [ fixed inputs for func ]
+        """ 
+        self._ids = ids
         self._func = func
+        if mode is 'simple':
+            self._data = [data[0],sqrt(sum([d**2 for d in data[1:]]))]
+        else:
+            self._data = [ Contour(*arg) for arg in data ]
+            for contour in self._data:
+                assert contour.dim == len(ids)
 
     def get_chi2(self, point):
-        #  collect necessary inputs
+        #  collect necessary ids
         chi2 = 0
-        for (block, name) in self._inputs:
-            f_inputs = [ point[block][name] for (block,name) in self._inputs ]
         try:
-            f_inputs = [ point[v] for v in self._inputs ]
+            for (block, name) in self._ids:
+                f_inputs = tuple([point[block][name]
+                    for (block,name) in self._ids])
         except KeyError:
-            print('ERROR: Provided invalid input set {0}'.format(self._inputs))
+            print('ERROR: Provided invalid input set {0}'.format(self._ids))
             print('\tSetting chi2 to 0 for this constraint')
         else:
-            args = f_inputs + self._args
+            args = [f_inputs] + self._data
             chi2 = self._func(*args)
         return chi2
 
-class ContourConstraint(Constraint):
-    def __init__(self, inputs, contour_details, func=chi2_from_contour):
-        #contour details is a ('filename', pval, dim=2, mode='radial')
-        self._inputs = inputs
-        self._func = func
-        self._args = [ Contour(*args) for args in contour_details ]
-
 constraints = {
-        'Mt': Constraint([('SMINPUTS','Mt')],
-            [173.2,0.9], LF.gauss)
-        'm0m12': ContourConstraint([('MINPAR', 'm0'), ('MINPAR', 'm12')],
-            [('PointAnalyser/test.txt', 'radial', 0.95, 2, LF.power_4_scaling)] )
+        'Mt': Constraint([('SMINPUTS','Mt')], [173.2,0.9], LF.gauss),
+        'M0M12': Constraint([('MINPAR', 'M0'), ('MINPAR', 'M12')],
+            [('PointAnalyser/test.txt', 'radial', 0.95, 2)],
+            LF.power_4_single_contour, mode='contour')
+        }
         #'Mt':           : [173.2,    ,0.9],             LF.gauss      ),
         #"MZ"            : [91.1875,  ,0.0021],          LF.gauss      ),
         #"GZ_in"         : [2.4952,   ,0.0023],          LF.gauss      ),
@@ -70,4 +76,3 @@ constraints = {
         #"R(Dms)/R(Dmd)" : [1.00,     ,0.01, 0.13],      LF.gauss      ),
         #"D_0(K*g)"      : [0.028,    ,0.023, 0.024],    LF.gauss      ),
         #"BR(b->sg)"     : [1.117,    ,0.12],            LF.gauss      ),
-        }

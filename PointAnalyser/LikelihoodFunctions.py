@@ -1,18 +1,19 @@
-def gauss(x, mu, sigma):
+def gauss(point, mu, sigma):
+    x = point[0]
     return ((x-mu)/sigma)**2
 
-def upperlimit(x, mu, sigma):
+def upperlimit(point, mu, sigma):
     chi2 = 0
     if x > mu:
-        chi2 = gauss(x,mu,sigma)
+        chi2 = gauss(point,mu,sigma)
     else:
         chi2 = 0
     return chi2
 
-def lowerlimit(x, mu, sigma):
+def lowerlimit(point, mu, sigma):
     chi2 = 0
     if x < mu:
-        chi2 = gauss(x,mu,sigma)
+        chi2 = gauss(point,mu,sigma)
     else:
         chi2 = 0
     return chi2
@@ -20,3 +21,7 @@ def lowerlimit(x, mu, sigma):
 # contour likelihood functions
 def power_4_scaling(bc, r):
     return bc*((1./r)**4)
+
+def power_4_single_contour(point, contour):
+    r = contour.point_ratio(point)
+    return power_4_scaling(contour.chi2, r)
