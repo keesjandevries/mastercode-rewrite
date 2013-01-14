@@ -102,6 +102,9 @@ class Contour(object):
 
     def point_ratio(self,point):
         segment_indices = segment_range(point, self.contour, self.mode)
-        segment = (self.contour[segment_indices[0]],
+        if segment_indices:
+            segment = (self.contour[segment_indices[0]],
                 self.contour[segment_indices[1]])
-        return mode_lookup[self.mode]['ratio'](point, segment)
+            return mode_lookup[self.mode]['ratio'](point, segment)
+        else:
+            return None
