@@ -6,6 +6,7 @@ from ObsCalculator import point
 from tools import ansi_bold
 
 from PointAnalyser import Analyse
+from PointAnalyser import Constraints_list
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -45,17 +46,10 @@ if __name__=="__main__" :
 
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
 
+    all_constraints=Constraints_list.constraints
 
-    total, breakdown = Analyse.chi2(combined_obs)
+    total, breakdown = Analyse.chi2(combined_obs,all_constraints)
 
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
     bpp.pprint(breakdown)
 
-    ## test code for Contour analyser
-    #from PointAnalyser import Contours
-    #from PointAnalyser import LikelihoodFunctions
-    #testf = LikelihoodFunctions.power_4_scaling
-    #point = (1,300)
-    #contour = Contours.Contour(filename='PointAnalyser/test.txt', mode='radial',
-            #pval=0.95, dim=2)
-    #print(Contours.chi2_from_contour(contour, point, testf))
