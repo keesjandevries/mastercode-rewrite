@@ -46,10 +46,17 @@ if __name__=="__main__" :
 
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
 
+    # I think this is the way to do it:
+    # initialise all constraints
     all_constraints=Constraints_list.constraints
-
-    total, breakdown = Analyse.chi2(combined_obs,all_constraints)
+    # make a dictionary that only contains the constraints you want (e.g. just define on the spot, or read in from a file)
+    data_set=['xenon100']
+    constraints={name: all_constraints[name] for name in data_set}
+    #pass this constraints list to the chi2 function
+    total, breakdown = Analyse.chi2(combined_obs,constraints)
 
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
+#    bpp.pprint(combined_obs)
     bpp.pprint(breakdown)
+#    print('Total chi2:',total)
 
