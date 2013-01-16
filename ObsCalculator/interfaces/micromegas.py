@@ -2,7 +2,7 @@
 
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from tools import setup_pipe, unique_str, ctypes_field_values
+from tools import setup_pipe, unique_str, ctypes_field_values, rm
 
 name = "Micromegas"
 MOlib = cdll.LoadLibrary('packages/lib/libmcmicromegas.so')
@@ -19,4 +19,5 @@ def run(slhadata, inputs=None, update=False) :
     fname = "/tmp/mc-{u}".format(u=unique_str())
     writer(fname)
     reader(fname)
+    rm(fname)
     return ctypes_field_values(MOout, name)

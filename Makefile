@@ -1,6 +1,7 @@
 .PHONY: all clean
 
 CALC_DIR=$(PWD)/ObsCalculator
+SAMPLE_DIR=$(PWD)/Sampler
 PATCH_DIR=$(CALC_DIR)/.patches
 DEF_DIR=$(CALC_DIR)/.make_defs
 INTERFACE_DIR=$(CALC_DIR)/interfaces
@@ -14,7 +15,8 @@ INCLUDE_DIR=$(INSTALL_DIR)/include
 MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
 	  INCLUDE_DIR=$(INCLUDE_DIR) DEF_DIR=$(DEF_DIR) \
 	  PREDICTOR_DIR=$(PREDICTOR_DIR) UTIL_DIR=$(UTIL_DIR) \
-	  INTERFACE_DIR=$(INTERFACE_DIR) LIB_DIR=$(LIB_DIR)
+	  INTERFACE_DIR=$(INTERFACE_DIR) LIB_DIR=$(LIB_DIR) \
+	  SAMPLE_DIR=$(SAMPLE_DIR)
 
 utils=slhalib
 predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
