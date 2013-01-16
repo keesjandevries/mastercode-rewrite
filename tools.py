@@ -208,3 +208,14 @@ class RedirectStdStreams(object):
         self._stdout.flush(); self._stderr.flush()
         sys.stdout = self.old_stdout
         sys.stderr = self.old_stderr
+
+def set_obj_inputs_and_defaults(obj,inputs={},defaults={}):
+    #FIXME: this could be improved: not sure if we need to copy 
+    # and we may want to check for fields in the structure
+    if inputs is None:
+        inputs={}
+    values=defaults.copy()
+    values.update(inputs)
+    for attr, value in values.items():
+        setattr(obj,attr,value)
+

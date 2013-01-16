@@ -11,17 +11,17 @@ from ObsCalculator.interfaces import softsusy
 from ObsCalculator.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
 from ObsCalculator.interfaces import susypope
 
-
 slha_generator = softsusy
 slha_modifiers = [feynhiggs]
 predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
         susypope]
 
-def run_point(model, **inputs):
+def run_point(model, **input_pars):
     stdouts = OrderedDict()
 
     obj, stdout = tools.get_ctypes_streams(func=slha_generator.run,
-            args=[model], kwargs=inputs)
+            args=[model], kwargs=input_pars[slha_generator.name])
+
     stdouts.update({slhamodule.name: stdout})
     slhafile = SLHA(obj)
 
@@ -30,8 +30,8 @@ def run_point(model, **inputs):
         is_modifier = predictor in slha_modifiers
         result, stdout = tools.get_ctypes_streams(
                 func=slhamodule.send_to_predictor,
-                args=[slhafile,predictor, is_modifier])
+                args=[slhafile,input_pars.get(predictor.name),predictor, is_modifier])
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
 
-    return slhafile.process(), predictor_output
+    return slhafile.process(), predictor_output , stdouts

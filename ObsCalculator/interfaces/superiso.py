@@ -10,7 +10,7 @@ SIlib = cdll.LoadLibrary('packages/lib/libmcsuperiso.so')
 class SuperISOPrecObs(Structure):
     _fields_ = [('SIbsg', c_double), ('SId0', c_double), ('SIgm2', c_double)]
 
-def run(slhadata, update=False) :
+def run(slhadata, inputs=None, update=False) :
     SIout = SuperISOPrecObs()
     fname = "/tmp/mc-{u}".format(u=tools.unique_str())
     slhadata.write(fname)

@@ -42,7 +42,10 @@ if __name__=="__main__" :
             'mgut': {'cMSSM': 2e16, 'pMSSM': 1.0e3}[model]
             }
     m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
-    slha_file, observations = point.run_point(model=model, **m_vars)
+    all_params={'SoftSUSY':m_vars}
+    
+
+    slha_file, observations,stdouts = point.run_point(model=model, **all_params)
 
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
 
