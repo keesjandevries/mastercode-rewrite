@@ -18,11 +18,11 @@ MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
 	  INTERFACE_DIR=$(INTERFACE_DIR) LIB_DIR=$(LIB_DIR) \
 	  SAMPLE_DIR=$(SAMPLE_DIR)
 
-utils=slhalib
+utils=slhalib multinest
 predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
 interfaces=feynhiggs_interface softsusy_interface micromegas_interface \
 		   superiso_interface bphysics_interface lspscat_interface \
-		   slhalib_interface susypope_interface
+		   slhalib_interface susypope_interface multinest_interface
 
 targets=$(predictors) $(utils) $(interfaces)
 
