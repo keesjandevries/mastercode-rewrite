@@ -14,7 +14,6 @@ constraints = {
         'MATANB' : Constraint([ids['mA'],ids['tanb']],
             [('PointAnalyser/matanb.txt','x',0.95,2,'linear',{'min':'flat'})],
             LF.power_2_single_ma_tanb, mode='contour' ),
-#        'xenon100':Constraint([('MASS','MNeu(1)'),('LSP scattering','s3out')],
         'xenon100':Constraint([ids['mneu1'],ids['ssiKO']],
             [('PointAnalyser/xenon100.txt','x',0.9,2,'logxy',{'min':'flat','max':'flat'})],
             LF.xenon100_jul_2012, mode='contour' ),
