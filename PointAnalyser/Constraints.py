@@ -24,8 +24,8 @@ Otherwise,
         chi2 = 0
         try:
             for (block, name) in self._ids:
-                f_inputs = tuple([point[block][name]
-                    for (block,name) in self._ids])
+                f_inputs = tuple([point[pred_id]
+                    for pred_id in self._ids])
         except KeyError:
             print('ERROR: Provided invalid input set {0}'.format(point))
             print('\tSetting chi2 to 0 for this constraint')

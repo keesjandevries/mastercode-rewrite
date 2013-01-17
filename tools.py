@@ -23,7 +23,7 @@ def ctypes_field_values(obj, title):
         if 'ctypes' in str(a_type._type_):
             c_obj = getattr(obj, attr)
             d[attr] = c_obj[:]
-    return {title: d}
+    return {(title,key):val for (key,val) in d.items() }
 
 def is_int(s):
     try:
