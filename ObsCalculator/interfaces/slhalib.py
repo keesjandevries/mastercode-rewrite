@@ -4,6 +4,7 @@ from collections import OrderedDict
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
 from tools import c_complex, pipe_object_to_function, unique_str, is_int, rm
+import Variables
 
 name = "SLHALib"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')
@@ -20,6 +21,9 @@ class SLHAData(Structure):
 
     def __setitem__(self,key,value):
         self.carray[key]=c_complex(value)
+
+    def __getitem__(self,key):
+        return self.carray[key]
 
 class SLHA(object):
     def __init__(self, data=""):
@@ -44,6 +48,22 @@ class SLHA(object):
     def read(self, filename):
         self.data = SLHAData()
         SLlib.read_slha(filename.encode('ascii'), byref(self.data))
+
+    def data_to_dict_using_variables(self):
+        """
+        looks for ids from Variables.py that look like 
+        ('slha',('block',(indicies),slhalib_nr))
+        Then tries to extract these values, if present
+        """
+        ids=Variables.get_ids()
+        slha_dict={}
+        #FIXME: not sure if this should be a function in tools.py
+        slha_ids=tools.get_slha_ids(ids)
+        for oid in slha_ids:
+            slhalib_nr=oid[-1]
+            value=self.data[slhalib_nr]
+            if value: slha_dict[oid]=value
+        return slha_dict
 
     def process(self):
         s = str(self)

@@ -25,6 +25,9 @@ def ctypes_field_values(obj, title):
             d[attr] = c_obj[:]
     return {(title,key):val for (key,val) in d.items() }
 
+def carray_to_list(obj):
+
+
 def is_int(s):
     try:
         i = int(s)
@@ -218,4 +221,7 @@ def set_obj_inputs_and_defaults(obj,inputs={},defaults={}):
     values.update(inputs)
     for attr, value in values.items():
         setattr(obj,attr,value)
+
+def get_slha_ids(ids):
+    return [oid for oid in ids.values() if sid=='slha']
 
