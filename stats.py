@@ -24,6 +24,7 @@ def chi2quantile(p, ndf):
 
     xx = 0.5 * ndf
     cp = xx - 1
+
     if ndf >= math.log(p)*(-c[5]):
         #starting approximation for ndf less than or equal to 0.32
         if ndf > c[3]:
@@ -40,8 +41,10 @@ def chi2quantile(p, ndf):
                 q = ch
                 p1 = 1 + ch * (c[7]+ch)
                 p2 = ch * (c[9] + ch * (c[8] + ch))
-                t = -0.5 + (c[7] + 2 * ch) / p1 - (c[9] + ch * (c[10] + 3 * ch)) / p2
-                ch = ch - (1 - math.exp(a + g + 0.5 * ch + cp * aa) *p2 / p1) / t
+                t = (-0.5 + (c[7] + 2. * ch) / p1 -
+                        (c[9] + ch * (c[10] + 3. * ch)) / p2)
+                ch = (ch - (1 - math.exp(a + g + 0.5 * ch + cp * aa) * p2 / p1)
+                        / t)
                 if abs(q/ch - 1.) > c[1]:
                     break
     else:
@@ -57,13 +60,17 @@ def chi2quantile(p, ndf):
         t = p2 * math.exp(xx * aa + g + p1 - cp * math.log(ch))
         b = t / ch
         a = 0.5 * t - b * cp
-        s1 = (c[19] + a * (c[17] + a * (c[14] + a * (c[13] + a * (c[12] +c[11] * a))))) / c[24]
-        s2 = (c[24] + a * (c[29] + a * (c[32] + a * (c[33] + c[35] * a)))) / c[37]
+        s1 = (((c[19] + a * (c[17] + a * (c[14] + a *
+            (c[13] + a * (c[12] +c[11] * a))))) / c[24]))
+        s2 = ((c[24] + a * (c[29] + a * (c[32] + a *
+            (c[33] + c[35] * a)))) / c[37])
         s3 = (c[19] + a * (c[25] + a * (c[28] + c[31] * a))) / c[37]
-        s4 = (c[20] + a * (c[27] + c[34] * a) + cp * (c[22] + a * (c[30] + c[36] * a))) / c[38]
+        s4 = ((c[20] + a * (c[27] + c[34] * a) + cp *
+                (c[22] + a * (c[30] + c[36] * a))) / c[38])
         s5 = (c[13] + c[21] * a + cp * (c[18] + c[26] * a)) / c[37]
         s6 = (c[15] + cp * (c[23] + c[16] * cp)) / c[38]
-        ch = ch + t * (1 + 0.5 * t * s1 - b * cp * (s1 - b * (s2 - b * (s3 - b * (s4 - b * (s5 - b * s6))))))
+        ch = (ch + t * (1 + 0.5 * t * s1 - b * cp *
+                (s1 - b * (s2 - b * (s3 - b * (s4 - b * (s5 - b * s6)))))))
         if abs(q / ch - 1) > e:
             break
     return ch
@@ -72,7 +79,7 @@ def chi2quantile(p, ndf):
 def qnorm( p, mean = 0.0, sd = 1.0):
     if p <= 0 or p >= 1:
         # The original perl code exits here, we'll throw an exception instead
-        raise ValueError( "Argument to ltqnorm %f must be in (0,1)" % p )
+        raise ValueError( "Argument to qnorm %f must be in (0,1)" % p )
 
     # Coefficients in rational approximations.
     a = (-3.969683028665376e+01,  2.209460984245205e+02,

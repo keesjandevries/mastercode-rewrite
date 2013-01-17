@@ -6,6 +6,7 @@ from ObsCalculator import point
 from tools import ansi_bold
 
 from PointAnalyser import Analyse
+from PointAnalyser import Constraints_list
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -21,7 +22,7 @@ if __name__=="__main__" :
     input_vars = {
             'cMSSM': {
                 'm0': 300.53, 'm12': 905.0, 'A0': -1323.97 , 'tanb': 16.26, 'sgnMu': 1 #MC8 bf
-                #'m0': 100, 'm12': 200, 'A0': 0, 'tanb': 10., 'sgnMu': 1
+                #'m0': 100, 'm12': 270, 'A0': 0, 'tanb': 10., 'sgnMu': 1
                 #'m0': 389.50582, 'm12': 853.0322, 'A0': 2664.7922,
                 #'tanb': 14.59729, 'sgnMu': 1
                 },
@@ -48,14 +49,17 @@ if __name__=="__main__" :
 
     combined_obs = dict(list(slha_file.items()) + list(observations.items()))
 
-    pprint.PrettyPrinter().pprint(observations)
+    # I think this is the way to do it:
+    # initialise all constraints
+    all_constraints=Constraints_list.constraints
+    # make a dictionary that only contains the constraints you want (e.g. just define on the spot, or read in from a file)
+    data_set=['xenon100']
+    constraints={name: all_constraints[name] for name in data_set}
+    #pass this constraints list to the chi2 function
+    total, breakdown = Analyse.chi2(combined_obs,constraints)
 
-
-    total, breakdown = Analyse.chi2(combined_obs)
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
-#    bpp.pprint(breakdown)
+#    bpp.pprint(combined_obs)
+    bpp.pprint(breakdown)
+#    print('Total chi2:',total)
 
-    from PointAnalyser import Contours
-    point = (1,300)
-    contour = Contours.Contour(filename='PointAnalyser/test.txt', mode='radial')
-    print(contour.point_ratio(point))

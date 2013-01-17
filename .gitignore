@@ -6,3 +6,5 @@
 *.slha
 *.pickled
 *.log
+*.dat
+*.points

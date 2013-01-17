@@ -3,7 +3,7 @@
 from collections import OrderedDict
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from tools import c_complex, pipe_object_to_function, unique_str, is_int
+from tools import c_complex, pipe_object_to_function, unique_str, is_int, rm
 
 name = "SLHALib"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')
@@ -27,7 +27,9 @@ class SLHA(object):
     def __str__(self):
         tmp_name = "/tmp/mc-{u}".format(u=unique_str())
         self.write(tmp_name)
-        return open(tmp_name).read()
+        txt=open(tmp_name).read()
+        rm(tmp_name)
+        return txt
 
     def __len__(self):
         return len(self.data)
