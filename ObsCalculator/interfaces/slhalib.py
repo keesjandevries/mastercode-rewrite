@@ -18,6 +18,8 @@ class SLHAData(Structure):
     def __len__(self):
         return len(self.carray)
 
+    def __setitem__(self,key,value):
+        self.carray[key]=c_complex(value)
 
 class SLHA(object):
     def __init__(self, data=""):
