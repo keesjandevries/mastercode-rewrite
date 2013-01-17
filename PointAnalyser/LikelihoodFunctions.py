@@ -39,7 +39,6 @@ def power_2_single_contour(point,contour):
 def power_2_single_ma_tanb(point,contour):
     chi2=0.
     r = contour.point_ratio(point)
-    print('r is ', r)
     if r:
         chi2=power_n_scaling(contour.chi2,r,2)
     return chi2
