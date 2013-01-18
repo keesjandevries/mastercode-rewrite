@@ -21,15 +21,22 @@ def get_ids():
     ids={
         'Mh0'       :(feynhiggs.name,   'mh'),
         'mstau1'    :('slha',('MASS',   (2000004),  123)),
-        'Af(1,1)'   :('slha',('AE',     (1,1),      225)), #FIXME: this number seems wrong
-        'mtop'      :('SMINPUTS','Mt'),
-        'mh'        :('MASS','Mh0'),
-        'm0'        :('MINPAR', 'M0'), 
-        'm12'       :('MINPAR', 'M12'),
-        'mA'        :('MASS','MA0'),
-        'tanb'      :('MINPAR','TB'),
-        'mneu1'     :('MASS','MNeu(1)'),
+        'Af(1,1)'   :('slha',('AE',     (1,1),      225)), 
+        'mtop'      :('SMINPUTS','Mt'),  #NB: these still follow the way of being processed by SLHA.process
+        'mh'        :('MASS','Mh0'),     #NB: these still follow the way of being processed by SLHA.process
+        'm0'        :('MINPAR', 'M0'),   #NB: these still follow the way of being processed by SLHA.process
+        'm12'       :('MINPAR', 'M12'),  #NB: these still follow the way of being processed by SLHA.process
+        'mA'        :('MASS','MA0'),     #NB: these still follow the way of being processed by SLHA.process
+        'tanb'      :('MINPAR','TB'),    #NB: these still follow the way of being processed by SLHA.process
+        'mneu1'     :('MASS','MNeu(1)'), #NB: these still follow the way of being processed by SLHA.process
         'ssiKO'     :(lspscat.name,'s3out'),
         'bsmmBP'    :(bphysics.name,'Psll'),
         }
     return ids
+
+
+
+
+
+
+
