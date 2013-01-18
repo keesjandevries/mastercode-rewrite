@@ -20,8 +20,8 @@ from ObsCalculator.interfaces import susypope
 def get_ids():
     ids={
         'Mh0'       :(feynhiggs.name,   'mh'),
-#        'mstau1'    :('slha',('MASS',   (1000015),  122)),
-#        'Af(1,1)'   :('slha',('AE',     (1,1),      225)) 
+        'mstau1'    :('slha',('MASS',   (2000004),  123)),
+        'Af(1,1)'   :('slha',('AE',     (1,1),      225)), #FIXME: this number seems wrong
         'mtop'      :('SMINPUTS','Mt'),
         'mh'        :('MASS','Mh0'),
         'm0'        :('MINPAR', 'M0'), 

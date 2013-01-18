@@ -3,7 +3,8 @@
 from collections import OrderedDict
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from tools import c_complex, pipe_object_to_function, unique_str, is_int, rm
+from tools import c_complex, pipe_object_to_function, unique_str, is_int, rm, get_slha_ids
+from tools import get_slhalibnr_from_oid
 import Variables
 
 name = "SLHALib"
@@ -20,10 +21,13 @@ class SLHAData(Structure):
         return len(self.carray)
 
     def __setitem__(self,key,value):
-        self.carray[key]=c_complex(value)
+        #in fortran, the first array index is 1, so need to shift one back
+        self.carray[key-1]=c_complex(value)
 
     def __getitem__(self,key):
-        return self.carray[key]
+        #FIXME: this is good for now since we don't use complex numbers ever
+        #in fortran, the first array index is 1, so need to shift one back
+        return self.carray[key-1].re
 
 class SLHA(object):
     def __init__(self, data=""):
@@ -58,11 +62,12 @@ class SLHA(object):
         ids=Variables.get_ids()
         slha_dict={}
         #FIXME: not sure if this should be a function in tools.py
-        slha_ids=tools.get_slha_ids(ids)
+        slha_ids=get_slha_ids(ids)
         for oid in slha_ids:
-            slhalib_nr=oid[-1]
+            slhalib_nr=get_slhalibnr_from_oid(oid)
             value=self.data[slhalib_nr]
-            if value: slha_dict[oid]=value
+            #slhalib has -999.0 as the default value
+            if value is not -999.0: slha_dict[oid]=value
         return slha_dict
 
     def process(self):

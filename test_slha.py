@@ -15,7 +15,7 @@ if __name__=="__main__" :
     filename=args.filename
     slhafile=SLHA()
     slhafile.read(filename)
-    print(slhafile.data[7])
-    slhafile.data[7]=1000.
+    print(slhafile.data_to_dict_using_variables())
+
 
 
