@@ -1,5 +1,6 @@
 #! /usr/bin/env python
-import argparse
+import argparse, pprint
+#import Variables
 
 from ObsCalculator.interfaces.slhalib import SLHA
 
@@ -15,7 +16,16 @@ if __name__=="__main__" :
     filename=args.filename
     slhafile=SLHA()
     slhafile.read(filename)
-    print(slhafile.data_to_dict_using_variables())
+#       print(slhafile.data_to_dict_using_variables())
+    bpp = pprint.PrettyPrinter(indent=4, depth=5)
+#    slhafile.get_matching_dict(Variables.get_ids(),True)
+
+    bpp.pprint(slhafile.suggested_ids_dict())
+#    bpp.pprint(slhafile.get_dict())
+#    bpp.pprint(slhafile.get_matching_dict(Variables.get_ids(),True))
+#    bpp.pprint(slhafile.all_unambiguous_suggestions())
+    
+#    bpp.pprint(slhafile.process_all())
 
 
 
