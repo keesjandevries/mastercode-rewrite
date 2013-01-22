@@ -7,6 +7,9 @@ extern "C" {
     int get_nslhadata() {
         return nslhadata;
     }
+    int get_ofsetspinfo(){
+        return OffsetSPInfo;
+    }
     void write_slha(const char slhafilename [],
             std::complex<double>* slhadata){
         int error;

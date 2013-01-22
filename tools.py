@@ -229,3 +229,7 @@ def get_slhalibnr_from_oid(oid):
     slhalib_nr=None
     if oid[0]=='slha': slhalib_nr=oid[1][-1]
     return slhalib_nr
+
+def get_slha_nr_ids_dict(ids_dict):
+    slha_ids=get_slha_ids(ids_dict)
+    return {get_slhalibnr_from_oid(oid):oid for oid in slha_ids}
