@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 import pprint, math
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
 from tools import c_complex, pipe_object_to_function, unique_str, is_int, rm, get_slha_ids
@@ -115,6 +115,7 @@ class SLHA(object):
         self.fill_slhadata_with_slhalib_nrs()
         block_indices_comment_nr_dict=self.process_all()
         suggested_ids_dict=OrderedDict()
+        rev_dict=OrderedDict()
         for key, val in block_indices_comment_nr_dict.items():
             block, indices, comment=key
             try:
@@ -124,14 +125,25 @@ class SLHA(object):
                 print("has a non-integer value {0}".format(str(val)))
             else:
                 oid=('slha',(block,indices,nr))
-                if not suggested_ids_dict.get(comment):
-                    suggested_ids_dict[comment]=oid 
-                else:
-                    try:
-                        suggested_ids_dict[comment].append(oid)
-                    except AttributeError:
-                        suggested_ids_dict[comment]=[suggested_ids_dict[comment],oid]
+                rev_dict[oid]=comment
+        comment_count=Counter(rev_dict.values())
+        for oid, comment in rev_dict.items():
+            if comment_count[comment] ==1:
+                suggested_ids_dict[comment]=oid
+            else:
+                block=oid[1][0]
+                key=block+comment
+                suggested_ids_dict[key]=oid
         return suggested_ids_dict
+                
+
+#                if not suggested_ids_dict.get(comment):
+#                    suggested_ids_dict[comment]=oid 
+#                else:
+#                    try:
+#                        suggested_ids_dict[comment].append(oid)
+#                    except AttributeError:
+#                        suggested_ids_dict[comment]=[suggested_ids_dict[comment],oid]
             
 
     def suggest_variables_index(self,value,slhalib_nr):
