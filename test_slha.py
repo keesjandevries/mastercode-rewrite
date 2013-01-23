@@ -20,9 +20,14 @@ if __name__=="__main__" :
     bpp = pprint.PrettyPrinter(indent=4, depth=5)
 #    slhafile.get_matching_dict(Variables.get_ids(),True)
 
-    bpp.pprint(slhafile.suggested_ids_dict())
-#    bpp.pprint(slhafile.get_dict())
-#    bpp.pprint(slhafile.get_matching_dict(Variables.get_ids(),True))
+#    bpp.pprint(slhafile.get_lookup())
+#    print(slhafile)
+
+#    slhafile[('MSOFT', 'MHu2')]=90.
+    print(slhafile[('MSOFT', 'MHu2')])
+#    bpp.pprint(slhafile.process())
+#    print(slhafile) 
+#    bpp.pprint(slhafile.get_oid_val_dict(Variables.get_ids(),True))
 #    bpp.pprint(slhafile.all_unambiguous_suggestions())
     
 #    bpp.pprint(slhafile.process_all())
