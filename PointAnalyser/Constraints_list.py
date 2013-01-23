@@ -1,23 +1,19 @@
 from PointAnalyser import LikelihoodFunctions as LF
 from PointAnalyser.Constraints import Constraint
 
-import Variables
-
-ids=Variables.get_ids()
-
 constraints = {
-        'Mt': Constraint([ids['mtop']], [173.2,0.9], LF.gauss),
-        'Higgs125': Constraint([ids['mh']], [125.,1.0,1.5], LF.gauss),
-        'M0M12': Constraint([ids['m0'],ids['m12']],
+        'Mt': Constraint([('SMINPUTS','Mt')], [173.2,0.9], LF.gauss),
+        'Higgs125': Constraint([('MASS','Mh0')], [125.,1.0,1.5], LF.gauss),
+        'M0M12': Constraint([('MINPAR', 'M0'), ('MINPAR', 'M12')],
             [('PointAnalyser/m0m12.txt', 'radial', 0.95, 2,'linear')],
             LF.power_4_inv_single_contour, mode='contour'),
-        'MATANB' : Constraint([ids['mA'],ids['tanb']],
+        'MATANB' : Constraint([('MASS','MA0'),('MINPAR','TB')],
             [('PointAnalyser/matanb.txt','x',0.95,2,'linear',{'min':'flat'})],
             LF.power_2_single_ma_tanb, mode='contour' ),
-        'xenon100':Constraint([ids['mneu1'],ids['ssiKO']],
+        'xenon100':Constraint([('MASS','MNeu(1)'),('LSP scattering','s3out')],
             [('PointAnalyser/xenon100.txt','x',0.9,2,'logxy',{'min':'flat','max':'flat'})],
             LF.xenon100_jul_2012, mode='contour' ),
-        'bsmm':Constraint([ids['bsmmBP']],
+        'bsmm':Constraint([('BPhysics','Psll')],
             [('PointAnalyser/bsmm.txt','x',0.9,1,'linear',{'max':'flat'})],
             LF.one_dim_chi2_lookup, mode='contour' ),
        }
