@@ -76,48 +76,6 @@ class SLHA(object):
 
     def get_lookup(self):
         return self.lookup
-#    def data_to_dict_using_variables(self):
-#        """
-#        looks for ids from Variables.py that look like 
-#        ('slha',('block',(indicies),slhalib_nr))
-#        Then tries to extract these values, if present
-#        """
-#        ids=Variables.get_ids()
-#        slha_dict={}
-#        #FIXME: not sure if this should be a function in tools.py
-#        slha_ids=get_slha_ids(ids)
-#        for oid in slha_ids:
-#            slhalib_nr=get_slhalibnr_from_oid(oid)
-#            value=self.data[slhalib_nr]
-#            #slhalib has -999.0 as the default value
-#            if value is not invalid: slha_dict[oid]=value
-#        return slha_dict
-
-#    def get_dict(self):
-#        d={}
-#        for i in range(1,nslhadata+1):
-#            val=self.data[i]
-#            if (val != invalid):
-#                d[i]=val
-#        return d
-
-
-#    def get_oid_val_dict(self,oid_dict,make_suggestions=False):
-#        nr_id_d     =get_slha_nr_ids_dict(oid_dict)
-##        print(nr_id_d)
-#        nr_val_d    =self.get_dict()
-#        id_val_d    ={}
-#        for nr, val in nr_val_d.items():
-#            try:
-#                id_val_d[nr_id_d[nr]]=val
-#            except KeyError:
-#                print("WARNING: no id in Variables.py corresponding to slhalib number {0}".format(nr))
-#                id_val_d[('slha',(nr))]=val
-#                if make_suggestions:
-#                    suggested_ids=self.suggest_variables_index(val,nr)
-#                    print("suggested indices for nr {0} and value {1}".format(nr,val))
-#                    if len(suggested_ids) > 0: pprint.PrettyPrinter().pprint(suggested_ids)
-#        return id_val_d
 
     def fill_slhadata_with_slhalib_nrs(self):
         #FIXME: this is a hack. If you look in SLHADefs.h, the SPinfo follows the numerical values
@@ -159,31 +117,6 @@ class SLHA(object):
         return lookup
                 
             
-
-#    def suggest_variables_index(self,value,slhalib_nr):
-#        block_ind_comment_value_d=self.process_all()
-#        suggestion_d={}
-#        for key, val in block_ind_comment_value_d.items():
-#            block,indices,comment=key
-#            if val == value:
-#                suggestion_d[comment]=('slha',(block,indices,slhalib_nr))
-#        return suggestion_d
-
-#    def all_unambiguous_suggestions(self):
-#        nr_val_d    =self.get_dict()
-#        block_ind_comment_value_d=self.process_all()
-#        final_suggestion={}
-#        for slhalib_nr,value in nr_val_d.items():
-#            suggestion_d={}
-#            for key, val in block_ind_comment_value_d.items():
-#                block,indices,comment=key
-#                if val == value:
-#                    suggestion_d[comment]=('slha',(block,indices,slhalib_nr))
-#            if len(suggestion_d) == 1:
-#                final_suggestion.update(suggestion_d)
-#        return final_suggestion
-
-
     def process_all(self):
         s = str(self)
         data = OrderedDict()
@@ -197,11 +130,8 @@ class SLHA(object):
                 items = line.split()
                 if len(items):
                     first_non_index = next(x for x in items if not is_int(x))
-#                    hash_index = next(x for x in items if not x=='#')
                     indices_end = items.index(first_non_index)
-#                    indices_end = items.index(hash_index) - 1
                     comment_pos = items.index('#') if '#' in items else 0
-#                    if comment_pos: indices_end= comment_pos - 2
                     indices = tuple([int(x) for x in items[:indices_end]])
                     values = tuple([float(x) for x in
                             items[indices_end:comment_pos]])
