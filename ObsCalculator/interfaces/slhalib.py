@@ -3,9 +3,7 @@ import pprint, math
 from collections import OrderedDict, Counter
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from tools import c_complex, pipe_object_to_function, unique_str, is_int, rm, get_slha_ids
-from tools import get_slhalibnr_from_oid, get_slha_nr_ids_dict
-#import Variables
+from tools import c_complex, pipe_object_to_function, unique_str, is_int, rm
 
 name = "SLHALib"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')
