@@ -32,9 +32,15 @@ class SLHAData(Structure):
         return self.carray[key-1].re
 
 class SLHA(object):
-    def __init__(self, data=""):
+    def __init__(self, data="",lookup=None):
+        self.lookup=lookup
         if data:
             pipe_object_to_function(data, self.read)
+            #Can only create a lookup based on an input slha file
+            if not self.lookup:
+                self.lookup=self.create_lookup()
+            else:
+                self.lookup=lookup
 
     def __str__(self):
         tmp_name = "/tmp/mc-{u}".format(u=unique_str())
@@ -47,6 +53,17 @@ class SLHA(object):
         return len(self.data)
 # FIXME: this needs to use pipe to function but at the moment fortran doesnt
 # work with writing to pipes
+    def __setitem__(self,key,value):
+        try:
+            self.data[self.lookup[key]]=value
+        except KeyError:
+            print("WARNING: {} is not a valid key".format(key))
+
+    def __getitem__(self,key):
+        try:
+            return self.data[self.lookup[key]]
+        except KeyError:
+            print("WARNING: {} is not a valid key".format(key))
 
     def write(self, filename):
         SLlib.write_slha(filename.encode('ascii'), byref(self.data))
@@ -54,7 +71,11 @@ class SLHA(object):
     def read(self, filename):
         self.data = SLHAData()
         SLlib.read_slha(filename.encode('ascii'), byref(self.data))
+        if not self.lookup:
+            self.lookup=self.create_lookup()
 
+    def get_lookup(self):
+        return self.lookup
 #    def data_to_dict_using_variables(self):
 #        """
 #        looks for ids from Variables.py that look like 
@@ -72,51 +93,54 @@ class SLHA(object):
 #            if value is not invalid: slha_dict[oid]=value
 #        return slha_dict
 
-    def get_dict(self):
-        d={}
-        for i in range(1,nslhadata+1):
-            val=self.data[i]
-            if (val != invalid):
-                d[i]=val
-        return d
+#    def get_dict(self):
+#        d={}
+#        for i in range(1,nslhadata+1):
+#            val=self.data[i]
+#            if (val != invalid):
+#                d[i]=val
+#        return d
 
-    def is_number(self,value):
-        nr=False
-        if value != invalid and (value==0.0  or abs(math.log(abs(value),10) )<30) :
-            nr= True
-        return nr
 
-    def get_matching_dict(self,indices_d,make_suggestions=False):
-        nr_id_d     =get_slha_nr_ids_dict(indices_d)
-        print(nr_id_d)
-        nr_val_d    =self.get_dict()
-        id_val_d    ={}
-        for key, val in nr_val_d.items():
-            try:
-                id_val_d[nr_id_d[key]]=val
-            except KeyError:
-                print("WARNING: no id in Variables.py corresponding to slhalib number {0}".format(key))
-                id_val_d[('slha',(key))]=val
-                if make_suggestions:
-                    suggested_ids=self.suggest_variables_index(val,key)
-                    print("suggested indices for key {0} and value {1}".format(key,val))
-                    if len(suggested_ids) > 0: pprint.PrettyPrinter().pprint(suggested_ids)
-        return id_val_d
+#    def get_oid_val_dict(self,oid_dict,make_suggestions=False):
+#        nr_id_d     =get_slha_nr_ids_dict(oid_dict)
+##        print(nr_id_d)
+#        nr_val_d    =self.get_dict()
+#        id_val_d    ={}
+#        for nr, val in nr_val_d.items():
+#            try:
+#                id_val_d[nr_id_d[nr]]=val
+#            except KeyError:
+#                print("WARNING: no id in Variables.py corresponding to slhalib number {0}".format(nr))
+#                id_val_d[('slha',(nr))]=val
+#                if make_suggestions:
+#                    suggested_ids=self.suggest_variables_index(val,nr)
+#                    print("suggested indices for nr {0} and value {1}".format(nr,val))
+#                    if len(suggested_ids) > 0: pprint.PrettyPrinter().pprint(suggested_ids)
+#        return id_val_d
 
     def fill_slhadata_with_slhalib_nrs(self):
         #FIXME: this is a hack. If you look in SLHADefs.h, the SPinfo follows the numerical values
         for i in range(1,ofsetspinfo+1):
-            if self.is_number(self.data[i]) :
+            if not self.data[i]==invalid :
                 self.data[i]=float(i)
-#        print(self)
 
 
-    def suggested_ids_dict(self):
+    def create_lookup(self):
+        """
+        This function returns a dictionary
+        { slhalib_nr: ('block','comment'), ... , ('block','comment'): nr, ... }
+        """
+        #first backup the data
+        backup_data={nr:self.data[nr] for nr in range(1,ofsetspinfo+1) if not nr == invalid }
+        #backup_data=self.data.copy()
+        #fill slhafile with slhalib numbers
         self.fill_slhadata_with_slhalib_nrs()
+        #retrieve block- and observables- names and make dict
         block_indices_comment_nr_dict=self.process_all()
-        suggested_ids_dict=OrderedDict()
-        rev_dict=OrderedDict()
+        lookup=OrderedDict()
         for key, val in block_indices_comment_nr_dict.items():
+            # for the moment only need block and comment
             block, indices, comment=key
             try:
                 nr=int(val)
@@ -124,50 +148,40 @@ class SLHA(object):
                 print("WARNING: the value for block {0}, indices {1}, comment {2}".format(block,str(indices),comment))
                 print("has a non-integer value {0}".format(str(val)))
             else:
-                oid=('slha',(block,indices,nr))
-                rev_dict[oid]=comment
-        comment_count=Counter(rev_dict.values())
-        for oid, comment in rev_dict.items():
-            if comment_count[comment] ==1:
-                suggested_ids_dict[comment]=oid
-            else:
-                block=oid[1][0]
-                key=block+comment
-                suggested_ids_dict[key]=oid
-        return suggested_ids_dict
+                oid=(block,comment)
+                lookup[nr]=oid
+        # now also save reverse
+        for nr, oid in lookup.items():
+            lookup[oid]=nr
+        # restore data
+        for nr, val in backup_data.items():
+            self.data[nr]=val
+        return lookup
                 
-
-#                if not suggested_ids_dict.get(comment):
-#                    suggested_ids_dict[comment]=oid 
-#                else:
-#                    try:
-#                        suggested_ids_dict[comment].append(oid)
-#                    except AttributeError:
-#                        suggested_ids_dict[comment]=[suggested_ids_dict[comment],oid]
             
 
-    def suggest_variables_index(self,value,slhalib_nr):
-        block_ind_comment_value_d=self.process_all()
-        suggestion_d={}
-        for key, val in block_ind_comment_value_d.items():
-            block,indices,comment=key
-            if val == value:
-                suggestion_d[comment]=('slha',(block,indices,slhalib_nr))
-        return suggestion_d
+#    def suggest_variables_index(self,value,slhalib_nr):
+#        block_ind_comment_value_d=self.process_all()
+#        suggestion_d={}
+#        for key, val in block_ind_comment_value_d.items():
+#            block,indices,comment=key
+#            if val == value:
+#                suggestion_d[comment]=('slha',(block,indices,slhalib_nr))
+#        return suggestion_d
 
-    def all_unambiguous_suggestions(self):
-        nr_val_d    =self.get_dict()
-        block_ind_comment_value_d=self.process_all()
-        final_suggestion={}
-        for slhalib_nr,value in nr_val_d.items():
-            suggestion_d={}
-            for key, val in block_ind_comment_value_d.items():
-                block,indices,comment=key
-                if val == value:
-                    suggestion_d[comment]=('slha',(block,indices,slhalib_nr))
-            if len(suggestion_d) == 1:
-                final_suggestion.update(suggestion_d)
-        return final_suggestion
+#    def all_unambiguous_suggestions(self):
+#        nr_val_d    =self.get_dict()
+#        block_ind_comment_value_d=self.process_all()
+#        final_suggestion={}
+#        for slhalib_nr,value in nr_val_d.items():
+#            suggestion_d={}
+#            for key, val in block_ind_comment_value_d.items():
+#                block,indices,comment=key
+#                if val == value:
+#                    suggestion_d[comment]=('slha',(block,indices,slhalib_nr))
+#            if len(suggestion_d) == 1:
+#                final_suggestion.update(suggestion_d)
+#        return final_suggestion
 
 
     def process_all(self):
@@ -179,12 +193,15 @@ class SLHA(object):
                 # is a block
                 block_name = line.split()[1]
                 #pass
-            else:
+            elif not block_name == 'SPINFO':
                 items = line.split()
                 if len(items):
                     first_non_index = next(x for x in items if not is_int(x))
+#                    hash_index = next(x for x in items if not x=='#')
                     indices_end = items.index(first_non_index)
+#                    indices_end = items.index(hash_index) - 1
                     comment_pos = items.index('#') if '#' in items else 0
+#                    if comment_pos: indices_end= comment_pos - 2
                     indices = tuple([int(x) for x in items[:indices_end]])
                     values = tuple([float(x) for x in
                             items[indices_end:comment_pos]])
@@ -195,27 +212,15 @@ class SLHA(object):
         return data
 
     def process(self):
-        s = str(self)
-        data = OrderedDict()
-        block_name = None
-        for line in s.split('\n'):
-            if line.startswith('B'):
-                # is a block
-                block_name = line.split()[1]
-                #pass
-            else:
-                items = line.split()
-                if len(items):
-                    first_non_index = next(x for x in items if not is_int(x))
-                    indices_end = items.index(first_non_index)
-                    comment_pos = items.index('#') if '#' in items else 0
-                    indices = tuple([int(x) for x in items[:indices_end]])
-                    values = tuple([float(x) for x in
-                            items[indices_end:comment_pos]])
-                    if len(values) == 1:
-                        values = values[0]
-                    comment = ' '.join(items[comment_pos:]).lstrip('#').lstrip()
-                    data[(block_name,comment)] = values
+        data={}
+        for i in range(1,nslhadata+1):
+            val=self.data[i]
+            if not val == invalid:
+                try:
+                    oid=('slha',self.lookup[i])
+                except KeyError:
+                    oid=('slha',i)
+                data[oid]=val
         return data
 
 def send_to_predictor(slhadata, inputs ,predictor, update=False):
