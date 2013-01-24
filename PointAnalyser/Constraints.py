@@ -27,7 +27,7 @@ Otherwise,
                 f_inputs = tuple([point[pred_id]
                     for pred_id in self._ids])
         except KeyError:
-            print('ERROR: Provided invalid input set {0}'.format(point))
+            print('ERROR: Provided invalid input set {0}'.format(self._ids))
             print('\tSetting chi2 to 0 for this constraint')
         except TypeError:
             print('ERROR: Please provide dictionary that can be accessed using point[id1][id2]')
