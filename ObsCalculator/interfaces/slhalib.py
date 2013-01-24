@@ -92,6 +92,7 @@ class SLHA(object):
         #fill slhafile with slhalib numbers
         self.fill_slhadata_with_slhalib_nrs()
         #retrieve block- and observables- names and make dict
+        self.write('temp.slha')
         block_indices_comment_nr_dict=self.process_all()
         lookup=OrderedDict()
         for key, val in block_indices_comment_nr_dict.items():
@@ -126,9 +127,8 @@ class SLHA(object):
             if line.startswith('B'):
                 # is a block
                 block_name = line.split()[1]
-                if 'Q' in block_name:
-                    data[(block_name,tuple([]),'Qscale')]=line.split('=').split()[0]
-                #pass
+                if 'Q' in line:
+                    data[(block_name,tuple([]),'Qscale')]= float(line.split('=')[1].split()[0])
             elif not block_name == 'SPINFO':
                 #FIXME: want to have the SPINFO as well at some point
                 items = line.split()
@@ -146,7 +146,7 @@ class SLHA(object):
         return data
 
     def process(self):
-        data={}
+        data=OrderedDict()
         for i in range(1,nslhadata+1):
             val=self.data[i]
             if not val == invalid:
