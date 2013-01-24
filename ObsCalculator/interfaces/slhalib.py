@@ -92,7 +92,6 @@ class SLHA(object):
         #fill slhafile with slhalib numbers
         self.fill_slhadata_with_slhalib_nrs()
         #retrieve block- and observables- names and make dict
-        self.write('temp.slha')
         block_indices_comment_nr_dict=self.process_all()
         lookup=OrderedDict()
         for key, val in block_indices_comment_nr_dict.items():
@@ -136,6 +135,7 @@ class SLHA(object):
                     first_non_index = next(x for x in items if not is_int(x))
                     indices_end = items.index(first_non_index)
                     comment_pos = items.index('#') if '#' in items else 0
+                    if comment_pos >0: indices_end=comment_pos-1
                     indices = tuple([int(x) for x in items[:indices_end]])
                     values = tuple([float(x) for x in
                             items[indices_end:comment_pos]])
