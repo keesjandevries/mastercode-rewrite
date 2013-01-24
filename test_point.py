@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import os, sys, select, argparse, pprint
+from collections import OrderedDict
 
 #from ObsCalculator import point
 from ObsCalculator import point
@@ -43,11 +44,12 @@ if __name__=="__main__" :
             }
     m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
     all_params={'SoftSUSY':m_vars}
+    all_params['mc_slha_update']={('SMINPUTS','MZ'):90.}
     
 
     slha_file, observations,stdouts = point.run_point(model=model, **all_params)
 
-    combined_obs = dict(list(slha_file.items()) + list(observations.items()))
+    combined_obs = OrderedDict(list(slha_file.items()) + list(observations.items()))
 
     # I think this is the way to do it:
     # initialise all constraints
@@ -61,6 +63,6 @@ if __name__=="__main__" :
 
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
     bpp.pprint(combined_obs)
-    bpp.pprint(breakdown)
+#    bpp.pprint(breakdown)
 #    print('Total chi2:',total)
 
