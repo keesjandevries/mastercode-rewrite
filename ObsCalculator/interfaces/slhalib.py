@@ -89,7 +89,6 @@ class SLHA(object):
         """
         #first backup the data
         backup_data={nr:self.data[nr] for nr in range(1,ofsetspinfo+1) if not nr == invalid }
-        #backup_data=self.data.copy()
         #fill slhafile with slhalib numbers
         self.fill_slhadata_with_slhalib_nrs()
         #retrieve block- and observables- names and make dict
@@ -116,6 +115,10 @@ class SLHA(object):
                 
             
     def process_all(self):
+        """
+        This function contains knowledge about what an slhafile from slhalib looks like
+        It returns a dictionary: {(block_name,indices,comment):  value, ...}
+        """
         s = str(self)
         data = OrderedDict()
         block_name = None
@@ -123,8 +126,11 @@ class SLHA(object):
             if line.startswith('B'):
                 # is a block
                 block_name = line.split()[1]
+                if 'Q' in block_name:
+                    data[(block_name,tuple([]),'Qscale')]=line.split('=').split()[0]
                 #pass
             elif not block_name == 'SPINFO':
+                #FIXME: want to have the SPINFO as well at some point
                 items = line.split()
                 if len(items):
                     first_non_index = next(x for x in items if not is_int(x))
