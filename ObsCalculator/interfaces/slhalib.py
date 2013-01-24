@@ -34,11 +34,6 @@ class SLHA(object):
         self.lookup=lookup
         if data:
             pipe_object_to_function(data, self.read)
-            #Can only create a lookup based on an input slha file
-            if not self.lookup:
-                self.lookup=self.create_lookup()
-            else:
-                self.lookup=lookup
 
     def __str__(self):
         tmp_name = "/tmp/mc-{u}".format(u=unique_str())
@@ -51,29 +46,40 @@ class SLHA(object):
         return len(self.data)
 # FIXME: this needs to use pipe to function but at the moment fortran doesnt
 # work with writing to pipes
+
     def __setitem__(self,key,value):
-        try:
-            self.data[self.lookup[key]]=value
-        except KeyError:
-            print("WARNING: {} is not a valid key".format(key))
+        if self.lookup:
+            try:
+                self.data[self.lookup[key]]=value
+            except KeyError:
+                print("WARNING: {0} is not a valid key".format(key))
+        else:
+            print("WARNING: lookup is not initialised for slha object")
+
 
     def __getitem__(self,key):
-        try:
-            return self.data[self.lookup[key]]
-        except KeyError:
-            print("WARNING: {} is not a valid key".format(key))
+        if self.lookup:
+            try:
+                return self.data[self.lookup[key]]
+            except KeyError:
+                print("WARNING: {0} is not a valid key".format(key))
+        else:
+            print("WARNING: lookup is not initialised for slha object")
 
     def write(self, filename):
         SLlib.write_slha(filename.encode('ascii'), byref(self.data))
 
-    def read(self, filename):
+    def read(self, filename,makelookup=True):
         self.data = SLHAData()
         SLlib.read_slha(filename.encode('ascii'), byref(self.data))
-        if not self.lookup:
-            self.lookup=self.create_lookup()
+        if (not self.lookup) and makelookup:
+            self.initialise_lookup()
 
     def get_lookup(self):
-        return self.lookup
+        if self.lookup:
+            return self.lookup.copy()
+        else:
+            print("WARNING: cannot return lookup, because lookup is not initiated")
 
     def fill_slhadata_with_slhalib_nrs(self):
         #FIXME: this is a hack. If you look in SLHADefs.h, the SPinfo follows the numerical values
@@ -82,7 +88,7 @@ class SLHA(object):
                 self.data[i]=float(i)
 
 
-    def create_lookup(self):
+    def initialise_lookup(self):
         """
         This function returns a dictionary
         { slhalib_nr: ('block','comment'), ... , ('block','comment'): nr, ... }
@@ -92,7 +98,7 @@ class SLHA(object):
         #fill slhafile with slhalib numbers
         self.fill_slhadata_with_slhalib_nrs()
         #retrieve block- and observables- names and make dict
-        block_indices_comment_nr_dict=self.process_all()
+        block_indices_comment_nr_dict=self.get_blocks_indices_comments_values()
         lookup=OrderedDict()
         for key, val in block_indices_comment_nr_dict.items():
             # for the moment only need block and comment
@@ -111,13 +117,14 @@ class SLHA(object):
         # restore data
         for nr, val in backup_data.items():
             self.data[nr]=val
-        return lookup
+        self.lookup= lookup
                 
             
-    def process_all(self):
+    def get_blocks_indices_comments_values(self):
         """
         This function contains knowledge about what an slhafile from slhalib looks like
         It returns a dictionary: {(block_name,indices,comment):  value, ...}
+        NB: atm ignoring BLOCK SPINFO  and  DECAY's
         """
         s = str(self)
         data = OrderedDict()
@@ -128,6 +135,9 @@ class SLHA(object):
                 block_name = line.split()[1]
                 if 'Q' in line:
                     data[(block_name,tuple([]),'Qscale')]= float(line.split('=')[1].split()[0])
+            elif line.startswith('D'):
+                #FIXME: we may want to change this
+                print("WARNING: DECAY's are ignored in SLHA.get_blocks_indices_comments_values() ")
             elif not block_name == 'SPINFO':
                 #FIXME: want to have the SPINFO as well at some point
                 items = line.split()
