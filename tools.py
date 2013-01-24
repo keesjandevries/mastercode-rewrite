@@ -72,9 +72,10 @@ def setup_pipe(reader, writer, pipe_name=None):
         return output
 
 
-def pipe_object_to_function(obj, function, pipe_name=None):
+def pipe_object_to_function(obj, function, args=[], kwargs={}, pipe_name=None):
     if pipe_name is None:
         pipe_name = "/tmp/mc-{u}".format(u=unique_str())
+    args.insert(0,pipe_name)
     try:
         os.mkfifo(pipe_name)
     except OSError as e:
@@ -90,7 +91,7 @@ def pipe_object_to_function(obj, function, pipe_name=None):
         os._exit(child_pid)
     else:
     # parent process
-        function_out = function(pipe_name)
+        function_out = function(*args,**kwargs)
         os.unlink(pipe_name)
         os.waitpid(child_pid,0)
         return function_out
