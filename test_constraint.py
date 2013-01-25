@@ -14,9 +14,12 @@ def parse_args():
 
 
 def format_ids_and_values_to_dict(ids,values):
-    point={id1:{} for (id1,id2) in ids}
-    for ((id1,id2),val)  in zip(ids,values):
-        point[id1].update({id2:val})
+#    point={id1:{} for (id1,id2) in ids}
+#    for ((id1,id2),val)  in zip(ids,values):
+#        point[id1].update({id2:val})
+    point={}
+    for oid, val in zip(ids,values):
+        point[oid]=val
     return point
 
 if __name__=="__main__" :
@@ -31,7 +34,7 @@ if __name__=="__main__" :
         if len(args.values) is len(ids):
             point=format_ids_and_values_to_dict(ids,args.values)
             chi2=constraint.get_chi2(point)
-            print('Constraint: ',args.constraint,', for values: ',args.values, ', gives chi2: ', chi2)
+            print('Constraint: ',args.constraint, ' for values: ',args.values, ', gives chi2: ', chi2)
 
 
 
