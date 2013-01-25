@@ -2,14 +2,19 @@ from PointAnalyser import LikelihoodFunctions as LF
 from PointAnalyser.Constraints import Constraint
 
 constraints_dict = {
+############################# NUISANCE #######################
         'Mt': {
             'oids' : [('slha', ('SMINPUTS', 'Mt'))],
             'data' : [173.2,0.9], 
             'func' : LF.gauss },
-        'MZ' : 
+        'MZ' :{ 
             'oids' : [('slha',('SMINPUTS','MZ'))],
-            'data' : [91.1875,  ,0.0021],  
-            'func' : LF.gauss      ),
+            'data' : [91.1875  ,0.0021],  
+            'func' : LF.gauss      ,},
+        'GZ_in': {   
+            'oids': [('SUSY-POPE','GZ_in')],
+            'data': [2.4952, 0.0023],
+            'func': LF.gauss},
 ############################# SUSY-POPE ######################
         'Ab16': {   
             'oids': [('SUSY-POPE', 'Ab_16')],
@@ -40,16 +45,12 @@ constraints_dict = {
             'data': [0.01714, 0.00095],
             'func': LF.gauss},
         'DAlpha_had': {   
-            'oids': [],
+            'oids': [('SUSY-POPE', 'sigma_had')],
             'data': [0.02749, 0.0001],
             'func': LF.gauss},
         'D_0(K*g)': {   
-            'oids': [],
+            'oids': [('SuperISO', 'SId0')],
             'data': [0.028, 0.023, 0.024],
-            'func': LF.gauss},
-        'GZ_in': {   
-            'oids': [],
-            'data': [2.4952, 0.0023],
             'func': LF.gauss},
         'Gamma_Z': {   
             'oids': [('SUSY-POPE', 'Gamma_z')],
@@ -62,7 +63,7 @@ constraints_dict = {
         'sintheta_eff': {   
             'oids': [('SUSY-POPE', 'sin_theta_eff')],
             'data': [0.2324, 0.0012],
-            'func': LF.gauss}}
+            'func': LF.gauss},
         'Rb': {   
             'oids': [('SUSY-POPE', 'Rb')],
             'data': [0.21629, 0.00066],
@@ -94,22 +95,22 @@ constraints_dict = {
             'func': LF.gauss},
 ########################################### MICROMEGAS #################################
         'Oh^2': {   
-            'oids': [(('Micromegas', 'Omega'))],
+            'oids': [('Micromegas', 'Omega')],
             'data': [0.1109, 0.0056, 0.012],
             'func': LF.gauss},
 ########################################### BPHYSICS ###################################        
         'BR(Bd->ll)': {   
             'oids': [('BPhysics', 'Pdll')],
             'data': [2.3e-08, 0.0, 2e-10],
-            'func': 'LF.upperlimit'},
+            'func': LF.upperlimit},
         'Bsmumu': {   
             'oids': [('BPhysics', 'Psll')],
             'data': [4.6e-08, 1e-10, 2e-10],
-            'func': 'LF.upperlimit'},
+            'func': LF.upperlimit},
         'Bsmumu_test': {   
             'oids': [('BPhysics', 'Psll')],
             'data': [2.3e-09, 1.73e-09],
-            'func': 'LF.upperlimit'},
+            'func': LF.upperlimit},
         'R(B->Xsll)': {   
             'oids': [('BPhysics', 'BRXsll')],
             'data': [0.99, 0.32, 0.0],
@@ -133,7 +134,7 @@ constraints_dict = {
         'R(Dms)/R(Dmd)': {   
             'oids': [('BPhysics', 'RDMs'),('BPhysics', 'RDMb')],
             'data': [1.0, 0.01, 0.13],
-            'func': LF.gaus}, #FIXME: here's a function is needed that takes the ratio of these two :)
+            'func': LF.ratio_gauss}, #FIXME: here's a function is needed that takes the ratio of these two :)
         'R(K->lnu)': {   
             'oids': [('BPhysics', 'BRKl2')],
             'data': [1.008, 0.014],
@@ -141,7 +142,7 @@ constraints_dict = {
         'R(Kp->pinn)': {   
             'oids': [('BPhysics', 'BRKpnn')],
             'data': [4.5, 0.01],
-            'func': 'LF.upperlimit'},
+            'func': LF.upperlimit},
         'R(b->sg)': {   
             'oids': [('BPhysics', 'BRbsg')],
             'data': [1.117, 0.12],
