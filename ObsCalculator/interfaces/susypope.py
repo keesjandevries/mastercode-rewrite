@@ -67,4 +67,8 @@ def run(slhadata, inputs=None, update=False):
     spout = susypopeObs()
     SPlib.run_susypope(byref(slhadata.data), byref(n_slha), byref(flags),
             byref(spout))
-    return ctypes_field_values(spout, name)
+    susypope_outputs=ctypes_field_values(spout, name)
+    susypope_outputs[(name,'GZ_in')]=n_slha.ZWidthexp
+    del susypope_outputs[(name,'MSSMObs')]
+    del susypope_outputs[(name,'SMObs')]
+    return susypope_outputs
