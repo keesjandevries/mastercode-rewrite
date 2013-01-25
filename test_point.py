@@ -44,7 +44,8 @@ if __name__=="__main__" :
             }
     m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
     all_params={'SoftSUSY':m_vars}
-    all_params['mc_slha_update']={('SMINPUTS','MZ'):90.}
+#    all_params['mc_slha_update']={('SMINPUTS','MZ'):90.}
+    all_params['mc_slha_update']=True
     
 
     slha_file, observations,stdouts = point.run_point(model=model, **all_params)
