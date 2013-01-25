@@ -25,5 +25,5 @@ if __name__=="__main__" :
 
     
     bpp = pprint.PrettyPrinter(indent=4, depth=5)
-    bpp.pprint(lspscat.run(slhafile))
+    bpp.pprint(susypope.run(slhafile))
     
