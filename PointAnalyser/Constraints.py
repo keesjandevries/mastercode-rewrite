@@ -21,10 +21,10 @@ Otherwise,
 
     def get_chi2(self, point):
         #  collect necessary ids
-        chi2 = 0
+        chi2 = 0 
         try:
             for (block, name) in self._ids:
-                f_inputs = tuple([point[pred_id]
+                point_values = tuple([point[pred_id]
                     for pred_id in self._ids])
         except KeyError:
             print('ERROR: Provided invalid input set {0}'.format(self._ids))
@@ -33,7 +33,11 @@ Otherwise,
             print('ERROR: Please provide dictionary that can be accessed using point[id1][id2]')
             print('\tSetting chi2 to 0 for this constraint')
         else:
-            args = [f_inputs] + self._data
-            chi2 = self._func(*args)
+            try:
+                args = [point_values] + self._data
+                chi2 = self._func(*args)
+            except UnboundLocalError:
+                print("ERROR: no ids were specified")
+                print('\tSetting chi2 to 0 for this constraint')
         return chi2
 
