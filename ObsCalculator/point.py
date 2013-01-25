@@ -35,7 +35,7 @@ def run_point(model, **input_pars):
         # someone may define 'mc_slha_updata : True'
         try:
             values.update([(oid,val ) for oid,val in input_pars['mc_slha_update'].items() if oid in values.keys()])
-        except TypeError:
+        except AttributeError:
             pass
         for oid, val in values.items():
             slhafile[oid]=val
