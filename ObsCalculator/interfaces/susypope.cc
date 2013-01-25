@@ -32,8 +32,8 @@ struct susypopeNoneSLHA {
 // output
 struct susypopeObs {
     double MSSMObs[35], SMObs[35];
-    double MW, sin_theta_eff, Gamma_z, Rl, Rb, Rc, Afb_b, Afb_c, Ab_16, Ac_17,
-           Al, Al_fb, sigma_had;
+//    double MW, sin_theta_eff, Gamma_z, Rl, Rb, Rc, Afb_b, Afb_c, Ab_16, Ac_17,
+//           Al, Al_fb, sigma_had;
 };
 
 extern "C" {
@@ -159,19 +159,19 @@ extern "C" {
         if (error) std::cout << "calcobs failed" << std::endl;
 
         // extract observables in more readable terms
-        out->MW             =  out->SMObs[0 ];
-        out->sin_theta_eff  =  out->SMObs[26];
-        out->Gamma_z        =  out->SMObs[10];
-        out->Rl             =  out->SMObs[21];
-        out->Rb             =  out->SMObs[25];
-        out->Rc             =  out->SMObs[24];
-        out->Afb_b          =  out->SMObs[33];
-        out->Afb_c          =  out->SMObs[34];
-        out->Ab_16          =  out->SMObs[30];
-        out->Ac_17          =  out->SMObs[31];
-        out->Al             =  out->SMObs[29];
-        out->Al_fb          =  out->SMObs[33];
-        out->sigma_had      =  out->SMObs[20];
+//        out->MW             =  out->SMObs[0 ];
+//        out->sin_theta_eff  =  out->SMObs[26];
+//        out->Gamma_z        =  out->SMObs[10];
+//        out->Rl             =  out->SMObs[21];
+//        out->Rb             =  out->SMObs[25];
+//        out->Rc             =  out->SMObs[24];
+//        out->Afb_b          =  out->SMObs[33];
+//        out->Afb_c          =  out->SMObs[34];
+//        out->Ab_16          =  out->SMObs[30];
+//        out->Ac_17          =  out->SMObs[31];
+//        out->Al             =  out->SMObs[29];
+//        out->Al_fb          =  out->SMObs[33];
+//        out->sigma_had      =  out->SMObs[20];
 
     }
 }
@@ -212,18 +212,18 @@ int main() {
     // Getting different memory address styles between the susypope executable
     // that is tied up against libAMWObs and hte one that uses libmcsoftsusy
 
-    std::cout <<  "MW           : " <<  obs.SMObs[0]      << std::endl ;
-    std::cout <<  "sin_theta_eff: " <<  obs.sin_theta_eff << std::endl ;
-    std::cout <<  "Gamma_z      : " <<  obs.Gamma_z       << std::endl ;
-    std::cout <<  "Rl           : " <<  obs.Rl            << std::endl ;
-    std::cout <<  "Rb           : " <<  obs.Rb            << std::endl ;
-    std::cout <<  "Rc           : " <<  obs.Rc            << std::endl ;
-    std::cout <<  "Afb_b        : " <<  obs.Afb_b         << std::endl ;
-    std::cout <<  "Afb_c        : " <<  obs.Afb_c         << std::endl ;
-    std::cout <<  "Ab_16        : " <<  obs.Ab_16         << std::endl ;
-    std::cout <<  "Ac_17        : " <<  obs.Ac_17         << std::endl ;
-    std::cout <<  "Al           : " <<  obs.Al            << std::endl ;
-    std::cout <<  "Al_fb        : " <<  obs.Al_fb         << std::endl ;
-    std::cout <<  "sigma_had    : " <<  obs.sigma_had     << std::endl ;
+//    std::cout <<  "MW           : " <<  obs.SMObs[0]      << std::endl ;
+//    std::cout <<  "sin_theta_eff: " <<  obs.sin_theta_eff << std::endl ;
+//    std::cout <<  "Gamma_z      : " <<  obs.Gamma_z       << std::endl ;
+//    std::cout <<  "Rl           : " <<  obs.Rl            << std::endl ;
+//    std::cout <<  "Rb           : " <<  obs.Rb            << std::endl ;
+//    std::cout <<  "Rc           : " <<  obs.Rc            << std::endl ;
+//    std::cout <<  "Afb_b        : " <<  obs.Afb_b         << std::endl ;
+//    std::cout <<  "Afb_c        : " <<  obs.Afb_c         << std::endl ;
+//    std::cout <<  "Ab_16        : " <<  obs.Ab_16         << std::endl ;
+//    std::cout <<  "Ac_17        : " <<  obs.Ac_17         << std::endl ;
+//    std::cout <<  "Al           : " <<  obs.Al            << std::endl ;
+//    std::cout <<  "Al_fb        : " <<  obs.Al_fb         << std::endl ;
+//    std::cout <<  "sigma_had    : " <<  obs.sigma_had     << std::endl ;
 
 }
