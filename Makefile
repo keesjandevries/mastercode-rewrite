@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 CALC_DIR=$(PWD)/ObsCalculator
-SAMPLE_DIR=$(PWD)/Sampler
+SAMPLE_DIR=$(PWD)/Samplers
 PATCH_DIR=$(CALC_DIR)/.patches
 DEF_DIR=$(CALC_DIR)/.make_defs
 INTERFACE_DIR=$(CALC_DIR)/interfaces

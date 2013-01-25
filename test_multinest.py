@@ -4,7 +4,7 @@ import os, threading, subprocess
 import sys, select, argparse, pprint
 from collections import OrderedDict
 
-from Sampler.interfaces import multinest
+from Samplers.interfaces import multinest
 from ObsCalculator import point
 from tools import ansi_bold
 
