@@ -1,6 +1,6 @@
 from math import sqrt
 
-from PointAnalyser.Contours import Contour
+from PointAnalyser.Contour import Contour
 
 class Constraint(object):
     def __init__(self, ids, data, func, mode='simple'):
