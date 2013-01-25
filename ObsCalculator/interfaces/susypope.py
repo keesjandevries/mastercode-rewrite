@@ -59,19 +59,19 @@ class susypopeObs(Structure):
 def get_relevant_observables(all_obs):
     all_obs_d=ctypes_field_values(all_obs, name)
     d={
-        'MW'             :  all_obs_d[(name,'SMObs')][0 ],
-        'sin_theta_eff'  :  all_obs_d[(name,'SMObs')][26],
-        'Gamma_z'        :  all_obs_d[(name,'SMObs')][10],
-        'Rl'             :  all_obs_d[(name,'SMObs')][21],
-        'Rb'             :  all_obs_d[(name,'SMObs')][25],
-        'Rc'             :  all_obs_d[(name,'SMObs')][24],
-        'Afb_b'          :  all_obs_d[(name,'SMObs')][33],
-        'Afb_c'          :  all_obs_d[(name,'SMObs')][34],
-        'Ab_16'          :  all_obs_d[(name,'SMObs')][30],
-        'Ac_17'          :  all_obs_d[(name,'SMObs')][31],
-        'Al'             :  all_obs_d[(name,'SMObs')][29],
-        'Al_fb'          :  all_obs_d[(name,'SMObs')][33],
-        'sigma_had'      :  all_obs_d[(name,'SMObs')][20]}
+        'MW'             :  all_obs_d[(name,'MSSMObs')][0 ],
+        'sin_theta_eff'  :  all_obs_d[(name,'MSSMObs')][26],
+        'Gamma_z'        :  all_obs_d[(name,'MSSMObs')][10],
+        'Rl'             :  all_obs_d[(name,'MSSMObs')][21],
+        'Rb'             :  all_obs_d[(name,'MSSMObs')][25],
+        'Rc'             :  all_obs_d[(name,'MSSMObs')][24],
+        'Afb_b'          :  all_obs_d[(name,'MSSMObs')][33],
+        'Afb_c'          :  all_obs_d[(name,'MSSMObs')][34],
+        'Ab_16'          :  all_obs_d[(name,'MSSMObs')][30],
+        'Ac_17'          :  all_obs_d[(name,'MSSMObs')][31],
+        'Al'             :  all_obs_d[(name,'MSSMObs')][29],
+        'Al_fb'          :  all_obs_d[(name,'MSSMObs')][32],
+        'sigma_had'      :  all_obs_d[(name,'MSSMObs')][20]}
     return {(name,obs):val for obs,val in d.items()}
 
 def run(slhadata, inputs=None, update=False):
@@ -88,4 +88,5 @@ def run(slhadata, inputs=None, update=False):
 #    susypope_outputs=ctypes_field_values(spout, name)
     susypope_outputs=get_relevant_observables(spout)
     susypope_outputs[(name,'GZ_in')]=n_slha.ZWidthexp
+    susypope_outputs[(name,'DAlpha_had_in')]=n_slha.DeltaAlfa5had
     return susypope_outputs
