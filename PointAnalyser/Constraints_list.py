@@ -15,6 +15,10 @@ constraints_dict = {
             'oids': [('SUSY-POPE','GZ_in')],
             'data': [2.4952, 0.0023],
             'func': LF.gauss},
+        'DAlpha_had': {   
+            'oids': [('SUSY-POPE', 'DAlpha_had_in')],
+            'data': [0.02749, 0.0001],
+            'func': LF.gauss},
 ############################# SUSY-POPE ######################
         'Ab16': {   
             'oids': [('SUSY-POPE', 'Ab_16')],
@@ -43,10 +47,6 @@ constraints_dict = {
         'Al_fb': {   
             'oids': [('SUSY-POPE', 'Al_fb')],
             'data': [0.01714, 0.00095],
-            'func': LF.gauss},
-        'DAlpha_had': {   
-            'oids': [('SUSY-POPE', 'sigma_had')],
-            'data': [0.02749, 0.0001],
             'func': LF.gauss},
         'D_0(K*g)': {   
             'oids': [('SuperISO', 'SId0')],
