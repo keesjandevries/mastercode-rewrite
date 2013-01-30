@@ -41,20 +41,23 @@ extern "C" {
 // set flags
     void setflags_amw_( int&, int&, int&, int&, int&, int&, int&);
 // set paramters from slha and non-slha data
-    void setpara_amw_(int&, double&, double&, double&, double&, double&,
-            double&, double&, double&, double&, double&, double&, double&,
-            double&, std::complex<double>&, double*,
-            std::complex<double> a[][4], double&, double&, double&, double&,
-            double&, double&, double&, double&, double&, double&, double&,
-            double&, double&, double&, double&, std::complex<double>&, double&, 
-            std::complex<double>&, std::complex<double>&,
-            std::complex<double>&, std::complex<double>&,
-            std::complex<double>&, std::complex<double>&,
-            std::complex<double>&, std::complex<double>&,
-            std::complex<double>&, double&, double&, double &, 
-            std::complex<double>&, std::complex<double>&,
-            std::complex<double>&, double&, double&, double&, double&,
-            double&);
+    void setpara_amw_(int&, 
+            double&, double&, double&, double&, double&,
+            double&, double&, double&, 
+            double&, double&, double&, 
+            double&, double&, std::complex<double>&, 
+            double*, std::complex<double> a[][4], 
+            double&, double&, double&, double&, double&, 
+            double&, double&, double&, double&, double&, 
+            double&, double&, double&, double&, double&, 
+            std::complex<double>&, double&, 
+            std::complex<double>&, std::complex<double>&, std::complex<double>&, std::complex<double>&, 
+                std::complex<double>&, std::complex<double>&,std::complex<double>&, std::complex<double>&, 
+                std::complex<double>&, 
+            double&, double&, double &, 
+            std::complex<double>&, std::complex<double>&, std::complex<double>&, 
+            double&, double&, 
+            double&, double&,double&);
 // calculate the observables
     void calcobs_amw_(int&, double*, double*);
 }
@@ -130,12 +133,21 @@ int set_parameters(std::complex<double>* slhadata, susypopeNoneSLHA* n_slha){
         }
       }
 
-      setpara_amw_(error, MT, MB, MTAU, MW, Zmass, DeltaAlfa5had, DeltaAlfaQED,
-              ZWidthexp, TB, MA0, MHp, Mh0, MHH, SAeff, MHiggs, UHiggs, M3SL,
-              M3SE, M3SQ, M3SU, M3SD, M2SL, M2SE, M2SQ, M2SU, M2SD, M1SL, M1SE,
-              M1SQ, M1SU, M1SD, MUE, MUEPhase, Atau, At, Ab, Amu, Ac, As, Ae,
-              Au, Ad, Atphase, Abphase, Atauphase, M_1, M_2, M_3, M2phase,
-              M1phase, Qtau, Qt, Qb);
+      setpara_amw_(error, 
+              MT, MB, MTAU, MW, Zmass, 
+              DeltaAlfa5had, DeltaAlfaQED, ZWidthexp, 
+              TB, MA0, MHp, 
+              Mh0, MHH, SAeff, 
+              MHiggs, UHiggs, 
+              M3SL, M3SE, M3SQ, M3SU, M3SD, 
+              M2SL, M2SE, M2SQ, M2SU, M2SD, 
+              M1SL, M1SE, M1SQ, M1SU, M1SD, 
+              MUE, MUEPhase, 
+              Atau, At, Ab, Amu, Ac, As, Ae, Au, Ad, 
+              Atphase, Abphase, Atauphase, 
+              M_1, M_2, M_3, 
+              M2phase, M1phase, 
+              Qtau, Qt, Qb);
       return error;
 }
 
