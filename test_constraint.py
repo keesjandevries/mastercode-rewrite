@@ -22,6 +22,9 @@ def format_ids_and_values_to_dict(ids,values):
 if __name__=="__main__" :
     args = parse_args()
 
+    constr=constraints['xenon100']
+    xenon100_cont=constr._data[0]
+    print(xenon100_cont.get_contour_value(423))
     try:
         constraint=constraints[args.constraint]
     except KeyError:

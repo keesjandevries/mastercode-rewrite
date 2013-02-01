@@ -57,13 +57,17 @@ if __name__=="__main__" :
     all_constraints=Constraints_list.constraints
     # make a dictionary that only contains the constraints you want (e.g. just define on the spot, or read in from a file)
 #       data_set=['xenon100']
-    data_set=all_constraints.keys()
+#    data_set=all_constraints.keys()
+    data_set=['Al(SLD)', 'sintheta_eff', 'Gamma_Z', 'MZ',  'Rl', 'Afb(b)',  'Afb(c)',   'DAlpha_had', 'sigma_had^0', 'Al(P_tau)', 'Ac17', 'Rb', 'Rc', 'Ab16',  'Al_fb',  'MW', ]
+#    print(data_set)
     constraints={name: all_constraints[name] for name in data_set}
     #pass this constraints list to the chi2 function
     total, breakdown = Analyse.chi2(combined_obs,constraints)
 
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
-    bpp.pprint(combined_obs)
-#    bpp.pprint(breakdown)
+#    bpp.pprint(combined_obs)
+    susypope_obs={oid:val for oid, val in combined_obs.items() if oid[0]=='SUSY-POPE'}
+    bpp.pprint(susypope_obs)
+    bpp.pprint(breakdown)
 #    print('Total chi2:',total)
 
