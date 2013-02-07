@@ -180,6 +180,8 @@ class MssmSoftsusy(object) :
     def setMixing(self, mixing):
         # this actually sets a global, but we dont like globals
         SPlib.set_global_MIXING(mixing)
+    def getSeriousProblem(self):
+        return SPlib.MssmSoftSusy_getSeriousProblem(c_void_p(self._obj))
 
 class QedQcd(object) :
     def __init__(self) :
@@ -256,4 +258,7 @@ def run(model, **model_inputs):
 
     slhafile = r.lesHouchesAccordOutputStream(model=model, dv_pars=inputs,
             **output_args)
-    return slhafile.decode('utf-8')
+
+    problem = r.getSeriousProblem()
+
+    return slhafile.decode('utf-8'), problem

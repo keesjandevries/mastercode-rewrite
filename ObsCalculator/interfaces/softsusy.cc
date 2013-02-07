@@ -140,14 +140,24 @@ extern "C"
     void MssmSoftSusy_setData(MssmSoftsusy* mss, QedQcd * qq){
         mss->setData(*qq);
     }
+    void MssmSoftSusy_getSeriousProblem(MssmSoftsusy* mss){
+        mss->displayProblem().testSeriousProblem();
+    }
 
     double MssmSoftsusy_lowOrg( MssmSoftsusy* mss, int bCond, double mxGuess,
             DoubleVector *pars, int sgnMu, double tanb, QedQcd *oneset,
             bool gaugeUnification, bool ewsbBCscale = false) {
+        // inspecting softsusy this seems to be the only place where try and catch
+        // statements are needed
+        try{
         void (*bC)( MssmSoftsusy &, const DoubleVector &) = 
             boundaryCondition( bCond );
         return mss->lowOrg(bC, mxGuess, *pars, sgnMu, tanb, *oneset, 
                     gaugeUnification, ewsbBCscale);
+        }
+        catch(const std::string & a) { std::cout << a;}
+        catch(const char * a) { std::cout << a; }
+        catch(...) { std::cout << "Unknown type of exception caught.\n"; }
     }
 
     void MssmSoftsusy_lesHouchesAccordOutput( MssmSoftsusy* mss,

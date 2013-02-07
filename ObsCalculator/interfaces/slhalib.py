@@ -35,14 +35,16 @@ class SLHA(object):
         if data:
             #cannot do produce lookup on the fly with the pipe_object_to_function
             #therefore, do it separate
-            pipe_object_to_function(data, self.read,kwargs={'makelookup': False})
+            pipe_object_to_function(data, self.read,args=[],kwargs={'makelookup': False})
             if not self.lookup:
                 self.initialise_lookup()
 
     def __str__(self):
         tmp_name = "/tmp/mc-{u}".format(u=unique_str())
         self.write(tmp_name)
-        txt=open(tmp_name).read()
+        f=open(tmp_name)
+        txt=f.read()
+        f.close()
         rm(tmp_name)
         return txt
 

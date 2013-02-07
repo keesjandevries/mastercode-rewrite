@@ -13,6 +13,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--model', '-m', dest='model', action='store', type=str,
             default='cMSSM', help='override model')
+    parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
+            default=None, help='override model')
 
     return parser.parse_args()
 
@@ -20,7 +22,9 @@ if __name__=="__main__" :
     args = parse_args()
 
     model = args.model
-    input_vars = {
+    
+    if args.input_pars is None:
+        input_vars = {
             'cMSSM': {
                 'm0': 300.53, 'm12': 905.0, 'A0': -1323.97 , 'tanb': 16.26, 'sgnMu': 1 #MC8 bf
                 #'m0': 100, 'm12': 270, 'A0': 0, 'tanb': 10., 'sgnMu': 1
@@ -38,6 +42,8 @@ if __name__=="__main__" :
                 'mbR': 2.50e+03
                 },
             }[model]
+    else:
+        input_vars=eval(args.input_pars)
     other_vars = {
             'mt': 173.2,
             'mgut': {'cMSSM': 2e16, 'pMSSM': 1.0e3}[model]
@@ -46,10 +52,16 @@ if __name__=="__main__" :
     all_params={'SoftSUSY':m_vars}
 #    all_params['mc_slha_update']={('SMINPUTS','MZ'):90.}
     all_params['mc_slha_update']=True
+    all_params['verbose']=True
     
 
-    slha_file, observations,stdouts = point.run_point(model=model, **all_params)
+    try:
+        slha_obj, observations,stdouts = point.run_point(model=model, **all_params)
+    except TypeError:
+        print("ERROR: Point failed to run")
+        exit()
 
+    slha_file=slha_obj.process()
     combined_obs = OrderedDict(list(slha_file.items()) + list(observations.items()))
 
     # I think this is the way to do it:
