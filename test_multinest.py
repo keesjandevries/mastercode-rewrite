@@ -95,4 +95,4 @@ def myloglike(cube, ndim, nparams):
 
 n_params = len(param_ranges)
 
-multinest.run(myloglike, myprior, n_params, resume =False, verbose = True, sampling_efficiency = 0.3, n_live_points=40, max_iter=1)
+multinest.run(myloglike, myprior, n_params, resume =False, verbose = True, sampling_efficiency = 0.3, n_live_points=5, max_iter=1)
