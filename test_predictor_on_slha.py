@@ -35,7 +35,8 @@ if __name__=="__main__" :
     if True:
         all_constraints=Constraints_list.constraints
     #    data_set=all_constraints.keys()
-        data_set=['Al(SLD)', 'sintheta_eff', 'Gamma_Z',  'Rl', 'Afb(b)',  'Afb(c)',   'DAlpha_had', 'sigma_had^0', 'Al(P_tau)', 'Ac17', 'Rb', 'Rc', 'Ab16',  'Al_fb',  'MW', ]
+        data_set=['Al(SLD)', 'sintheta_eff', 'Gamma_Z',  'Rl', 'Afb(b)',  'Afb(c)',   'DAlpha_had', 
+                'sigma_had^0', 'Al(P_tau)', 'Ac', 'Rb', 'Rc', 'Ab',  'Al_fb',  'MW-mc-old', ]
     #    print(data_set)
         constraints={name: all_constraints[name] for name in data_set}
         #pass this constraints list to the chi2 function

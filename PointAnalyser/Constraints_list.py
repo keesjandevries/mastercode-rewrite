@@ -20,11 +20,11 @@ constraints_dict = {
             'data': [0.02749, 0.0001],
             'func': LF.gauss},
 ############################# SUSY-POPE ######################
-        'Ab16': {   
+        'Ab': {   
             'oids': [('SUSY-POPE', 'Ab_16')],
             'data': [0.923, 0.02],
             'func': LF.gauss},
-        'Ac17': {  
+        'Ac': {  
             'oids': [('SUSY-POPE', 'Ac_17')],
             'data': [0.67, 0.027],
             'func': LF.gauss},
@@ -59,6 +59,10 @@ constraints_dict = {
         'MW': {   
             'oids': [('SUSY-POPE', 'MW')],
             'data': [80.385, 0.015, 0.01],
+            'func': LF.gauss},
+        'MW-mc-old': {   
+            'oids': [('SUSY-POPE', 'MW')],
+            'data': [80.399, 0.023, 0.01],
             'func': LF.gauss},
         'sintheta_eff': {   
             'oids': [('SUSY-POPE', 'sin_theta_eff')],
