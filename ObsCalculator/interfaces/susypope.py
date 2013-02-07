@@ -79,12 +79,13 @@ def run(slhadata, inputs=None, update=False):
     # We somehow need to set the defaults for the susypope flags and none-slhainputs
     if inputs is None:
         inputs={}
+    verbose = inputs.get('verbose',False)
     flags  = susypopeFlags(default_inputs['flags'],inputs.get('flags'))
     n_slha = susypopeNoneSLHA(default_inputs['non_slha_inputs'],inputs.get('non_slha_inputs'))
 
     spout = susypopeObs()
     SPlib.run_susypope(byref(slhadata.data), byref(n_slha), byref(flags),
-            byref(spout))
+            byref(spout),verbose)
 #    susypope_outputs=ctypes_field_values(spout, name)
     susypope_outputs=get_relevant_observables(spout)
     susypope_outputs[(name,'GZ_in')]=n_slha.ZWidthexp
