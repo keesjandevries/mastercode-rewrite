@@ -168,9 +168,14 @@ class SLHA(object):
             if not val == invalid:
                 try:
                     oid=('slha',self.lookup[i])
+                    data[oid]=val
                 except KeyError:
-                    oid=('slha',i)
-                data[oid]=val
+                    continue
+#                try:
+#                    oid=('slha',self.lookup[i])
+#                except KeyError:
+#                    oid=('slha',i)
+#                data[oid]=val
         return data
 
 def send_to_predictor(slhadata, inputs ,predictor, update=False):
