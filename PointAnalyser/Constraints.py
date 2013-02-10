@@ -41,3 +41,8 @@ Otherwise,
                 print('\tSetting chi2 to 0 for this constraint')
         return chi2
 
+    def get_sigma(self):
+        try:
+            return self._data[1]
+        except:
+            print("ERROR in returning sigma, is this a gaussian constraint?")
