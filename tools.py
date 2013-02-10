@@ -178,8 +178,10 @@ def extract_values(output_object):
     return values
 
 def pickle_object(obj, filename):
-    f = open(filename, 'w')
+    f = open(filename, 'wb')
     pickle.dump(obj,f)
+    f.close()
+    print('File savd to ;' , filename)
 
 def open_pickled_file(filename):
     f = open(filename,'r')
