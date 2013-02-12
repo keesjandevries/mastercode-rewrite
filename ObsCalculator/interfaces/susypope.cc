@@ -32,8 +32,8 @@ struct susypopeNoneSLHA {
 // output
 struct susypopeObs {
     double MSSMObs[35], SMObs[35];
-//    double MW, sin_theta_eff, Gamma_z, Rl, Rb, Rc, Afb_b, Afb_c, Ab_16, Ac_17,
-//           Al, Al_fb, sigma_had;
+//    double MW, sin_theta_eff, Gamma_z, Rl, Rb, Rc, Afb_b, Afb_c, Ab, Ac,
+//           Al, Afb_l, sigma_had;
 };
 
 extern "C" {
@@ -208,10 +208,10 @@ extern "C" {
 //        out->Rc             =  out->SMObs[24];
 //        out->Afb_b          =  out->SMObs[33];
 //        out->Afb_c          =  out->SMObs[34];
-//        out->Ab_16          =  out->SMObs[30];
-//        out->Ac_17          =  out->SMObs[31];
+//        out->Ab          =  out->SMObs[30];
+//        out->Ac          =  out->SMObs[31];
 //        out->Al             =  out->SMObs[29];
-//        out->Al_fb          =  out->SMObs[33];
+//        out->Afb_l          =  out->SMObs[33];
 //        out->sigma_had      =  out->SMObs[20];
 
     }
@@ -261,10 +261,10 @@ int main() {
     std::cout <<  "Rc           : " <<  obs.MSSMObs[24] << std::endl ;
     std::cout <<  "Afb_b        : " <<  obs.MSSMObs[33] << std::endl ;
     std::cout <<  "Afb_c        : " <<  obs.MSSMObs[34] << std::endl ;
-    std::cout <<  "Ab_16        : " <<  obs.MSSMObs[30] << std::endl ;
-    std::cout <<  "Ac_17        : " <<  obs.MSSMObs[31] << std::endl ;
+    std::cout <<  "Ab           : " <<  obs.MSSMObs[30] << std::endl ;
+    std::cout <<  "Ac           : " <<  obs.MSSMObs[31] << std::endl ;
     std::cout <<  "Al           : " <<  obs.MSSMObs[29] << std::endl ;
-    std::cout <<  "Al_fb        : " <<  obs.MSSMObs[33] << std::endl ;
+    std::cout <<  "Afb_l        : " <<  obs.MSSMObs[33] << std::endl ;
     std::cout <<  "sigma_had    : " <<  obs.MSSMObs[20] << std::endl ;
 
 }

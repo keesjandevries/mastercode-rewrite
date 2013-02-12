@@ -53,7 +53,7 @@ class susypopeObs(Structure):
 #            ('MW', c_double), ('sin_theta_eff', c_double),
 #            ('Gamma_z', c_double), ('Rl', c_double), ('Rb', c_double),
 #            ('Rc', c_double), ('Afb_b', c_double), ('Afb_c', c_double),
-#            ('Ab_16', c_double), ('Ac_17', c_double), ('Al', c_double),
+#            ('Ab', c_double), ('Ac', c_double), ('Al', c_double),
 #            ('Al_fb', c_double), ('sigma_had', c_double)]
 
 def get_relevant_observables(all_obs):
@@ -63,15 +63,15 @@ def get_relevant_observables(all_obs):
         'sin_theta_eff'  :  all_obs_d[(name,'MSSMObs')][26],
         'Gamma_z'        :  all_obs_d[(name,'MSSMObs')][10],
         'Rl'             :  all_obs_d[(name,'MSSMObs')][21],
+        'sigma_had'      :  all_obs_d[(name,'MSSMObs')][20],
         'Rb'             :  all_obs_d[(name,'MSSMObs')][25],
         'Rc'             :  all_obs_d[(name,'MSSMObs')][24],
-        'Afb_b'          :  all_obs_d[(name,'MSSMObs')][33],
-        'Afb_c'          :  all_obs_d[(name,'MSSMObs')][34],
-        'Ab_16'          :  all_obs_d[(name,'MSSMObs')][30],
-        'Ac_17'          :  all_obs_d[(name,'MSSMObs')][31],
         'Al'             :  all_obs_d[(name,'MSSMObs')][29],
-        'Al_fb'          :  all_obs_d[(name,'MSSMObs')][32],
-        'sigma_had'      :  all_obs_d[(name,'MSSMObs')][20]}
+        'Ab'             :  all_obs_d[(name,'MSSMObs')][30],
+        'Ac'             :  all_obs_d[(name,'MSSMObs')][31],
+        'Afb_l'          :  all_obs_d[(name,'MSSMObs')][32],
+        'Afb_b'          :  all_obs_d[(name,'MSSMObs')][33],
+        'Afb_c'          :  all_obs_d[(name,'MSSMObs')][34],}
     return {(name,obs):val for obs,val in d.items()}
 
 def run(slhadata, inputs=None, update=False):
