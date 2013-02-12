@@ -23,7 +23,7 @@ if __name__=="__main__" :
     args = parse_args()
 
     data_set=['Al(SLD)', 'sintheta_eff', 'Gamma_Z',  'Rl', 'Afb(b)',  'Afb(c)',    
-                    'sigma_had^0', 'Al(P_tau)', 'Ac', 'Rb', 'Rc', 'Ab',  'Al_fb',  'MW-mc-old', ]
+                    'sigma_had^0', 'Al(P_tau)', 'Ac', 'Rb', 'Rc', 'Ab',  'Afb_l',  'MW-mc-old', ]
     d={}
     for constraint in data_set:
         d[constraint]=constraints[constraint].get_sigma()
