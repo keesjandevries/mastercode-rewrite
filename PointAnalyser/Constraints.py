@@ -46,3 +46,6 @@ Otherwise,
             return self._data[1]
         except:
             print("ERROR in returning sigma, is this a gaussian constraint?")
+
+    def get_oids(self):
+        return self._ids
