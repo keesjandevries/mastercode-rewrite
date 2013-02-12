@@ -21,11 +21,11 @@ constraints_dict = {
             'func': LF.gauss},
 ############################# SUSY-POPE ######################
         'Ab': {   
-            'oids': [('SUSY-POPE', 'Ab_16')],
+            'oids': [('SUSY-POPE', 'Ab')],
             'data': [0.923, 0.02],
             'func': LF.gauss},
         'Ac': {  
-            'oids': [('SUSY-POPE', 'Ac_17')],
+            'oids': [('SUSY-POPE', 'Ac')],
             'data': [0.67, 0.027],
             'func': LF.gauss},
         'Afb(b)': {   
@@ -44,8 +44,8 @@ constraints_dict = {
             'oids': [('SUSY-POPE', 'Al')],
             'data': [0.1513, 0.0021],
             'func': LF.gauss},
-        'Al_fb': {   
-            'oids': [('SUSY-POPE', 'Al_fb')],
+        'Afb_l': {   
+            'oids': [('SUSY-POPE', 'Afb_l')],
             'data': [0.01714, 0.00095],
             'func': LF.gauss},
         'D_0(K*g)': {   
