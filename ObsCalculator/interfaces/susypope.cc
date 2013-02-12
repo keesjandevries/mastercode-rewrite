@@ -1,5 +1,6 @@
 //g++ -o susypope.x susypope.cc -I../packages/include/SLHALib -L../packages/lib -lSLHA -L../predictors/private/SUSY-POPE-0.1/ -lAMWObs -lgfortran
 #include <iostream>
+#include <iomanip>
 #include <complex>
 #include <cmath>
 
@@ -135,30 +136,30 @@ int set_parameters(std::complex<double>* slhadata, susypopeNoneSLHA* n_slha, boo
 
       if (verbose){
         std::cout << "=============SUSY-POPE-INPUTS============" << std::endl;
-        std::cout << "MT, MB, ML, MW, MZ" 
-              <<"  "<< MT <<"  "<<  MB <<"  "<<  MTAU <<"  "<<  MW <<"  "<<  Zmass <<"  "<< std::endl;
+        std::cout << "MT, MB, ML, MW, MZ" << std::setprecision(12) 
+              <<"  "<< MT <<"  "<<  MB <<"  "<<  MTAU <<"  "<<  MW <<"  "<<  Zmass <<"  "<<  std::endl ;
         std::cout <<  "DeltaAlfa5had, DeltaAlfaQED, ZWidthexp" 
-              <<"  "<<   DeltaAlfa5had <<"  "<<  DeltaAlfaQED <<"  "<<  ZWidthexp <<"  "<< std::endl;
+              <<"  "<<   DeltaAlfa5had <<"  "<<  DeltaAlfaQED <<"  "<<  ZWidthexp <<"  "<< std::setprecision(12) << std::endl ;
         std::cout <<  "TB, MA0, MHp, Mh0, MHH, SA" 
-              <<"  "<< TB <<"  "<<  MA0 <<"  "<<  MHp <<"  "<<  Mh0 <<"  "<<   MHH <<"  "<<  SAeff <<"  "<< std::endl;
+              <<"  "<< TB <<"  "<<  MA0 <<"  "<<  MHp <<"  "<<  Mh0 <<"  "<<   MHH <<"  "<<  SAeff <<"  "<< std::setprecision(12) << std::endl ;
         std::cout << "M3SL, M3SE, M3SQ, M3SU, M3SD" 
-              <<"  "<< M3SL <<"  "<<  M3SE <<"  "<<  M3SQ <<"  "<<   M3SU <<"  "<<  M3SD <<"  "<< std::endl;
+              <<"  "<< M3SL <<"  "<<  M3SE <<"  "<<  M3SQ <<"  "<<   M3SU <<"  "<<  M3SD <<"  "<< std::setprecision(12) << std::endl ;
         std::cout <<  "M2SL, M2SE, M2SQ, M2SU, M2SD" 
-              <<"  "<< M2SL <<"  "<<  M2SE <<"  "<<  M2SQ <<"  "<<   M2SU <<"  "<<  M2SD <<"  "<< std::endl;
+              <<"  "<< M2SL <<"  "<<  M2SE <<"  "<<  M2SQ <<"  "<<   M2SU <<"  "<<  M2SD <<"  "<< std::setprecision(12) << std::endl ;
         std::cout <<  "M1SL, M1SE, M1SQ, M1SU, M1SD" 
-              <<"  "<< M1SL <<"  "<<  M1SE <<"  "<<  M1SQ <<"  "<<   M1SU <<"  "<<  M1SD <<"  "<< std::endl;
+              <<"  "<< M1SL <<"  "<<  M1SE <<"  "<<  M1SQ <<"  "<<   M1SU <<"  "<<  M1SD <<"  "<< std::setprecision(12) << std::endl ;
         std::cout <<  "MUE, MUEPhase" 
-              <<"  "<< MUE <<"  "<<  MUEPhase <<"  "<< std::endl;
+              <<"  "<< MUE <<"  "<<  MUEPhase <<"  "<< std::setprecision(12) << std::endl ;
         std::cout <<   "Atau, At, Ab, Amu, Ac, As, Ae, Au, Ad"
-              <<"  "<< Atau <<"  "<<  At <<"  "<<  Ab <<"  "<<  Amu <<"  "<<  Ac <<"  "<<  As <<"  "<<  Ae <<"  "<<  Au <<"  "<<  Ad <<"  "<< std::endl;
+              <<"  "<< Atau <<"  "<<  At <<"  "<<  Ab <<"  "<<  Amu <<"  "<<  Ac <<"  "<<  As <<"  "<<  Ae <<"  "<<  Au <<"  "<<  Ad <<"  "<< std::setprecision(12) << std::endl ;
         std::cout << "Atphase, Abphase, Atauphase"
-              <<"  "<< Atphase <<"  "<<  Abphase <<"  "<< Atauphase <<"  "<< std::endl;
+              <<"  "<< Atphase <<"  "<<  Abphase <<"  "<< Atauphase <<"  "<< std::setprecision(12) << std::endl ;
         std::cout <<  "M_1, M_2, M_3" 
-              <<"  "<< M_1 <<"  "<<  M_2 <<"  "<<  M_3 <<"  "<< std::endl;
+              <<"  "<< M_1 <<"  "<<  M_2 <<"  "<<  M_3 <<"  "<< std::setprecision(12) << std::endl ;
         std::cout <<  "M2phase, M1phase"
-              <<"  "<< M2phase <<"  "<<  M1phase <<"  "<< std::endl;
+              <<"  "<< M2phase <<"  "<<  M1phase <<"  "<< std::setprecision(12) << std::endl ;
         std::cout <<  "Qtau, Qt, Qb" 
-              <<"  "<< Qtau <<"  "<<  Qt <<"  "<<  Qb <<"  "<< std::endl;
+              <<"  "<< Qtau <<"  "<<  Qt <<"  "<<  Qb <<"  "<< std::setprecision(12) << std::endl ;
         std::cout << "=============SUSY-POPE-INPUTS============" << std::endl;
       }
 
