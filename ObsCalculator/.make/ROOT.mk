@@ -13,11 +13,8 @@ ifeq ($(wildcard $(src_dir)),)
 endif
 	cd $(src_dir); \
 		./configure --prefix=$(INSTALL_DIR)   \
-		--with-python-incdir=$(python_incdir) \
-		--with-python-libdir=$(python_libdir) \
-		--etcdir=$(INSTALL_DIR)
+		--etcdir=$(INSTALL_DIR) 
 	$(MAKE) -C $(src_dir)
-	$(MAKE) -C $(src_dir) cintdlls
 	$(MAKE) -C $(src_dir) install
 
 #ROOT: $(lib)
