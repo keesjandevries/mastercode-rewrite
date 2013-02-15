@@ -34,18 +34,13 @@ if __name__=="__main__" :
     for filename in filenames:
         slhafile=SLHA(lookup=slha_lookup)
         slhafile.read(filename)
-#        if not slha_lookup:
-#            slha_lookup=slhafile.get_lookup()
-
-        
         bpp = pprint.PrettyPrinter(indent=4, depth=5)
         kwargs={'verbose':False}
-        if filename == 'slhas/susy-pope-1000_nuhm2/015762-slha.out': kwargs={'verbose':True}
         predictions=susypope.run(slhafile,inputs=kwargs)
 #        predictions=lspscat.run(slhafile)
-        if filename == 'slhas/susy-pope-1000_nuhm2/015762-slha.out':   bpp.pprint(predictions)
+        bpp.pprint(predictions)
         
-        if True:
+        if True :
             all_constraints=Constraints_list.constraints
         #    data_set=all_constraints.keys()
             data_set=['Al(SLD)', 'sintheta_eff', 'Gamma_Z',  'Rl', 'Afb(b)',  'Afb(c)',    
@@ -55,7 +50,6 @@ if __name__=="__main__" :
             #pass this constraints list to the chi2 function
             total, breakdown = Analyse.chi2(predictions,constraints)
             print('Total is:',total)
-            if filename == 'slhas/susy-pope-1000_nuhm2/015762-slha.out': bpp.pprint(breakdown)
-            l.append((breakdown,filename))
-    pickle_object(l,'temp/mcpp-breakdowns.pkl')
+            bpp.pprint(breakdown)
+            l.append((breakdown,predictions,filename,total))
 

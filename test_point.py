@@ -1,10 +1,10 @@
 #! /usr/bin/env python
-import os, sys, select, argparse, pprint
+import os, sys, select, argparse, pprint, json
 from collections import OrderedDict
 
 #from ObsCalculator import point
 from ObsCalculator import point
-from tools import ansi_bold
+from tools import  pickle_object
 
 from PointAnalyser import Analyse
 from PointAnalyser import Constraints_list
@@ -26,7 +26,9 @@ if __name__=="__main__" :
     if args.input_pars is None:
         input_vars = {
             'cMSSM': {
-                'm0': 300.53, 'm12': 905.0, 'A0': -1323.97 , 'tanb': 16.26, 'sgnMu': 1 #MC8 bf
+#                'm0': 300.53, 'm12': 905.0, 'A0': -1323.97 , 'tanb': 16.26, 'sgnMu': 1 #MC8 bf
+                'm0': 300.53, 'm12': 905.0, 'A0': -1303.97 , 'tanb': 16.26, 'sgnMu': 1 #MC8 bf
+#                'm0': 1120. , 'm12': 1870 , 'A0': -1220.   , 'tanb': 46, 'sgnMu': 1 #Upper island
                 #'m0': 100, 'm12': 270, 'A0': 0, 'tanb': 10., 'sgnMu': 1
                 #'m0': 389.50582, 'm12': 853.0322, 'A0': 2664.7922,
                 #'tanb': 14.59729, 'sgnMu': 1
@@ -52,7 +54,7 @@ if __name__=="__main__" :
     all_params={'SoftSUSY':m_vars}
 #    all_params['mc_slha_update']={('SMINPUTS','MZ'):90.}
     all_params['mc_slha_update']=True
-    all_params['verbose']=True
+#    all_params['verbose']=True
     
 
     try:
@@ -69,8 +71,8 @@ if __name__=="__main__" :
     all_constraints=Constraints_list.constraints
     # make a dictionary that only contains the constraints you want (e.g. just define on the spot, or read in from a file)
 #       data_set=['xenon100']
-#    data_set=all_constraints.keys()
-    data_set=['Al(SLD)', 'sintheta_eff', 'Gamma_Z', 'MZ',  'Rl', 'Afb(b)',  'Afb(c)',   'DAlpha_had', 'sigma_had^0', 'Al(P_tau)', 'Ac', 'Rb', 'Rc', 'Ab',  'Al_fb',  'MW', ]
+    data_set=all_constraints.keys()
+#    data_set=['Al(SLD)', 'sintheta_eff', 'Gamma_Z', 'MZ',  'Rl', 'Afb(b)',  'Afb(c)',   'DAlpha_had', 'sigma_had^0', 'Al(P_tau)', 'Ac', 'Rb', 'Rc', 'Ab',  'Afb_l',  'MW', ]
 #    print(data_set)
     constraints={name: all_constraints[name] for name in data_set}
     #pass this constraints list to the chi2 function
@@ -78,8 +80,16 @@ if __name__=="__main__" :
 
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
 #    bpp.pprint(combined_obs)
-    susypope_obs={oid:val for oid, val in combined_obs.items() if oid[0]=='SUSY-POPE'}
-    bpp.pprint(susypope_obs)
-    bpp.pprint(breakdown)
-#    print('Total chi2:',total)
+#    susypope_obs={oid:val for oid, val in combined_obs.items() if oid[0]=='SUSY-POPE'}
+#    bpp.pprint(susypope_obs)
+#    print(total)
+#    bpp.pprint(breakdown)
+    print('Total chi2:',total)
+    for key, val in breakdown.items():
+        combined_obs[('constr_X2',key)]=val
+    combined_obs[('tot_X2','all')]=total
+    bpp.pprint(combined_obs)
+    pickle_object(combined_obs, 'temp/point.pkl')
+#    susypope_obs={oid:val for oid, val in combined_obs.items() if oid[0]=='SUSY-POPE'}
+
 

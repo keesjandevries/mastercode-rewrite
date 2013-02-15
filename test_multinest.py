@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 from Samplers.interfaces import multinest
 from ObsCalculator import point
+from Storage import sqlstorage 
 
 from PointAnalyser import Analyse
 from PointAnalyser import Constraints_list
@@ -36,6 +37,7 @@ set_global_lookup(None)
 default_chi=1e9
 
 all_constraints=Constraints_list.constraints
+data_base_file='temp/test.db'
 
 def myprior(cube, ndim, nparams):
     for i, (name,(low,high)) in enumerate(param_ranges.items()):
@@ -51,7 +53,7 @@ def get_obs(cube,ndim):
     input_vars = {
      'm0': m0, 'm12': m12, 'A0': A0 , 'tanb': tanb, 'sgnMu': 1 #MC8 bf
                 }
-    print(input_vars)
+#    print(input_vars)
     other_vars = {
             'mt': 173.2,
             'mgut': {'cMSSM': 2e16, 'pMSSM': 1.0e3}[model]
@@ -67,7 +69,7 @@ def get_obs(cube,ndim):
         return None
 
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
-    bpp.pprint(stdouts)
+#    bpp.pprint(stdouts)
 
     slha_file=slha_obj.process()
     if slha_lookup is None:
@@ -91,6 +93,7 @@ def myloglike(cube, ndim, nparams):
     obs=get_obs(cube,ndim)
     if obs: chi2=get_chi2(obs)
     else: print("ERROR: in one of the programs")
+    sqlstorage.store_point_to_table(chi2,obs,'tree',data_base_file)   
     return -chi2
 
 n_params = len(param_ranges)
