@@ -181,7 +181,7 @@ def pickle_object(obj, filename):
     f = open(filename, 'wb')
     pickle.dump(obj,f)
     f.close()
-    print('File savd to ;' , filename)
+    print('File saved to :' , filename)
 
 def open_pickled_file(filename):
     f = open(filename,'r')
