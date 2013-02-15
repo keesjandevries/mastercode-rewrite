@@ -167,7 +167,7 @@ class SLHA(object):
             val=self.data[i]
             if not val == invalid:
                 try:
-                    oid=('slha',self.lookup[i])
+                    oid=self.lookup[i]
                     data[oid]=val
                 except KeyError:
                     continue

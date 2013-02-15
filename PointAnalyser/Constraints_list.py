@@ -4,11 +4,11 @@ from PointAnalyser.Constraints import Constraint
 constraints_dict = {
 ############################# NUISANCE #######################
         'Mt': {
-            'oids' : [('slha', ('SMINPUTS', 'Mt'))],
+            'oids' : [('SMINPUTS', 'Mt')],
             'data' : [173.2,0.9], 
             'func' : LF.gauss },
         'MZ' :{ 
-            'oids' : [('slha',('SMINPUTS','MZ'))],
+            'oids' : [('SMINPUTS','MZ')],
             'data' : [91.1875  ,0.0021],  
             'func' : LF.gauss      ,},
         'GZ_in': {   
@@ -100,8 +100,13 @@ constraints_dict = {
 ########################################### MICROMEGAS #################################
         'Oh^2': {   
             'oids': [('Micromegas', 'Omega')],
-            'data': [0.1109, 0.0056, 0.012],
+            'data': [0.1120, 0.0056, 0.012],
             'func': LF.gauss},
+        'Oh^2-9-years': {   
+            'oids': [('Micromegas', 'Omega')],
+            'data': [0.1138, 0.0056, 0.012],
+            'func': LF.gauss,
+            'info': '1212.5226 table2 9-years'},
 ########################################### BPHYSICS ###################################        
         'BR(Bd->ll)': {   
             'oids': [('BPhysics', 'Pdll')],
@@ -153,17 +158,17 @@ constraints_dict = {
             'func': LF.gauss},
 ########################################### CONSTRAINTS FROM LIKELIHOODS ###############        
         'M0M12': {
-            'oids': [('slha', ('MINPAR', 'M0')),('slha', ('MINPAR', 'M12'))],
+            'oids': [('MINPAR', 'M0'),('MINPAR', 'M12')],
             'data': [('PointAnalyser/m0m12.txt', 'radial', 0.95, 2,'linear')],
             'func': LF.power_4_inv_single_contour, 
             'mode': 'contour'},
         'MATANB' : {
-            'oids': [('FeynHiggs', 'mA'),('slha', ('MINPAR', 'TB'))],
+            'oids': [('FeynHiggs', 'mA'),('MINPAR', 'TB')],
             'data': [('PointAnalyser/matanb.txt','x',0.95,2,'linear',{'min':'flat'})],
             'func': LF.power_2_single_ma_tanb, 
             'mode': 'contour' },
         'xenon100':{
-            'oids': [('slha', ('MASS', 'MNeu(1)')),('LSP scattering','s3out')],
+            'oids': [('MASS', 'MNeu(1)'),('LSP scattering','s3out')],
             'data': [('PointAnalyser/xenon100.txt','x',0.9,2,'logxy',{'min':'flat','max':'flat'})],
             'func': LF.xenon100_jul_2012, 
             'mode': 'contour' },
