@@ -9,6 +9,10 @@ from tools import  pickle_object
 from PointAnalyser import Analyse
 from PointAnalyser import Constraints_list
 
+#storage
+import Storage.interfaces.ROOT as root
+from Storage import old_mc_rootstorage as rootstore
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--model', '-m', dest='model', action='store', type=str,
@@ -27,7 +31,7 @@ if __name__=="__main__" :
         input_vars = {
             'cMSSM': {
 #                'm0': 300.53, 'm12': 905.0, 'A0': -1323.97 , 'tanb': 16.26, 'sgnMu': 1 #MC8 bf
-                'm0': 300.53, 'm12': 905.0, 'A0': -1303.97 , 'tanb': 16.26, 'sgnMu': 1 #MC8 bf
+                'm0': 300.53, 'm12': 905.0, 'A0': -1303.97 , 'tanb': 16.26, 'sgnMu': 1 #MC8 bf adjusted
 #                'm0': 1120. , 'm12': 1870 , 'A0': -1220.   , 'tanb': 46, 'sgnMu': 1 #Upper island
                 #'m0': 100, 'm12': 270, 'A0': 0, 'tanb': 10., 'sgnMu': 1
                 #'m0': 389.50582, 'm12': 853.0322, 'A0': 2664.7922,
@@ -54,7 +58,7 @@ if __name__=="__main__" :
     all_params={'SoftSUSY':m_vars}
 #    all_params['mc_slha_update']={('SMINPUTS','MZ'):90.}
     all_params['mc_slha_update']=True
-#    all_params['verbose']=True
+    all_params['verbose']=True
     
 
     try:
@@ -89,7 +93,8 @@ if __name__=="__main__" :
         combined_obs[('constr_X2',key)]=val
     combined_obs[('tot_X2','all')]=total
     bpp.pprint(combined_obs)
-    pickle_object(combined_obs, 'temp/point.pkl')
+#    pickle_object(combined_obs, 'temp/point.pkl')
 #    susypope_obs={oid:val for oid, val in combined_obs.items() if oid[0]=='SUSY-POPE'}
+#    slha_obj.write('slhas/test.slha')
 
 
