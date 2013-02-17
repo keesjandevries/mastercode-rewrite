@@ -4,13 +4,16 @@ from collections import OrderedDict
 
 from Samplers.interfaces import multinest
 from ObsCalculator import point
-from Storage import sqlstorage 
+from Storage import old_mc_rootstorage as rootstore
 
 from PointAnalyser import Analyse
 from PointAnalyser import Constraints_list
 
+import Storage.interfaces.ROOT as root
+
 if not os.path.exists("chains"): os.mkdir("chains")
 
+# WARNING: THIS CODE NEEDS A MASSIVE CLEANUP
 #####################!!!!!!!!!!!!!!!!!!###############
 # global variable
 # DON'T USE THIS OUTSIDE THIS SCRIPT
@@ -37,8 +40,12 @@ set_global_lookup(None)
 default_chi=1e9
 
 all_constraints=Constraints_list.constraints
-data_base_file='temp/test.db'
+#data_base_file='temp/test.db'
+bpp = pprint.PrettyPrinter(indent=4, depth=3)
 
+root.root_open('temp/test.root')
+
+# WARNING: THIS CODE NEEDS A MASSIVE CLEANUP
 def myprior(cube, ndim, nparams):
     for i, (name,(low,high)) in enumerate(param_ranges.items()):
         cube[i]=(high-low)*cube[i]+low
@@ -68,7 +75,6 @@ def get_obs(cube,ndim):
     except TypeError:
         return None
 
-    bpp = pprint.PrettyPrinter(indent=4, depth=3)
 #    bpp.pprint(stdouts)
 
     slha_file=slha_obj.process()
@@ -87,15 +93,21 @@ def get_chi2(obs):
     print("Done this, chi2: ",total)
     return total
 
+# WARNING: THIS CODE NEEDS A MASSIVE CLEANUP
 
 def myloglike(cube, ndim, nparams):
     chi2=default_chi
     obs=get_obs(cube,ndim)
-    if obs: chi2=get_chi2(obs)
+    if obs: 
+        chi2=get_chi2(obs)
+        obs[('tot_X2', 'all')]=chi2
+        rootstore.write_point_to_root(obs)
     else: print("ERROR: in one of the programs")
-    sqlstorage.store_point_to_table(chi2,obs,'tree',data_base_file)   
     return -chi2
 
 n_params = len(param_ranges)
 
 multinest.run(myloglike, myprior, n_params, resume =False, verbose = True, sampling_efficiency = 0.3, n_live_points=5, max_iter=1)
+
+# WARNING: THIS CODE NEEDS A MASSIVE CLEANUP
+root.root_close()
