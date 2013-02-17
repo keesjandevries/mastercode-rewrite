@@ -57,7 +57,7 @@ VARS_dict={
         # 40, 41 is DarkSUSY
         ('SuperISO', 'SIbsg')   : 39,
         ('HMIX', 'MUE')         : 42,
-        # 43 sigma^SI MICOMEGS: WARNING this is missing
+        ('Micromegas', 'sigma_p_si'): 43,
         ('ALPHA', 'Alpha')      : 44, 
         ('HMIX', 'MA02')        : 45,
         ('NMIX','ZNeu(1,1)')    : 46,
