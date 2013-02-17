@@ -70,7 +70,8 @@ models = {
 
 output_opts = {
         'cMSSM': {
-            'qMax': 91.1875,
+#            'qMax': 91.1875,
+            'qMax': 0.0, # will run dr-bar to the softsusy-scale
             'numPoints': 1,
             'ewsbBCscale': False,
             },
