@@ -102,6 +102,10 @@ constraints_dict = {
             'oids': [('Micromegas', 'Omega')],
             'data': [0.1120, 0.0056, 0.012],
             'func': LF.gauss},
+        'Oh^2_mc8': {   
+            'oids': [('Micromegas', 'Omega')],
+            'data': [0.1109, 0.0056, 0.012],
+            'func': LF.gauss},
         'Oh^2-9-years': {   
             'oids': [('Micromegas', 'Omega')],
             'data': [0.1138, 0.0056, 0.012],
@@ -162,6 +166,11 @@ constraints_dict = {
             'data': [('PointAnalyser/m0m12.txt', 'radial', 0.95, 2,'linear')],
             'func': LF.power_4_inv_single_contour, 
             'mode': 'contour'},
+        'atlas5_m0_m12': {
+            'oids': [('MINPAR', 'M0'),('MINPAR', 'M12')],
+            'data': [('PointAnalyser/atlas_5fb_m0_m12.txt', 'radial', 0.95, 2,'linear')],
+            'func': LF.power_4_inv_single_contour, 
+            'mode': 'contour'},
         'MATANB' : {
             'oids': [('FeynHiggs', 'mA'),('MINPAR', 'TB')],
             'data': [('PointAnalyser/matanb.txt','x',0.95,2,'linear',{'min':'flat'})],
@@ -171,6 +180,11 @@ constraints_dict = {
             'oids': [('MASS', 'MNeu(1)'),('LSP scattering','s3out')],
             'data': [('PointAnalyser/xenon100.txt','x',0.9,2,'logxy',{'min':'flat','max':'flat'})],
             'func': LF.xenon100_jul_2012, 
+            'mode': 'contour' },
+        'mc8_bsmm':{
+            'oids': [('BPhysics','Psll')],
+            'data': [('PointAnalyser/mc8_bsmm.txt','x',0.9,1,'linear',{'max':'flat'})],
+            'func': LF.one_dim_chi2_lookup, 
             'mode': 'contour' },
         'bsmm':{
             'oids': [('BPhysics','Psll')],
