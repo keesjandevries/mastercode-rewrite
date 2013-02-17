@@ -229,7 +229,7 @@ def run(model, **model_inputs):
     oneset = QedQcd()
 #    if model_inputs.get('SMinputs'):
 #    setup_SM_values(oneset,r,default_inputs,model_inputs['SMinputs'])
-    setup_SM_values(oneset,r,default_inputs,None)
+    setup_SM_values(oneset,r,default_inputs,model_inputs)
         
     #for var, func_name in qed_qcd_funcs.items():
     #    # for example
