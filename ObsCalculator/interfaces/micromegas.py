@@ -9,7 +9,7 @@ MOlib = cdll.LoadLibrary('packages/lib/libmcmicromegas.so')
 
 class MicromegasPrecObs(Structure):
     _fields_ = [('Omega', c_double), ('Bll', c_double), ('Bsg', c_double),
-            ('SMbsg', c_double)]
+            ('SMbsg', c_double),('sigma_p_si',c_double)]
 
 def run(slhadata, inputs=None, update=False) :
     MOout = MicromegasPrecObs()
