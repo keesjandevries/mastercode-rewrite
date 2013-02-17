@@ -28,5 +28,5 @@ def root_close():
 
 def root_write(l):
     double_array=c_double*len(l)
-    vars=double_array(*l)
-    ROOTlib.rootwrite(vars,len(l))
+    VARS=double_array(*l)
+    ROOTlib.rootwrite(VARS,len(l))
