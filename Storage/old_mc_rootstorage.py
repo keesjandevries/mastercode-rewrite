@@ -1,24 +1,167 @@
 #! /usr/bin/env python
 import Storage.interfaces.ROOT as root
-from example_point import point 
-from mc_new_old_oids_dict import get_mc_old_oid
+#from example_point import point 
+#from mc_new_old_oids_dict import get_mc_old_oid
 
-#WARNING: This module will be changed.
-def fill_vars(d,vars):
+#KJ 2013/02/15 WARNING: This module is horrific and thus temporary
+# Key word to keep in mind is "RESULT ORIENTED" :D:D:D:D
+
+# RESULT ORIENTED :D
+
+# This is the index list as it comes from mc-old
+# WARNING: RESULT ORIENTED
+max_rows = 106 # this number is also valid for nuhm2, 
+                                       #and does not include the funny numbers at the end of the tree
+# WARNING: RESULT ORIENTED
+VARS_dict={
+        #parameters
+        ('tot_X2', 'all')       :0,
+        ('MINPAR','M0')         :1,
+        ('MINPAR','M12')        :2,
+        ('MINPAR','A')          :3,
+        ('MINPAR','TB')         :4,
+        ('MINPAR','signMUE')    :5,
+        ('SMINPUTS','Mt')       :6,
+        ('SMINPUTS','MZ')       :7,
+        ('SUSY-POPE', 'GZ_in')  :8,
+        ('SUSY-POPE', 'DAlpha_had_in'):9,
+        #predictions
+        ('BPhysics', 'BRbsg')   : 10,
+        ('BPhysics', 'RDMs')    : 11,
+        ('BPhysics', 'Psll')    : 12,
+        ('BPhysics', 'BRbtn')   : 13,
+        ('BPhysics', 'BRXsll')  : 14,
+        ('BPhysics', 'BRKl2')   : 15,
+        ('FeynHiggs','gm2')     : 16,
+        ('SUSY-POPE', 'MW')     : 17, 
+        ('SUSY-POPE', 'sin_theta_eff'): 18,
+        ('SUSY-POPE', 'Gamma_z'): 19,
+        ('SUSY-POPE', 'Rl')     : 21,
+        ('SUSY-POPE', 'Rb')     : 22, 
+        ('SUSY-POPE', 'Rc')     : 23,
+        ('SUSY-POPE', 'Afb_b')  : 24,
+        ('SUSY-POPE', 'Afb_c')  : 25,
+        ('SUSY-POPE', 'Ab')     : 26,
+        ('SUSY-POPE', 'Ac')     : 27,
+        ('SUSY-POPE', 'Al')     : [28,30],
+        ('FeynHiggs', 'mh')     : 28,
+        ('Micromegas', 'Omega') : 29,
+        ('SUSY-POPE', 'Afb_l')  : 31,
+        ('SUSY-POPE', 'sigma_had'):32,
+        ('BPhysics', 'RDMb')    : 33,
+        ('BPhysics', 'RDMK')    : 34,
+        ('BPhysics', 'BRKpnn')  : 35,
+        ('BPhysics', 'Pdll')    : 36,
+        # 37 is that bloody ratio
+        ('SuperISO', 'SId0')    : 38,
+        # 40, 41 is DarkSUSY
+        ('SuperISO', 'SIbsg')   : 39,
+        ('HMIX', 'MUE')         : 42,
+        # 43 sigma^SI MICOMEGS: WARNING this is missing
+        ('ALPHA', 'Alpha')      : 44, 
+        ('HMIX', 'MA02')        : 45,
+        # 46-61 NMix_ZNeu, was once needed for KOcode
+        ('NMix','ZNeu(1,1)')    : 46,
+        ('NMix','ZNeu(1,2)')    : 47,
+        ('NMix','ZNeu(1,3)')    : 48,
+        ('NMix','ZNeu(1,4)')    : 49,
+        ('NMix','ZNeu(2,1)')    : 50,
+        ('NMix','ZNeu(2,2)')    : 51,
+        ('NMix','ZNeu(2,3)')    : 52,
+        ('NMix','ZNeu(2,4)')    : 53,
+        ('NMix','ZNeu(3,1)')    : 54,
+        ('NMix','ZNeu(3,2)')    : 55,
+        ('NMix','ZNeu(3,3)')    : 56,
+        ('NMix','ZNeu(3,4)')    : 57,
+        ('NMix','ZNeu(4,1)')    : 58,
+        ('NMix','ZNeu(4,2)')    : 59,
+        ('NMix','ZNeu(4,3)')    : 60,
+        ('NMix','ZNeu(4,4)')    : 61,
+        ('MASS', 'MSf(1,3,1)')  : 62, #muL
+        ('MASS', 'MSf(2,3,1)')  : 63, #muR
+        ('MASS', 'MSf(1,4,1)')  : 64, #mdL
+        ('MASS', 'MSf(2,4,1)')  : 65, #mdR
+        ('STOPMIX', 'USf(1,1)') : 66,
+        ('STOPMIX', 'USf(1,1)') : 67,
+        ('STOPMIX', 'USf(1,1)') : 68,
+        ('STOPMIX', 'USf(1,1)') : 69,
+        ('SBOTMIX', 'USf(1,1)') : 70,
+        ('SBOTMIX', 'USf(1,1)') : 71,
+        ('SBOTMIX', 'USf(1,1)') : 72,
+        ('SBOTMIX', 'USf(1,1)') : 73,
+        ('MASS', 'MCha(1)'): 74,
+        ('MASS', 'MCha(2)'): 75,
+        ('MASS', 'MNeu(1)'): 76,
+        ('MASS', 'MNeu(2)'): 77,
+        ('MASS', 'MNeu(3)'): 78,
+        ('MASS', 'MNeu(4)'): 79,
+        ('MASS', 'MSf(2,2,1)'): 80, #er
+        ('MASS', 'MSf(1,2,1)'): 81, #el
+        ('MASS', 'MSf(1,1,1)'): 82, #nu_e
+ #
+        ('MASS', 'MSf(2,2,2)'): 83, #mur
+        ('MASS', 'MSf(1,2,2)'): 84, #mul
+        ('MASS', 'MSf(1,1,2)'): 85, #nu_mu
+ #
+        ('MASS', 'MSf(1,2,3)'): 86, #tau1
+        ('MASS', 'MSf(2,2,3)'): 87, #tau2
+        ('MASS', 'MSf(1,1,3)'): 88, #nu_tau
+ # 89, 90 are averages
+        ('MASS', 'MSf(1,3,3)'): 91, #top1
+        ('MASS', 'MSf(2,3,3)'): 92, #top2
+        ('MASS', 'MSf(1,4,3)'): 93, #bot1
+        ('MASS', 'MSf(2,4,3)'): 94, #bot2
+# Gluino mass
+        ('MASS', 'MGl'): 95,
+# Higgs masses
+        ('MASS', 'Mh0'): 96,
+        ('MASS', 'MHH'): 97,
+        ('MASS', 'MA0'): 98,
+        ('MASS', 'MHp'): 99,
+        }
+
+# WARNING: RESULT ORIENTED
+def get_mc_old_oid(mcpp_oid,model='cMSSM'):
+    if model=='cMSSM':
+        return VARS_dict.get(mcpp_oid)
+
+#WARNING: RESULT ORIENTED
+def fill_VARS(point,VARS,model='cMSSM'):
     for oid, val in point.items():
-        old_oid=get_mc_old_oid(oid)
+        old_oid=get_mc_old_oid(oid,model)
         if old_oid: 
             # To deal with stupid dubble assignment of Al
             try:
-                vars[old_oid]=val
+                if old_oid==0: print("should be filled", val)
+                VARS[old_oid]=val
             except TypeError: 
                 for o_oid in old_oid:
-                    vars[o_oid]=val
-    return vars
+                    VARS[o_oid]=val
+    return VARS
 
-if __name__=="__main__" :
-    vars=100*[0.]
-    vars=fill_vars(point,vars)
-    root.root_open('test.root')
-    root.root_write(vars)
-    root.root_close()
+#WARNING: RESULT ORIENTED
+def fill_VARS_2(point,VARS,model='cMSSM'):
+    for mcpp_oid, old_oid in VARS_dict.items():
+        try:
+            VARS[old_oid]=point[mcpp_oid]
+        except TypeError:
+            for oldoid in old_oid:
+                VARS[oldoid]=point[mcpp_oid]
+
+    if model=='cMSSM'
+        VARS[37]=point[('BPhysics', 'RDMs')]/point[('BPhysics', 'RDMb')]
+    return VARS
+
+
+#WARNING: RESULT ORIENTED
+def write_point_to_root(point,model='cMSSM'):
+    VARS=max_rows*[0.]
+#    VARS=fill_VARS(point,VARS,model)
+    VARS=fill_VARS_2(point,VARS,model)
+    root.root_write(VARS)
+
+
+
+
+
+
