@@ -36,14 +36,14 @@ VARS_dict={
         ('SUSY-POPE', 'MW')     : 17, 
         ('SUSY-POPE', 'sin_theta_eff'): 18,
         ('SUSY-POPE', 'Gamma_z'): 19,
-        ('SUSY-POPE', 'Rl')     : 21,
-        ('SUSY-POPE', 'Rb')     : 22, 
-        ('SUSY-POPE', 'Rc')     : 23,
-        ('SUSY-POPE', 'Afb_b')  : 24,
-        ('SUSY-POPE', 'Afb_c')  : 25,
-        ('SUSY-POPE', 'Ab')     : 26,
-        ('SUSY-POPE', 'Ac')     : 27,
-        ('SUSY-POPE', 'Al')     : [28,30],
+        ('SUSY-POPE', 'Rl')     : 20,
+        ('SUSY-POPE', 'Rb')     : 21, 
+        ('SUSY-POPE', 'Rc')     : 22,
+        ('SUSY-POPE', 'Afb_b')  : 23,
+        ('SUSY-POPE', 'Afb_c')  : 24,
+        ('SUSY-POPE', 'Ab')     : 25,
+        ('SUSY-POPE', 'Ac')     : 26,
+        ('SUSY-POPE', 'Al')     : [27,30],
         ('FeynHiggs', 'mh')     : 28,
         ('Micromegas', 'Omega') : 29,
         ('SUSY-POPE', 'Afb_l')  : 31,
@@ -60,35 +60,34 @@ VARS_dict={
         # 43 sigma^SI MICOMEGS: WARNING this is missing
         ('ALPHA', 'Alpha')      : 44, 
         ('HMIX', 'MA02')        : 45,
-        # 46-61 NMix_ZNeu, was once needed for KOcode
-        ('NMix','ZNeu(1,1)')    : 46,
-        ('NMix','ZNeu(1,2)')    : 47,
-        ('NMix','ZNeu(1,3)')    : 48,
-        ('NMix','ZNeu(1,4)')    : 49,
-        ('NMix','ZNeu(2,1)')    : 50,
-        ('NMix','ZNeu(2,2)')    : 51,
-        ('NMix','ZNeu(2,3)')    : 52,
-        ('NMix','ZNeu(2,4)')    : 53,
-        ('NMix','ZNeu(3,1)')    : 54,
-        ('NMix','ZNeu(3,2)')    : 55,
-        ('NMix','ZNeu(3,3)')    : 56,
-        ('NMix','ZNeu(3,4)')    : 57,
-        ('NMix','ZNeu(4,1)')    : 58,
-        ('NMix','ZNeu(4,2)')    : 59,
-        ('NMix','ZNeu(4,3)')    : 60,
-        ('NMix','ZNeu(4,4)')    : 61,
+        ('NMIX','ZNeu(1,1)')    : 46,
+        ('NMIX','ZNeu(1,2)')    : 47,
+        ('NMIX','ZNeu(1,3)')    : 48,
+        ('NMIX','ZNeu(1,4)')    : 49,
+        ('NMIX','ZNeu(2,1)')    : 50,
+        ('NMIX','ZNeu(2,2)')    : 51,
+        ('NMIX','ZNeu(2,3)')    : 52,
+        ('NMIX','ZNeu(2,4)')    : 53,
+        ('NMIX','ZNeu(3,1)')    : 54,
+        ('NMIX','ZNeu(3,2)')    : 55,
+        ('NMIX','ZNeu(3,3)')    : 56,
+        ('NMIX','ZNeu(3,4)')    : 57,
+        ('NMIX','ZNeu(4,1)')    : 58,
+        ('NMIX','ZNeu(4,2)')    : 59,
+        ('NMIX','ZNeu(4,3)')    : 60,
+        ('NMIX','ZNeu(4,4)')    : 61,
         ('MASS', 'MSf(1,3,1)')  : 62, #muL
         ('MASS', 'MSf(2,3,1)')  : 63, #muR
         ('MASS', 'MSf(1,4,1)')  : 64, #mdL
         ('MASS', 'MSf(2,4,1)')  : 65, #mdR
         ('STOPMIX', 'USf(1,1)') : 66,
-        ('STOPMIX', 'USf(1,1)') : 67,
-        ('STOPMIX', 'USf(1,1)') : 68,
-        ('STOPMIX', 'USf(1,1)') : 69,
+        ('STOPMIX', 'USf(1,2)') : 67,
+        ('STOPMIX', 'USf(2,1)') : 68,
+        ('STOPMIX', 'USf(2,2)') : 69,
         ('SBOTMIX', 'USf(1,1)') : 70,
-        ('SBOTMIX', 'USf(1,1)') : 71,
-        ('SBOTMIX', 'USf(1,1)') : 72,
-        ('SBOTMIX', 'USf(1,1)') : 73,
+        ('SBOTMIX', 'USf(1,2)') : 71,
+        ('SBOTMIX', 'USf(2,1)') : 72,
+        ('SBOTMIX', 'USf(2,2)') : 73,
         ('MASS', 'MCha(1)'): 74,
         ('MASS', 'MCha(2)'): 75,
         ('MASS', 'MNeu(1)'): 76,
@@ -148,8 +147,10 @@ def fill_VARS_2(point,VARS,model='cMSSM'):
             for oldoid in old_oid:
                 VARS[oldoid]=point[mcpp_oid]
 
-    if model=='cMSSM'
+    if model=='cMSSM':
         VARS[37]=point[('BPhysics', 'RDMs')]/point[('BPhysics', 'RDMb')]
+        VARS[89]=sum([point[('MASS',squark)] for squark in ['MSf(2,3,1)','MSf(2,3,2)','MSf(2,4,1)','MSf(2,4,2)'] ] )/4. # ave over R: u,c,d,s squarks
+        VARS[90]=sum([point[('MASS',squark)] for squark in ['MSf(1,3,1)','MSf(1,3,2)','MSf(1,4,1)','MSf(1,4,2)'] ] )/4. # ave over L: u,c,d,s squarks
     return VARS
 
 
