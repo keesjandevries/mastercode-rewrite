@@ -18,6 +18,8 @@ def parse_args():
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
     parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdonw')
     parser.add_argument('--root_save'  , '-r', dest='root_save', action='store_true', help='save to root file')
+    parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
+            default=None, help='override all_params')
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -44,6 +46,8 @@ if __name__=="__main__" :
                     }
                 }
             }
+    if args.input_pars:
+        all_params.update(eval(args.input_pars))
 
     try:
         slha_obj, observations,stdouts = point.run_point(model=model, **all_params)
