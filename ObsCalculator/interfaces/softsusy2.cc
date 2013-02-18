@@ -1045,8 +1045,8 @@ int run(char * inputslha, char* buf, int len) {
   catch(const char * a) { cout << a; }
   catch(...) { cout << "Unknown type of exception caught.\n"; }
   
-  return strlen(buf);
-//  return 0;
+  // in case of a serious problem, return as an error
+  return r->displayProblem().test() ;
 }
 
 }
