@@ -53,7 +53,7 @@ void errorCall() {
 
 extern "C"{
 
-int run(char * inputslha) {
+int run(char * inputslha, char* buf, int len) {
 
     stringstream inputslha_ss(inputslha);
 
@@ -339,7 +339,7 @@ int run(char * inputslha) {
     bool flag = false;
     if (true) {
       outputCharacteristics(8);
-      if (argc == 2) {
+      if (true) {
 	string line, block;
 	int model;
 	
@@ -1021,9 +1021,21 @@ int run(char * inputslha) {
     if (desiredMh > 0.1) {
       sPhysical s(r->displayPhys()); s.mh0 = desiredMh; r->setPhys(s);
     }
-    
-    r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
+
+
+    // This works. Same came up with it. Not sure if there's a better way
+    // define stringstream
+    std::stringstream ss_out( std::stringstream::in |
+                                  std::stringstream::out );
+    // the slhafile goes into the stringstream 
+    r->lesHouchesAccordOutput(ss_out, modelIdent, pars, sgnMu, tanb, qMax,  
 			      numPoints, mgut, ewsbBCscale);
+    std::string ss_str(
+            static_cast<std::stringstream const&>(std::stringstream() <<
+            ss_out.rdbuf()).str());
+    const char* ss_cstr = ss_str.c_str();
+    strncpy(buf,ss_cstr,len-1);
+    buf[len-1]=0;
     
     if (r->displayProblem().test()) {
       cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
@@ -1033,7 +1045,8 @@ int run(char * inputslha) {
   catch(const char * a) { cout << a; }
   catch(...) { cout << "Unknown type of exception caught.\n"; }
   
-  return 0;
+  return strlen(buf);
+//  return 0;
 }
 
 }
