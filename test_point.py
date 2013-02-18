@@ -58,7 +58,8 @@ if __name__=="__main__" :
     all_params={'SoftSUSY':m_vars}
 #    all_params['mc_slha_update']={('SMINPUTS','MZ'):90.}
     all_params['mc_slha_update']=True
-    all_params['verbose']=True
+#    all_params['verbose']=True
+    all_params['SUSY-POPE']={'non_slha_inputs':{'DeltaAlfa5had':0.02759}}
     
 
     try:
@@ -75,7 +76,12 @@ if __name__=="__main__" :
     all_constraints=Constraints_list.constraints
     # make a dictionary that only contains the constraints you want (e.g. just define on the spot, or read in from a file)
 #       data_set=['xenon100']
-    data_set=all_constraints.keys()
+#    data_set=all_constraints.keys()
+    data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
+            'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
+            'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
+            'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
+            'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
 #    data_set=['Al(SLD)', 'sintheta_eff', 'Gamma_Z', 'MZ',  'Rl', 'Afb(b)',  'Afb(c)',   'DAlpha_had', 'sigma_had^0', 'Al(P_tau)', 'Ac', 'Rb', 'Rc', 'Ab',  'Afb_l',  'MW', ]
 #    print(data_set)
     constraints={name: all_constraints[name] for name in data_set}
@@ -93,8 +99,10 @@ if __name__=="__main__" :
         combined_obs[('constr_X2',key)]=val
     combined_obs[('tot_X2','all')]=total
     bpp.pprint(combined_obs)
-#    pickle_object(combined_obs, 'temp/point.pkl')
-#    susypope_obs={oid:val for oid, val in combined_obs.items() if oid[0]=='SUSY-POPE'}
-#    slha_obj.write('slhas/test.slha')
+    # save to 
+    root.root_open('temp/test.root')
+    rootstore.write_point_to_root(combined_obs)
+    root.root_close()
+
 
 
