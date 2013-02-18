@@ -11,6 +11,7 @@
 */ 
 
 #include <softpoint.h>
+#include <sstream>
 
 // Returns a string with all characters in upper case: very handy
 string ToUpper(const string & s) {
@@ -50,7 +51,12 @@ void errorCall() {
   throw ii.str();
 }*/
 
-int main(int argc, char *argv[]) {
+extern "C"{
+
+int run(char * inputslha) {
+
+    stringstream inputslha_ss(inputslha);
+
   tryToConvergeHard = true;
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
@@ -331,13 +337,13 @@ int main(int argc, char *argv[]) {
   */
     
     bool flag = false;
-    if (!strcmp(argv[1], "leshouches")) {
+    if (true) {
       outputCharacteristics(8);
       if (argc == 2) {
 	string line, block;
 	int model;
 	
-	while (getline(cin,line)) {
+	while (getline(inputslha_ss,line)) {
 	  //	  mgutGuess = mgutCheck("unified", gaugeUnification);
 
 	  //	cout << line << endl;
@@ -1027,6 +1033,8 @@ int main(int argc, char *argv[]) {
   catch(const char * a) { cout << a; }
   catch(...) { cout << "Unknown type of exception caught.\n"; }
   
-  exit(0);
+  return 0;
+}
+
 }
 
