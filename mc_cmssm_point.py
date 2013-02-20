@@ -35,7 +35,7 @@ if __name__=="__main__" :
                 ('MINPAR', 'TB'):       16.26,
                 ('MINPAR', 'signMUE'):  1.0,
                 ('MINPAR', 'A'):        -1303.97,
-
+                ('SMINPUTS', 'Mt') :    173.2,
                 },
             'mc_slha_update':{
                 ('SMINPUTS','MZ')   : 91.1876, 
