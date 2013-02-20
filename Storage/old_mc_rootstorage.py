@@ -10,7 +10,7 @@ import Storage.interfaces.ROOT as root
 
 # This is the index list as it comes from mc-old
 # WARNING: RESULT ORIENTED
-max_rows = 106 # this number is also valid for nuhm2, 
+max_rows = 110 # this number is also valid for nuhm2, 
                                        #and does not include the funny numbers at the end of the tree
 # WARNING: RESULT ORIENTED
 VARS_dict={
@@ -117,6 +117,10 @@ VARS_dict={
         ('MASS', 'MHH'): 97,
         ('MASS', 'MA0'): 98,
         ('MASS', 'MHp'): 99,
+        ('SoftSUSY', 'Mh0'): 104,
+        ('SoftSUSY', 'MHH'): 105,
+        ('SoftSUSY', 'MA0'): 106,
+        ('SoftSUSY', 'MHp'): 107,
         }
 
 # WARNING: RESULT ORIENTED

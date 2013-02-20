@@ -69,9 +69,13 @@ def run_point(model, **input_pars):
         for oid, val in values.items():
             slhafile[oid]=val
 
-
-    # Finally: send slha file to predictors
     predictor_output = OrderedDict()
+    # FIXME: this should be done less arbitrarily: Save softsusy-Higgs sector
+    predictor_output[(softsusy2.name,'Mh0')]=slhafile[('MASS', 'Mh0')]
+    predictor_output[(softsusy2.name,'MHH')]=slhafile[('MASS', 'MHH')]
+    predictor_output[(softsusy2.name,'MA0')]=slhafile[('MASS', 'MA0')]
+    predictor_output[(softsusy2.name,'MHp')]=slhafile[('MASS', 'MHp')]
+    # Finally: send slha file to predictors
     for predictor in predictors:
         is_modifier = predictor in slha_modifiers
         #FIXME: needs to get something like: pred_verbose=  predictor.name in input_pars['verbose']
