@@ -32,7 +32,10 @@ param_ranges=OrderedDict([
         ('m0',(0,4000)),
         ('m12',(0,4000)),
         ('A0',(-5000,5000)),
-        ('tanb',(0,65)),
+        ('tanb',(1,65)), # softsusy only takes tanb>=1.
+        ('mt',(171.4,175)),
+        ('mz',(91.1833,91.1917)),
+        ('Delta_alpha_had',(0.02729,0.02769))
        ] )
 
 set_global_lookup(None)
@@ -57,21 +60,35 @@ def get_obs(cube,ndim):
     m12=cube[1]
     A0=cube[2]
     tanb=cube[3]
-    input_vars = {
-     'm0': m0, 'm12': m12, 'A0': A0 , 'tanb': tanb, 'sgnMu': 1 #MC8 bf
+    mt=cube[4]
+    mz=cube[5]
+    Delta_alpha_had=cube[6]
+
+    model = 'cMSSM' 
+
+    all_params={
+            'SoftSUSY':{
+                ('MINPAR', 'M0'):       m0,
+                ('MINPAR', 'M12'):      m12,
+                ('MINPAR', 'TB'):       tanb,
+                ('MINPAR', 'signMUE'):  1,
+                ('MINPAR', 'A'):        A0,
+                ('SMINPUTS', 'Mt') :    mt,
+                },
+            'mc_slha_update':{
+                ('SMINPUTS','MZ')   : mz, 
+                },
+            'SUSY-POPE':{
+                'non_slha_inputs':{
+                    'DeltaAlfa5had' : Delta_alpha_had,
+                    }
                 }
-#    print(input_vars)
-    other_vars = {
-            'mt': 173.2,
-            'mgut': {'cMSSM': 2e16, 'pMSSM': 1.0e3}[model]
             }
-    m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
-    input_pars={'SoftSUSY':m_vars}
-    input_pars['mc_slha_update']=True
-    input_pars['lookup']=slha_lookup
+#    m_vars = dict(list(input_vars.items()) + list(other_vars.items()))
+    all_params['lookup']=slha_lookup
 #    input_pars['verbose']=True
     try:
-        slha_obj, observations , stdouts = point.run_point(model=model, **input_pars)
+        slha_obj, observations , stdouts = point.run_point(model=model, **all_params)
     except TypeError:
         return None
 
