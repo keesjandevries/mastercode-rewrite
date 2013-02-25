@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import Storage.interfaces.ROOT as root
+import Storage.interfaces.ROOT_ab_out as ab_root
 #from example_point import point 
 #from mc_new_old_oids_dict import get_mc_old_oid
 
@@ -166,7 +167,11 @@ def write_point_to_root(point,model='cMSSM'):
     root.root_write(VARS)
 
 
-
+#WARNING: VERY RESULT ORIENTED
+def write_in_out_to_ab_root(in_vars,out_point,model='cMSSM'):
+    VARS=max_rows*[0.]
+    out_vars=fill_VARS_2(out_point,VARS,model)
+    ab_root.root_write(in_vars, out_vars)
 
 
 
