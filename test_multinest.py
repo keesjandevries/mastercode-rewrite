@@ -103,9 +103,13 @@ def get_obs(cube,ndim):
     return combined_obs
 
 def get_chi2(obs):
-    data_set=['xenon100']
-#    constraints={name: all_constraints[name] for name in data_set}
-    constraints=all_constraints.copy()
+    data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
+           'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
+           'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
+           'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
+           'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
+#    constraints=all_constraints.copy()
+    constraints={name: all_constraints[name] for name in data_set}
     total, breakdown = Analyse.chi2(obs,constraints)
     print("Done this, chi2: ",total)
     return total
