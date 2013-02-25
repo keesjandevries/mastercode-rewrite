@@ -26,10 +26,12 @@ def parse_args():
             default='temp/test_ab.root', help='output root file')
     parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
             default=None, help='override all_params')
-    parser.add_argument('--startn', '-B', dest='begin', action='store', type=int,
+    parser.add_argument('--nstart', '-B', dest='begin', action='store', type=int,
             default=0, help='start entry')
     parser.add_argument('--npoints', '-N', dest='end', action='store', type=int,
             default=10, help='number of entries')
+    parser.add_argument('--njump', '-J', dest='njump', action='store', type=int,
+            default=1, help='number of entries to jump after sampling')
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -41,11 +43,13 @@ if __name__=="__main__" :
     model = 'cMSSM' 
     
     begin=args.begin
-    end=args.end
+    step=args.njump
+    end=args.end*step
     if end > rread.root_get_entries():
         end= rread.root_get_entries()
     # WARNING: this code was written in a result oriented fashion
-    for entry in range(begin,end):
+    for entry in range(begin,end,step):
+        if 'n' in args.verbose: print("Entry number: {0}, ({1} out of {2})".format( entry, int((entry-begin)/step)+1, int((end-begin)/step)))
         VARS=rread.root_read(entry)
         m0, m12, A0, tanb, mt, mz, Delta_alpha_had = [VARS[i] for i in [1,2,3,4,6,7,9]]
         all_params={
@@ -77,7 +81,7 @@ if __name__=="__main__" :
             slha_obj, observations,stdouts = point.run_point(model=model, **all_params)
         except TypeError:
             print("ERROR: Point failed to run")
-            exit()
+            continue
 
 
 
@@ -106,6 +110,8 @@ if __name__=="__main__" :
 
         # save to root
         combined_obs[('tot_X2','all')]=total
+        #WARNING: the following is extremetly result oriented
+        VARS=VARS[:74]+VARS[-34:]
         old_mc_rootstorage.write_in_out_to_ab_root(VARS,combined_obs)
 
     # close root files after for loop
