@@ -50,11 +50,6 @@ class susypopeNoneSLHA(Structure):
 # output
 class susypopeObs(Structure):
     _fields_ = [('MSSMObs', c_double*35), ('SMObs', c_double*35)]
-#            ('MW', c_double), ('sin_theta_eff', c_double),
-#            ('Gamma_z', c_double), ('Rl', c_double), ('Rb', c_double),
-#            ('Rc', c_double), ('Afb_b', c_double), ('Afb_c', c_double),
-#            ('Ab', c_double), ('Ac', c_double), ('Al', c_double),
-#            ('Al_fb', c_double), ('sigma_had', c_double)]
 
 def get_relevant_observables(all_obs):
     all_obs_d=ctypes_field_values(all_obs, name)
