@@ -20,6 +20,7 @@ default_inputs={
 
 SLHA_MAX_SIZE = 10000
 
+#functions like this need to be defined separately for nuhm models and pmssm
 def get_cmssm_input_slha(slha_params,verbose=None):
     slha="""Block MODSEL		     # Select model
     1    1		     # sugra
@@ -60,8 +61,6 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
 
 
 def run(model, inputs,verbose=None):
-    #
-#    verbose=inputs.get('verbose')
     # set inputs to default
     slha_params=default_inputs.copy()
     # update to get the parsed inputs
@@ -69,6 +68,7 @@ def run(model, inputs,verbose=None):
 
     if model=='cMSSM':
         inputslha=get_cmssm_input_slha(slha_params,verbose)
+    # this list ought to be extended for new models
     else:
         return "", 1
 

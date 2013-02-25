@@ -1,15 +1,7 @@
-
-/** \file softpoint.cpp
-    - Project:     SOFTSUSY 
-   - Authors:     Ben Allanach, Markus Bernhardt 
-   - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
-
-   - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
-   - Description: main calling program: command line interface. Reads Les
-   - Houches files and command-line inputs and drives the calculation of a point
-   - in parameter space.
-*/ 
-
+//This interface is entirely based on softpoint.cpp
+//Reason: softpoint is very complicated, deals with the inputs correctly, 
+//and it therefore undesirable to duplicate this effort.
+//Changes w.r.t. softpoint.cpp are commented with HERE
 #include <softpoint.h>
 #include <sstream>
 
@@ -25,37 +17,22 @@ string ToUpper(const string & s) {
 	
 	return result;
     }
-/*
-void errorCall() {
-  ostringstream ii;
-  ii << "SOFTSUSY" << SOFTSUSY_VERSION 
-     << " called with incorrect arguments. Need to put either:\n";
-  ii << "softpoint.x leshouches < lesHouchesInput\n for SLHA input, or\n";
-  ii << "softpoint.x sugra <m0> <m12> <a0> <tanb> <mgut> <sgnMu>\n";
-  ii << "softpoint.x amsb <m0> <m32> <tanb> <mgut> <sgnMu>\n";
-  ii << "softpoint.x gmsb <n5> <mMess> <lambda> <cgrav> <tanb> <sgnMu> \n";
-  ii << "Any of the above can be extended by R-parity violation of one coupling by\n";
-  ii << "softpoint.x <non RPV model parameters as above> lambda <i> <j> <k> <coupling> \n";
-  ii << "the word lambda replaceable with lambdaP or lambdaPP for LLE, LQD, UDD coupling, respectively \n\n";
-  ii << "Other possibilities:\n";
-  ii << "softpoint.x sugra <m0> <m12> <a0> <tanb> <mgut> <sgnMu> <mb(mb)> ";
-  ii << " <mt> <as(MZ)> <1/a(MZ)>\n";
-  ii << "Bracketed entries are numerical values.\n";
-  ii << "<mgut> denotes the scale at which the SUSY breaking ";
-  ii << "parameters are specified. \n";
-  ii << "Enter <mgut>=unified to define MGUT by g1(MGUT)=g2(MGUT), otherwise";
-  ii << "\nit will be fixed at the numerical value input.\n";
-  ii << "For SUSY breaking terms set at MSUSY, enter <mgut>=msusy.\n";
-  ii << "lesHouchesInput contains the SUSY Les Houches Accord 2";
-  ii << " input.\n";
-  throw ii.str();
-}*/
 
+//HERE: remove error call
+
+//HERE: replace main function by "run"
+//in order to compile into shared library, the "run" function
+//is defined in extern C
 extern "C"{
 
+//HERE: this function takes an input slha and outputs into buff
+//the inputslha is defined as char array, since this can be parsed by
+//python.
 int run(char * inputslha, char* buf, int len) {
-
-    stringstream inputslha_ss(inputslha);
+  //HERE: rather than reading the input slha from the command line
+  //(using std::cin and the command ./softpoint.x leshouches < input.slha)
+  //we use a stringstream based on the inputslha char* 
+  stringstream inputslha_ss(inputslha);
 
   tryToConvergeHard = true;
   /// Sets up exception handling
@@ -82,267 +59,31 @@ int run(char * inputslha, char* buf, int len) {
   bool oldSchoolRpvOutput = false;
 
   try {
-/*  if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
-    cerr << "SOFTSUSY" << SOFTSUSY_VERSION << endl;
-    cerr << "B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
-    cerr << " hep-ph/0104145\n";
-    cerr << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, ";
-    cerr << "arXiv:0903.1805.\n\n";
-    cerr << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-	 << TOLERANCE << endl;
-    cerr << "G_F=" << GMU << " GeV^2" << endl;
-  }*/
+   //HERE: remove input handling
   
   double mgutGuess = 2.0e16, tanb = 10.;
   int sgnMu = 1;
   bool gaugeUnification = true, ewsbBCscale = false;
   double desiredMh = 0.;
 
-    // If there are no arguments, give error message,
-   // or if none of the options are called, then go to error message
-/*    if (argc == 1 || (strcmp(argv[1], "sugra") && strcmp(argv[1], "amsb") &&
-		      strcmp(argv[1], "gmsb") && 
-		      strcmp(argv[1], "runto") && 
-		      strcmp(argv[1], "leshouches")  && strcmp(argv[1], "-v") &&
-		      strcmp(argv[1], "--version")))
-      errorCall();*/
+   //HERE: remove input handling
     
     DoubleVector pars(3); 
     
     char * modelIdent = (char *)"";  
 
-/*    if (!strcmp(argv[1], "sugra")) {
-      cout << "# SOFTSUSY SUGRA calculation" << endl;
-      boundaryCondition = &sugraBcs;
-      if (argc == 8) {
-	modelIdent = (char *)"sugra";
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	r = &m;
-      } else if (argc == 9) {
-	modelIdent = (char *)"sugra";
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	QEWSB = atof(argv[8]);
-	r = &m;
-      } else if (argc == 12) {
-	modelIdent = (char *)"sugra";
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	double mbrun = atof(argv[8]);
-	double mtpole = atof(argv[9]);
-	double as = atof(argv[10]);
-	double aInv = atof(argv[11]);
-	oneset.setMass(mBottom, mbrun);
-	oneset.setMbMb(mbrun);
-	oneset.setPoleMt(mtpole);
-	oneset.setAlpha(ALPHA, 1.0 / aInv);
-	oneset.setAlpha(ALPHAS, as);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	r = &m;
-      } else if (argc == 13) {
-	RPVflag = true;
-	modelIdent = (char *)"sugra";
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	// check which lambda is set nonzero at MGUT
-	if (!strcmp(argv[8], "lambda")) {
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LE, k, i, j, d);
-	} else if (!strcmp(argv[8], "lambdaP")) {
-	  modelIdent = (char *)"sugra";
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LD, k, i, j, d);
-	} else if (!strcmp(argv[8], "lambdaPP")) {
-	  modelIdent = (char *)"sugra";
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LU, i, j, k, d);
-	}
-	r = &m;
-      } else if (argc == 11) {
-	modelIdent = (char *)"sugra";
-	RPVflag = true;
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	// check which lambda is set nonzero at MGUT
-	if (!strcmp(argv[8], "kappa")) {
-	  int i = int(atof(argv[9]));
-	  double d = atof(argv[10]);
-	  kw.setKappa(i, d);
-	}
-	r = &m;
-      } 
-      else {
-	errorCall();
-	// end of SUGRA option
-      }
-    }*/
-    //if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
-/*    if (!strcmp(argv[1], "amsb")) {
-      cout << "# SOFTSUSY mAMSB calculation" << endl;
-      boundaryCondition = &amsbBcs;
-      if (argc == 7 || argc == 12) {
-	modelIdent = (char *)"amsb";
-	double m0 = atof(argv[2]);
-	double m32 = atof(argv[3]);
-	tanb = atof(argv[4]);
-	mgutGuess = mgutCheck(argv[5], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[6]);
-	pars(1) = m32; pars(2) = m0;
-	// check if RPV
-	if (argc == 12) {
-	  if (!strcmp(argv[7], "lambda")) {
-	    RPVflag = true;
-	    int i= int(atof(argv[8]));
-	    int j= int(atof(argv[9]));
-	    int k= int(atof(argv[10]));
-	    double d = atof(argv[11]);
-	    kw.setLambda(LE, k, i, j, d);
-	  }	
-	  else if (!strcmp(argv[7], "lambdaP")) {
-	    RPVflag = true;
-	    int i= int(atof(argv[8]));
-	    int j= int(atof(argv[9]));
-	    int k= int(atof(argv[10]));
-	    double d = atof(argv[11]);
-	    kw.setLambda(LD, k, i, j, d);
-	  } else if (!strcmp(argv[7], "lambdaPP")) {
-	    RPVflag = true;
-	    int i= int(atof(argv[8]));
-	    int j= int(atof(argv[9]));
-	    int k= int(atof(argv[10]));
-	    double d = atof(argv[11]);
-	    kw.setLambda(LU, i, j, k, d);
-	  }
-	}
-	r = &m;
-      }
-      else 
-	errorCall();
-    }*/
-/*    if (!strcmp(argv[1], "gmsb")) {
-      cout << "# SOFTSUSY mGMSB calculation" << endl;
-      
-      boundaryCondition = &gmsbBcs;
-      modelIdent = (char *)"gmsb";
-      if (argc == 8) {
-	  double n5 = atof(argv[2]);
-	  double mMess = atof(argv[3]);
-	  double lambda = atof(argv[4]);
-	  double cgrav = atof(argv[5]);
-	  tanb = atof(argv[6]);
-	  sgnMu =  atoi(argv[7]);
-	  mgutGuess = mMess;
-	  gaugeUnification = false;
-	  pars.setEnd(4);
-	  pars(1) = n5; pars(2) = mMess; pars(3) = lambda; pars(4) = cgrav;
-	  r = &m;
-	  if (lambda > mMess) {
-	  ostringstream ii;
-	  ii << "Input lambda=" << lambda << " should be less than mMess="
-	     << mMess << endl;
-	  throw ii.str();
-	}
-	if (cgrav > 1.0) {
-	  ostringstream ii;
-	  ii << "Input cgrav=" << cgrav << " a real number bigger than or "
-	     << " equal to 1 (you can use 1 as a default value).\n";
-	  throw ii.str();
-	}
-      }
-      // for RPV GMSB
-      else if (argc == 13) {
-	modelIdent = (char *)"gmsb";
-	RPVflag = true;
-	double n5 = atof(argv[2]);
-	double mMess = atof(argv[3]);
-	double lambda = atof(argv[4]);
-	double cgrav = atof(argv[5]);
-	tanb = atof(argv[6]);
-	sgnMu =  atoi(argv[7]);
-	mgutGuess = mMess;
-	gaugeUnification = false;
-	pars.setEnd(4);
-	pars(1) = n5; pars(2) = mMess; pars(3) = lambda; pars(4) = cgrav;
-	// check which lambda is set nonzero at MGUT
-	if (!strcmp(argv[8], "lambda")) {
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LE, k, i, j, d);
-	} else if (!strcmp(argv[8], "lambdaP")) {
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LD, k, i, j, d);
-	} else if (!strcmp(argv[8], "lambdaPP")) {
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LU, i, j, k, d);
-	}
-	r = &m;
-	if (lambda < mMess) {
-	  ostringstream ii;
-	  ii << "Input lambda=" << lambda << " should be greater than mMess="
-	     << mMess << endl;
-	  throw ii.str();
-	}
-	if (cgrav > 1.0) {
-	  ostringstream ii;
-	  ii << "Input cgrav=" << cgrav << " a real number bigger than or "
-	     << " equal to 1 (you can use 1 as a default value).\n";
-	  throw ii.str();
-	}
-      }
-      else 
-	errorCall();
-    }
-  */
+   //HERE: remove input handling
     
     bool flag = false;
-    if (true) {
-      outputCharacteristics(8);
-      if (true) {
+   //HERE: remove if statements, since they concern input
+   //handling
+    outputCharacteristics(8);
 	string line, block;
 	int model;
 	
+    //HERE: replace std::cin with the stringstream inputslha_ss
+    //this is a good substitute since a stringstream can be read in
+    //line by line
 	while (getline(inputslha_ss,line)) {
 	  //	  mgutGuess = mgutCheck("unified", gaugeUnification);
 
@@ -956,9 +697,7 @@ int run(char * inputslha, char* buf, int len) {
 	  
 	} // end of file
 	
-      }
-      else errorCall();
-    }
+   //HERE: else statements and brackets from if statements at line 76
 
     /// prepare CKM angles
     if (flavourViolation) k.setAngles(lambda, aCkm, rhobar, etabar);
@@ -1023,8 +762,8 @@ int run(char * inputslha, char* buf, int len) {
     }
 
 
-    // This works. Same came up with it. Not sure if there's a better way
-    // define stringstream
+    // HERE: This works. Sam came up with it. Not sure if there's a better way
+    // define stringstream to substitute std::cout
     std::stringstream ss_out( std::stringstream::in |
                                   std::stringstream::out );
     // the slhafile goes into the stringstream 
@@ -1045,7 +784,7 @@ int run(char * inputslha, char* buf, int len) {
   catch(const char * a) { cout << a; }
   catch(...) { cout << "Unknown type of exception caught.\n"; }
   
-  // in case of a serious problem, return as an error
+  //HERE: in case of a serious problem, return as an error
   return r->displayProblem().test() ;
 }
 
