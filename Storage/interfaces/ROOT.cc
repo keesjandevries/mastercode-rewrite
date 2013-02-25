@@ -1,8 +1,3 @@
-//
-// Fortran interface to ROOT I/O
-//
-// $Id: root_interface.cc,v 1.1 2008/09/30 13:58:09 fronga Exp $
-
 #include <sstream>
 #include <iostream>
 #include <cstdlib>
