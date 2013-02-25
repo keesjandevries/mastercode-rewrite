@@ -7,11 +7,11 @@ from ObsCalculator.interfaces import slhalib as slhamodule
 from ObsCalculator.interfaces.slhalib import SLHA
 
 # spectrum calculator
-from ObsCalculator.interfaces import softsusy2
+from ObsCalculator.interfaces import softsusy
 from ObsCalculator.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
 from ObsCalculator.interfaces import susypope
 
-slha_generator = softsusy2
+slha_generator = softsusy
 slha_modifiers = [feynhiggs]
 predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
         susypope]
@@ -71,10 +71,10 @@ def run_point(model, **input_pars):
 
     predictor_output = OrderedDict()
     # FIXME: this should be done less arbitrarily: Save softsusy-Higgs sector
-    predictor_output[(softsusy2.name,'Mh0')]=slhafile[('MASS', 'Mh0')]
-    predictor_output[(softsusy2.name,'MHH')]=slhafile[('MASS', 'MHH')]
-    predictor_output[(softsusy2.name,'MA0')]=slhafile[('MASS', 'MA0')]
-    predictor_output[(softsusy2.name,'MHp')]=slhafile[('MASS', 'MHp')]
+    predictor_output[(softsusy.name,'Mh0')]=slhafile[('MASS', 'Mh0')]
+    predictor_output[(softsusy.name,'MHH')]=slhafile[('MASS', 'MHH')]
+    predictor_output[(softsusy.name,'MA0')]=slhafile[('MASS', 'MA0')]
+    predictor_output[(softsusy.name,'MHp')]=slhafile[('MASS', 'MHp')]
     # Finally: send slha file to predictors
     for predictor in predictors:
         is_modifier = predictor in slha_modifiers
