@@ -15,6 +15,9 @@ def root_close():
 def root_get_n_vars():
     return ROOT_readlib.getNvars()
 
+def root_get_entries():
+    return ROOT_readlib.getEntries()
+
 def root_read(entry):
     nvars=root_get_n_vars()
     double_array=c_double*nvars

@@ -22,6 +22,10 @@ extern "C"
         return tree->GetLeaf("vars")->GetLen();
     }
     //____________________________________________________________________
+    int getEntries(){
+        return tree->GetEntries();
+    }
+    //____________________________________________________________________
     void rootclose()
     {
       inputFile->Close();
