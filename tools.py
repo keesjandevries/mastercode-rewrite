@@ -198,6 +198,7 @@ def get_ctypes_streams(func, args=[], kwargs={}):
     p_stdout = read_pipe(pipe_out)
     os.close(pipe_out)
     os.close(pipe_in)
+    os.close(stdout)
     return (ret, p_stdout)
 
 class RedirectStdStreams(object):
