@@ -1,6 +1,6 @@
 from math import sqrt
 
-from PointAnalyser.Contours import Contour
+from PointAnalyser.Contour import Contour
 
 class Constraint(object):
     def __init__(self, ids, data, func, mode='simple'):
@@ -21,19 +21,31 @@ Otherwise,
 
     def get_chi2(self, point):
         #  collect necessary ids
-        chi2 = 0
+        chi2 = 0 
         try:
             for (block, name) in self._ids:
-                f_inputs = tuple([point[block][name]
-                    for (block,name) in self._ids])
+                point_values = tuple([point[pred_id]
+                    for pred_id in self._ids])
         except KeyError:
-            print('ERROR: Provided invalid input set {0}'.format(point))
+            print('ERROR: Provided invalid input set {0}'.format(self._ids))
             print('\tSetting chi2 to 0 for this constraint')
         except TypeError:
             print('ERROR: Please provide dictionary that can be accessed using point[id1][id2]')
             print('\tSetting chi2 to 0 for this constraint')
         else:
-            args = [f_inputs] + self._data
-            chi2 = self._func(*args)
+            try:
+                args = [point_values] + self._data
+                chi2 = self._func(*args)
+            except UnboundLocalError:
+                print("ERROR: no ids were specified")
+                print('\tSetting chi2 to 0 for this constraint')
         return chi2
 
+    def get_sigma(self):
+        try:
+            return self._data[1]
+        except:
+            print("ERROR in returning sigma, is this a gaussian constraint?")
+
+    def get_oids(self):
+        return self._ids

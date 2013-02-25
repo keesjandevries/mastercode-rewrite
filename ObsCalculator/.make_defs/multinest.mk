@@ -9,5 +9,6 @@ interface_dir=$(SAMPLE_DIR)/interfaces
 interface_src=$(interface_dir)/multinest.c
 interface_lib=$(LIB_DIR)/libmcmultinest.so
 
-cc=g++
+cc=gcc
+xx=g++
 fc=gfortran

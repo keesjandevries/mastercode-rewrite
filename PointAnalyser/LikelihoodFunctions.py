@@ -2,8 +2,15 @@ def gauss(point, mu, sigma):
     x = point[0]
     return ((x-mu)/sigma)**2
 
+def ratio_gauss(point, mu, sigma):
+    x1 = point[0]
+    x2 = point[1]
+    x=x1/x2
+    return ((x-mu)/sigma)**2
+
 def upperlimit(point, mu, sigma):
     chi2 = 0
+    x = point[0]
     if x > mu:
         chi2 = gauss(point,mu,sigma)
     else:
@@ -12,6 +19,7 @@ def upperlimit(point, mu, sigma):
 
 def lowerlimit(point, mu, sigma):
     chi2 = 0
+    x = point[0]
     if x < mu:
         chi2 = gauss(point,mu,sigma)
     else:
@@ -39,7 +47,6 @@ def power_2_single_contour(point,contour):
 def power_2_single_ma_tanb(point,contour):
     chi2=0.
     r = contour.point_ratio(point)
-    print('r is ', r)
     if r:
         chi2=power_n_scaling(contour.chi2,r,2)
     return chi2

@@ -8,3 +8,5 @@
 *.log
 *.dat
 *.points
+*c.txt
+*csummary.txt

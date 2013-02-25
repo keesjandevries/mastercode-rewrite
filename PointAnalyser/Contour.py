@@ -6,7 +6,7 @@ def load_contour(filename, mode='radial'):
     f = open(filename,'r')
     s_contour = [tuple(x.split()) for x in f.readlines()]
     f_contour = [(float(x), float(y)) for (x,y) in s_contour]
-    f_contour.sort(key=mode_lookup[mode]['par'])
+    f_contour.sort(key=mode_lookup[mode]['parameter'])
     f.close()
     return f_contour
 
@@ -65,17 +65,17 @@ def interpolate_y(point_par, segment,interp='linear'):
 
 mode_lookup = {
         'radial': {
-            'par': theta,
+            'parameter': theta,
             'value': radius,
             'interpolate': interpolate_radial,
             },
         'x': {
-            'par': x_coord,
+            'parameter': x_coord,
             'value': y_coord,
             'interpolate': interpolate_y,
             },
         'y': {
-            'par': y_coord,
+            'parameter': y_coord,
             'value': x_coord,
             'interpolate': interpolate_x,
             },
@@ -85,7 +85,7 @@ mode_lookup = {
 def find_segment_indices(mode,point_par,coords):
     try:
         second_point= next(c_point for c_point in coords if not
-                 mode_lookup[mode]['par'](c_point) < point_par )
+                 mode_lookup[mode]['parameter'](c_point) < point_par )
     except StopIteration:
         print("ERROR: Unable to find intercept for point {p}".format(p=point))
         segment_positions = None
@@ -120,8 +120,8 @@ def interpolate( mode, point_par, coords, interp):
 
 def get_contour_value(point_par, mode, coords, interp, extrap):
     value=None
-    min_par=mode_lookup[mode]['par'](coords[0])
-    max_par=mode_lookup[mode]['par'](coords[-1])
+    min_par=mode_lookup[mode]['parameter'](coords[0])
+    max_par=mode_lookup[mode]['parameter'](coords[-1])
     if point_par < min_par and extrap.get('min'):
         value=extrap_lookup['min'][extrap['min']](mode,coords)
     elif min_par <= point_par and point_par <= max_par:
@@ -132,6 +132,8 @@ def get_contour_value(point_par, mode, coords, interp, extrap):
 
 
 class Contour(object):
+    #FIXME: This class does the job now, but may need some work
+    #  It is looking a bit messy now, but for the moment it is sufficient.
     # A contour is assumed to be parametrised by par (defined by mode)
     # the value of the contour for that par is given by con_val(par, cont)
     def __init__(self,filename, mode, pval=None , dim=2 , interp='linear', extrap={} ):
@@ -148,7 +150,7 @@ class Contour(object):
 
     def point_ratio(self,point):
         point_ratio=None
-        point_par   = mode_lookup[self.mode]['par'](point)
+        point_par   = mode_lookup[self.mode]['parameter'](point)
         point_value = mode_lookup[self.mode]['value'](point)
         cont_value  = get_contour_value(point_par, self.mode, self.coords, self.interp, self.extrap)
         if cont_value:

@@ -23,7 +23,8 @@ def ctypes_field_values(obj, title):
         if 'ctypes' in str(a_type._type_):
             c_obj = getattr(obj, attr)
             d[attr] = c_obj[:]
-    return {title: d}
+    return {(title,key):val for (key,val) in d.items() }
+
 
 def is_int(s):
     try:
@@ -71,9 +72,10 @@ def setup_pipe(reader, writer, pipe_name=None):
         return output
 
 
-def pipe_object_to_function(obj, function, pipe_name=None):
+def pipe_object_to_function(obj, function, args=[], kwargs={}, pipe_name=None):
     if pipe_name is None:
         pipe_name = "/tmp/mc-{u}".format(u=unique_str())
+    args.insert(0,pipe_name)
     try:
         os.mkfifo(pipe_name)
     except OSError as e:
@@ -89,7 +91,7 @@ def pipe_object_to_function(obj, function, pipe_name=None):
         os._exit(child_pid)
     else:
     # parent process
-        function_out = function(pipe_name)
+        function_out = function(*args,**kwargs)
         os.unlink(pipe_name)
         os.waitpid(child_pid,0)
         return function_out
@@ -176,8 +178,10 @@ def extract_values(output_object):
     return values
 
 def pickle_object(obj, filename):
-    f = open(filename, 'w')
+    f = open(filename, 'wb')
     pickle.dump(obj,f)
+    f.close()
+    print('File saved to :' , filename)
 
 def open_pickled_file(filename):
     f = open(filename,'r')
@@ -192,6 +196,9 @@ def get_ctypes_streams(func, args=[], kwargs={}):
     ret = func(*args, **kwargs)
     os.dup2(stdout, 1)
     p_stdout = read_pipe(pipe_out)
+    os.close(pipe_out)
+    os.close(pipe_in)
+    os.close(stdout)
     return (ret, p_stdout)
 
 class RedirectStdStreams(object):

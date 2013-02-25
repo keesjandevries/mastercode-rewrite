@@ -49,22 +49,40 @@ class susypopeNoneSLHA(Structure):
 
 # output
 class susypopeObs(Structure):
-    _fields_ = [('MSSMObs', c_double*35), ('SMObs', c_double*35),
-            ('MW', c_double), ('sin_theta_eff', c_double),
-            ('Gamma_z', c_double), ('Rl', c_double), ('Rb', c_double),
-            ('Rc', c_double), ('Afb_b', c_double), ('Afb_c', c_double),
-            ('Ab_16', c_double), ('Ac_17', c_double), ('Al', c_double),
-            ('Al_fb', c_double), ('sigma_had', c_double)]
+    _fields_ = [('MSSMObs', c_double*35), ('SMObs', c_double*35)]
+
+def get_relevant_observables(all_obs):
+    all_obs_d=ctypes_field_values(all_obs, name)
+    d={
+        'MW'             :  all_obs_d[(name,'MSSMObs')][0 ],
+        'sin_theta_eff'  :  all_obs_d[(name,'MSSMObs')][26],
+        'Gamma_z'        :  all_obs_d[(name,'MSSMObs')][10],
+        'Rl'             :  all_obs_d[(name,'MSSMObs')][21],
+        'sigma_had'      :  all_obs_d[(name,'MSSMObs')][20],
+        'Rb'             :  all_obs_d[(name,'MSSMObs')][25],
+        'Rc'             :  all_obs_d[(name,'MSSMObs')][24],
+        'Al'             :  all_obs_d[(name,'MSSMObs')][29],
+        'Ab'             :  all_obs_d[(name,'MSSMObs')][30],
+        'Ac'             :  all_obs_d[(name,'MSSMObs')][31],
+        'Afb_l'          :  all_obs_d[(name,'MSSMObs')][32],
+        'Afb_b'          :  all_obs_d[(name,'MSSMObs')][33],
+        'Afb_c'          :  all_obs_d[(name,'MSSMObs')][34],}
+    return {(name,obs):val for obs,val in d.items()}
 
 def run(slhadata, inputs=None, update=False):
     #FIXME: not entirely sure if this is the most elegant way of doing it.
     # We somehow need to set the defaults for the susypope flags and none-slhainputs
     if inputs is None:
         inputs={}
+    verbose = inputs.get('verbose',False)
     flags  = susypopeFlags(default_inputs['flags'],inputs.get('flags'))
     n_slha = susypopeNoneSLHA(default_inputs['non_slha_inputs'],inputs.get('non_slha_inputs'))
 
     spout = susypopeObs()
     SPlib.run_susypope(byref(slhadata.data), byref(n_slha), byref(flags),
-            byref(spout))
-    return ctypes_field_values(spout, name)
+            byref(spout),verbose)
+#    susypope_outputs=ctypes_field_values(spout, name)
+    susypope_outputs=get_relevant_observables(spout)
+    susypope_outputs[(name,'GZ_in')]=n_slha.ZWidthexp
+    susypope_outputs[(name,'DAlpha_had_in')]=n_slha.DeltaAlfa5had
+    return susypope_outputs
