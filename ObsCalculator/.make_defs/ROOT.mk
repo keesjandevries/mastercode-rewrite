@@ -13,6 +13,7 @@ interface_read_lib=$(LIB_DIR)/libmcROOT_read.so
 interface_ab_out_src=$(STORAGE_DIR)/interfaces/ROOT_ab_out.cc
 interface_ab_out_lib=$(LIB_DIR)/libmcROOT_ab_out.so
 root_flags=$(shell $(INSTALL_DIR)/bin/root-config --cflags --libs )
+python_incdir=$(shell python -c  "import distutils.sysconfig as du; print(du.get_python_inc())" )
+python_libdir=$(shell python -c "import sys; print( sys.prefix )")/lib
 
 cc=g++
-#fc=gfortran
