@@ -144,7 +144,8 @@ class SLHA(object):
             elif line.startswith('D'):
                 #FIXME: we may want to change this
                 print("WARNING: DECAY's are ignored in SLHA.get_blocks_indices_comments_values() ")
-            elif not block_name == 'SPINFO':
+                block_name=None
+            elif block_name and (not block_name == 'SPINFO') :
                 #FIXME: want to have the SPINFO as well at some point
                 items = line.split()
                 if len(items):
