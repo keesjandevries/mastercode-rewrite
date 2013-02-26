@@ -19,7 +19,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
     parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdonw')
-    parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity')
+    parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity',default=[])
     parser.add_argument('--in_file', '-i', dest='in_file', action='store', type=str,
             default='temp/test.root', help='output in file')
     parser.add_argument('--root_file', '-r', dest='root_file', action='store', type=str,
