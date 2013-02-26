@@ -11,16 +11,27 @@ from ObsCalculator.interfaces import softsusy
 from ObsCalculator.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
 from ObsCalculator.interfaces import susypope
 
-slha_generator = softsusy
-slha_modifiers = [feynhiggs]
-predictors = slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
-        susypope]
+default_slha_generator = softsusy
+default_slha_modifiers = [feynhiggs]
+default_predictors = default_slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
+            susypope]
 
 
 def run_point(model, **input_pars):
+    #==================================
+    # define predictors
+    #==================================
+    slha_generator  =default_slha_generator
+    slha_modifiers  =default_slha_modifiers
+    predictors      =default_predictors
+
+    #define standard outs dict
     stdouts = OrderedDict()
-    #handle verbosity like this 'verbose': ['softsusy', 'FH', ...]
-    #verbosity helps with debugging
+    
+    #==============================================================
+    # handle verbosity like this 'verbose': ['softsusy', 'FH', ...]
+    # verbosity helps with debugging
+    #==============================================================
     if not input_pars.get('verbose'): input_pars['verbose']=[]
     #make an option to select all verbosity
     if 'all' in input_pars['verbose']:
@@ -28,36 +39,52 @@ def run_point(model, **input_pars):
         input_pars['verbose'].append(slha_generator.name)
         input_pars['verbose'].append('slha')
 
-    # spectrum generation
-    # check for verbosity
-    slha_gen_verbose=slha_generator.name in input_pars['verbose']
-    # run the spectrum calculator
-    (obj,err), stdout = tools.get_ctypes_streams(func=slha_generator.run,
-            args=[model,input_pars[slha_generator.name]], kwargs={'verbose':slha_gen_verbose})
-    # print standard out 
-    if slha_gen_verbose:
-        print(stdout)
-    #error handling for slha generator    
-    if err: print("ERROR: spectrum calculator")
-    
-    # If the spectrum calculater fails then there is no hope to calculate anything else.
-    # Hence, return None is appropriate
-    if(err): return None
+    if input_pars.get('spectrumfile'):
+        #=============================================================
+        # if an slhafile is given, the spectrum generation is skipped
+        # the slhafile also does not get modified
+        #=============================================================
+        slha_modifiers=[]
+        slhafile = SLHA()
+        slhafile.read(input_pars['spectrumfile'])
+        print("NOTE: Running on spectrum file {0}.".format(input_pars['spectrumfile'])) 
+        print('      Spectrum is not modified.')
+    else:
+        # ======================
+        # run spectrum generator
+        # ======================
 
-    stdouts.update({slhamodule.name: stdout})
+        # check for verbosity
+        slha_gen_verbose=slha_generator.name in input_pars['verbose']
+        # run the spectrum calculator
+        (obj,err), stdout = tools.get_ctypes_streams(func=slha_generator.run,
+                args=[model,input_pars[slha_generator.name]], kwargs={'verbose':slha_gen_verbose})
+        # print standard out 
+        if slha_gen_verbose:
+            print(stdout)
+        #error handling for slha generator    
+        if err: print("ERROR: spectrum calculator")
+        
+        # If the spectrum calculater fails then there is no hope to calculate anything else.
+        # Hence, return None is appropriate
+        if(err): return None
 
-    # if you want to see the slha file from the specturm generator, put 'verbose' in the 
-    if 'slha' in input_pars['verbose']:
-        print(obj)
+        stdouts.update({slhamodule.name: stdout})
 
-    # make slha object 
-    slhafile = SLHA(obj,input_pars.get('lookup'))
+        # if you want to see the slha file from the specturm generator, put 'verbose' in the 
+        if 'slha' in input_pars['verbose']:
+            print(obj)
 
+        # make slha object 
+        slhafile = SLHA(obj,input_pars.get('lookup'))
+
+    # =====================================================
     # WARNING: here is a functionality needed by mastercode
     #          it is not generic
     # "Manually" setting MW and MZ in the slha file object
     # if 'mc_slha_update' is in input_vars
     # this hack should not escape from this file
+    # =====================================================
     if input_pars.get('mc_slha_update'):
         # by default, use these values
         values={('MASS','MW') : 80.4,('SMINPUTS','MZ') : 91.1875}
@@ -69,13 +96,17 @@ def run_point(model, **input_pars):
         for oid, val in values.items():
             slhafile[oid]=val
 
+    # predictions start here
     predictor_output = OrderedDict()
     # FIXME: this should be done less arbitrarily: Save softsusy-Higgs sector
     predictor_output[(softsusy.name,'Mh0')]=slhafile[('MASS', 'Mh0')]
     predictor_output[(softsusy.name,'MHH')]=slhafile[('MASS', 'MHH')]
     predictor_output[(softsusy.name,'MA0')]=slhafile[('MASS', 'MA0')]
     predictor_output[(softsusy.name,'MHp')]=slhafile[('MASS', 'MHp')]
-    # Finally: send slha file to predictors
+
+    # ===========================
+    # run predictors on slha file
+    # ===========================
     for predictor in predictors:
         is_modifier = predictor in slha_modifiers
         #FIXME: needs to get something like: pred_verbose=  predictor.name in input_pars['verbose']
