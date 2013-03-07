@@ -26,7 +26,7 @@ def parse_args():
 if __name__=="__main__" :
     args = parse_args()
 
-    model = 'cMSSM' 
+    model = 'pMSSM' 
 
     all_params={
             'SoftSUSY':{
@@ -87,11 +87,11 @@ if __name__=="__main__" :
 
 
     all_constraints=Constraints_list.constraints
-    #mc8 data set
+    #mc8 data set without atlas
     data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
             'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
             'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
-            'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
+            'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
             'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
     constraints={name: all_constraints[name] for name in data_set}
 
