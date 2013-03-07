@@ -17,7 +17,12 @@ default_predictors = default_slha_modifiers + [micromegas, superiso, bphysics, l
             susypope]
 
 
+#FIXME: model should not be a neseccarry input, since also able to run on slha
 def run_point(model, **input_pars):
+    """
+    run_point is the core function of MC++
+    documentation is needed soon
+    """
     #==================================
     # define predictors
     #==================================
@@ -38,6 +43,7 @@ def run_point(model, **input_pars):
         input_pars['verbose']=[pred.name for pred in predictors]
         input_pars['verbose'].append(slha_generator.name)
         input_pars['verbose'].append('slha')
+        input_pars['verbose'].append('spectrum')
 
     if input_pars.get('spectrumfile'):
         #=============================================================
@@ -47,8 +53,9 @@ def run_point(model, **input_pars):
         slha_modifiers=[]
         slhafile = SLHA()
         slhafile.read(input_pars['spectrumfile'])
-        print("NOTE: Running on spectrum file {0}.".format(input_pars['spectrumfile'])) 
-        print('      Spectrum is not modified.')
+        if 'spectrum' in input_pars['verbose']:
+            print("NOTE: Running on spectrum file {0}.".format(input_pars['spectrumfile'])) 
+            print('      Spectrum is not modified.')
     else:
         # ======================
         # run spectrum generator
@@ -120,5 +127,11 @@ def run_point(model, **input_pars):
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
 
-
-    return slhafile, predictor_output , stdouts
+    
+    
+    # =====================================================
+    # combine all observables into one output
+    # =====================================================
+    slha_obs=slhafile.process()
+    combined_obs = OrderedDict(list(slha_obs.items()) + list(predictor_output.items()))
+    return slhafile, combined_obs, stdouts
