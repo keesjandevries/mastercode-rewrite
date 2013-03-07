@@ -42,7 +42,6 @@ def run_point(model, **input_pars):
     if 'all' in input_pars['verbose']:
         input_pars['verbose']=[pred.name for pred in predictors]
         input_pars['verbose'].append(slha_generator.name)
-        input_pars['verbose'].append('slha')
         input_pars['verbose'].append('spectrum')
 
     if input_pars.get('spectrumfile'):
@@ -79,7 +78,7 @@ def run_point(model, **input_pars):
         stdouts.update({slhamodule.name: stdout})
 
         # if you want to see the slha file from the specturm generator, put 'verbose' in the 
-        if 'slha' in input_pars['verbose']:
+        if 'spectrum' in input_pars['verbose']:
             print(obj)
 
         # make slha object 
