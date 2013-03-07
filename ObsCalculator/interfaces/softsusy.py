@@ -31,8 +31,10 @@ SLHA_MAX_SIZE = 10000
 # 3. initialise and slha object <your_object> with <this slha> file and do print( <your_object> ).
 #       this gives you the right keys that you should use. This is not strickly nessicary, but it provides
 #       consistancy
-def get_cmssm_input_slha(slha_params,verbose=None):
-    slha="""Block MODSEL		     # Select model
+def get_cmssm_input_slha(slha_params):
+    slha="""# BASED ON: Example input in SLHA format, and suitable for input to
+# SOFTSUSY (v1.8 or higher): benchmark point - see arXiv:1109.3859
+Block MODSEL		     # Select model
     1    1		     # sugra
 Block SMINPUTS		     # Standard Model inputs
     1	{alpha_inv}	     # alpha^(-1) SM MSbar(MZ)
@@ -65,11 +67,9 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
     sign_mu     =slha_params[('MINPAR', 'signMUE')    ]  ,
     A0 	        =slha_params[('MINPAR', 'A')          ]  
                 )
-    if verbose:
-        print(slha)
     return slha
 
-def get_pmssm_input_slha(slha_params,verbose=None):
+def get_pmssm_input_slha(slha_params):
     slha="""# BASED ON: Example input in SLHA format, and suitable for input to
 # SOFTSUSY (v1.8 or higher): benchmark point - see arXiv:1109.3859
 Block MODSEL		     # Select model
@@ -90,61 +90,64 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
     5   1.000000000e+00      # Include 2-loop scalar mass squared/trilinear RGEs
 Block EXTPAR          # non-universal SUSY breaking parameters
       0   -1.000000000000000e+00	 # Set MX=MSUSY 
-      1  { M_1   }         # M_1(MX)
-      2  { M_2   }         # M_2(MX)
-      3  { M_3   }         # M_3(MX)
-     11  { At    }         # At(MX)
-     12  { Ab    }         # Ab(MX)
-     13  { Atau  }         # Atau(MX)
-     23  { mu    }         # mu(MX)
-     26  { mA    }         # mA(pole)
-     31  { meL   }         # meL(MX)
-     32  { mmuL  }         # mmuL(MX)
-     33  { mtauL }         # mtauL(MX)
-     34  { meR   }         # meR(MX)
-     35  { mmuR  }         # mmuR(MX)
-     36  { mtauR }         # mtauR(MX)
-     41  { mqL1  }         # mqL1(MX)
-     42  { mqL2  }         # mqL2(MX)
-     43  { mqL3  }         # mqL3(MX)
-     44  { muR   }         # muR(MX)
-     45  { mcR   }         # mcR(MX)
-     46  { mtR   }         # mtR(MX)
-     47  { mdR   }         # mdR(MX)
-     48  { msR   }         # msR(MX)
-     49  { mbR   }         # mbR(MX)""".format(
-    alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')] ,
-    g_fermi     =slha_params[('SMINPUTS', 'GF')       ] ,
-    alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ] ,
-    mz          =slha_params[('SMINPUTS', 'MZ')       ] ,
-    mb          =slha_params[('SMINPUTS', 'Mb')       ] ,
-    mtop        =slha_params[('SMINPUTS', 'Mt')       ] ,
-    mtau        =slha_params[('SMINPUTS', 'Mtau')     ] ,
-    tanb 	    =slha_params[('MINPAR', 'TB')         ]  ,
-    M_1         =slha_params[ 
-    M_2         =slha_params[ 
-    M_3         =slha_params[ 
-    At          =slha_params[ 
-    Ab          =slha_params[ 
-    Atau        =slha_params[ 
-    mu          =slha_params[ 
-    mA          =slha_params[ 
-    meL         =slha_params[ 
-    mmuL        =slha_params[ 
-    mtauL       =slha_params[ 
-    meR         =slha_params[ 
-    mmuR        =slha_params[ 
-    mtauR       =slha_params[ 
-    mqL1        =slha_params[ 
-    mqL2        =slha_params[ 
-    mqL3        =slha_params[ 
-    muR         =slha_params[ 
-    mcR         =slha_params[ 
-    mtR         =slha_params[ 
-    mdR         =slha_params[ 
-    msR         =slha_params[          
-    mbR         =slha_params[ 
+      1  {M_1}         # M_1(MX)
+      2  {M_2}         # M_2(MX)
+      3  {M_3}         # M_3(MX)
+     11  {At}         # At(MX)
+     12  {Ab}         # Ab(MX)
+     13  {Atau}         # Atau(MX)
+     23  {mu}         # mu(MX)
+     26  {mA}         # mA(pole)
+     31  {meL}         # meL(MX)
+     32  {mmuL}         # mmuL(MX)
+     33  {mtauL}         # mtauL(MX)
+     34  {meR}         # meR(MX)
+     35  {mmuR}         # mmuR(MX)
+     36  {mtauR}         # mtauR(MX)
+     41  {mqL1}         # mqL1(MX)
+     42  {mqL2}         # mqL2(MX)
+     43  {mqL3}         # mqL3(MX)
+     44  {muR}         # muR(MX)
+     45  {mcR}         # mcR(MX)
+     46  {mtR}         # mtR(MX)
+     47  {mdR}         # mdR(MX)
+     48  {msR}         # msR(MX)
+     49  {mbR}         # mbR(MX)""".format(
+    alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
+    g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
+    alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
+    mz          =slha_params[('SMINPUTS', 'MZ')       ],
+    mb          =slha_params[('SMINPUTS', 'Mb')       ],
+    mtop        =slha_params[('SMINPUTS', 'Mt')       ],
+    mtau        =slha_params[('SMINPUTS', 'Mtau')     ],
+    tanb 	    =slha_params[('MINPAR', 'TB')         ],
+    M_1         =slha_params[('EXTPAR', 'M1')         ],  
+    M_2         =slha_params[('EXTPAR', 'M2')         ],   
+    M_3         =slha_params[('EXTPAR', 'M3')         ],  
+    At          =slha_params[('EXTPAR', 'Atau')       ],  
+    Ab          =slha_params[('EXTPAR', 'At')         ],  
+    Atau        =slha_params[('EXTPAR', 'Ab')         ],  
+    mu          =slha_params[('EXTPAR', 'MUE')        ],  
+    mA          =slha_params[('EXTPAR', 'MA0')        ],  
+    meL         =slha_params[('EXTPAR', 'MSL(1)')     ],        
+    mmuL        =slha_params[('EXTPAR', 'MSL(2)')     ],        
+    mtauL       =slha_params[('EXTPAR', 'MSL(3)')     ],        
+    meR         =slha_params[('EXTPAR', 'MSE(1)')     ],        
+    mmuR        =slha_params[('EXTPAR', 'MSE(2)')     ],        
+    mtauR       =slha_params[('EXTPAR', 'MSE(3)')     ],        
+    mqL1        =slha_params[('EXTPAR', 'MSQ(1)')     ],        
+    mqL2        =slha_params[('EXTPAR', 'MSQ(2)')     ],        
+    mqL3        =slha_params[('EXTPAR', 'MSQ(3)')     ],        
+    muR         =slha_params[('EXTPAR', 'MSU(1)')     ],        
+    mcR         =slha_params[('EXTPAR', 'MSU(2)')     ],        
+    mtR         =slha_params[('EXTPAR', 'MSU(3)')     ],        
+    mdR         =slha_params[('EXTPAR', 'MSD(1)')     ],        
+    msR         =slha_params[('EXTPAR', 'MSD(2)')     ],                 
+    mbR         =slha_params[('EXTPAR', 'MSD(3)')     ]        
     )
+    return slha
+
+ 
 def run(model, inputs,verbose=None):
     # set inputs to default
     slha_params=default_inputs.copy()
@@ -152,10 +155,12 @@ def run(model, inputs,verbose=None):
     slha_params.update(inputs)
 
     if model=='cMSSM':
-        inputslha=get_cmssm_input_slha(slha_params,verbose)
-    # this list ought to be extended for new models
+        inputslha=get_cmssm_input_slha(slha_params)
+    elif model=='pMSSM':
+        inputslha=get_pmssm_input_slha(slha_params)
     else:
         return "", 1
+    if verbose: print(inputslha)
 
     # then run on the inputslha file
     c_str_buf = create_string_buffer(SLHA_MAX_SIZE)
