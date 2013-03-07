@@ -6,8 +6,15 @@ from ctypes import cdll,  c_char_p, create_string_buffer
 name = "SoftSUSY"
 SPlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy.so')
 
+#NOTE: the input slha observable ids (oids) follow the output of slhalib.py:
+#BLOCK MASS
+#        25     1.24444583E+02   # Mh0   
+# would result in ('MASS','Mh0')
+# slhalib.py is based on slhalib (hep-ph/0605049) 
+# this code does not recognise all block, so we have to introduce our own definitions
+# below I indicate where this is not the case
 
-#FIXME: should the softsusy parameters be part of this?
+#NOTE: these defaults come from softsusy-<version>/defs.cpp
 default_inputs={
     ('SMINPUTS', 'invAlfaMZ')   : 127.908953,
     ('SMINPUTS', 'GF')          : 1.16639e-05,
@@ -16,6 +23,13 @@ default_inputs={
     ('SMINPUTS', 'Mt')          : 173.2,
     ('SMINPUTS', 'Mb')          : 4.2,
     ('SMINPUTS', 'Mtau')        : 1.77703,
+    #NOTE: BLOCK SOFTSUSY is not recognised by slhalib, so have our own definitions
+    ('SOFTSUSY','TOLERANCE')    : 1.0e-3,
+    ('SOFTSUSY','MIXING')       : 1.0 ,
+    ('SOFTSUSY','PRINTOUT')     : 0.0 ,
+    ('SOFTSUSY','QEWSB')        : 1.0 ,
+    ('SOFTSUSY','2_LOOP')       : 1.0 ,
+    ('SOFTSUSY','numHiggsLoops'): 2.0 ,
         }
 
 
@@ -51,23 +65,34 @@ Block MINPAR		     # Input parameters
     4   {sign_mu} 	     # sign(mu)
     5   {A0} 	     # A0
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
-    2   0.000000000e+00	     # Quark mixing parameter: see manual
-    5   1.000000000e+00      # Include 2-loop scalar mass squared/trilinear RGEs""".format(
-    alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')] ,
-    g_fermi     =slha_params[('SMINPUTS', 'GF')       ] ,
-    alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ] ,
-    mz          =slha_params[('SMINPUTS', 'MZ')       ] ,
-    mb          =slha_params[('SMINPUTS', 'Mb')       ] ,
-    mtop        =slha_params[('SMINPUTS', 'Mt')       ] ,
-    mtau        =slha_params[('SMINPUTS', 'Mtau')     ] ,
-    m0 	        =slha_params[('MINPAR', 'M0')         ]  ,
-    m12 	    =slha_params[('MINPAR', 'M12')        ]  ,
-    tanb 	    =slha_params[('MINPAR', 'TB')         ]  ,
-    sign_mu     =slha_params[('MINPAR', 'signMUE')    ]  ,
-    A0 	        =slha_params[('MINPAR', 'A')          ]  
-                )
+    1   {prec}      # Numerical precision: suggested range 10^(-3...-6)
+    2   {mix}      # Quark mixing parameter: see manual
+    3   {verb}          # verbose options
+    4   {qewsb}         # electro weak symmetry breaking scale x*sqrt(m_stop1,m_stop2)
+    5   {two_loop}      # Include 2-loop scalar mass squared/trilinear RGEs
+    7   {n_higgs_loops}     # number of loops in REWSB/mh calculation""".format(
+    alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
+    g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
+    alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
+    mz          =slha_params[('SMINPUTS', 'MZ')       ],
+    mb          =slha_params[('SMINPUTS', 'Mb')       ],
+    mtop        =slha_params[('SMINPUTS', 'Mt')       ],
+    mtau        =slha_params[('SMINPUTS', 'Mtau')     ],
+    m0 	        =slha_params[('MINPAR', 'M0')         ],
+    m12 	    =slha_params[('MINPAR', 'M12')        ],
+    tanb 	    =slha_params[('MINPAR', 'TB')         ],
+    sign_mu     =slha_params[('MINPAR', 'signMUE')    ],
+    A0 	        =slha_params[('MINPAR', 'A')          ], 
+    prec        =slha_params[('SOFTSUSY','TOLERANCE') ],
+    mix         =slha_params[('SOFTSUSY','MIXING')    ],
+    verb        =slha_params[('SOFTSUSY','PRINTOUT')  ], 
+    qewsb       =slha_params[('SOFTSUSY','QEWSB')     ],
+    two_loop    =slha_params[('SOFTSUSY','2_LOOP')    ], 
+    n_higgs_loops=slha_params[('SOFTSUSY','numHiggsLoops')]      
+    )
     return slha
+
+
 
 def get_pmssm_input_slha(slha_params):
     slha="""# BASED ON: Example input in SLHA format, and suitable for input to
@@ -85,9 +110,12 @@ Block SMINPUTS		     # Standard Model inputs
 Block MINPAR		     # Input parameters
     3   {tanb}	     # tanb
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
-    2   0.000000000e+00	     # Quark mixing parameter: see manual
-    5   1.000000000e+00      # Include 2-loop scalar mass squared/trilinear RGEs
+    1   {prec}      # Numerical precision: suggested range 10^(-3...-6)
+    2   {mix}      # Quark mixing parameter: see manual
+    3   {verb}          # verbose options
+    4   {qewsb}         # electro weak symmetry breaking scale x*sqrt(m_stop1,m_stop2)
+    5   {two_loop}      # Include 2-loop scalar mass squared/trilinear RGEs
+    7   {n_higgs_loops}     # number of loops in REWSB/mh calculation
 Block EXTPAR          # non-universal SUSY breaking parameters
       0   -1.000000000000000e+00	 # Set MX=MSUSY 
       1  {M_1}         # M_1(MX)
@@ -121,6 +149,12 @@ Block EXTPAR          # non-universal SUSY breaking parameters
     mtop        =slha_params[('SMINPUTS', 'Mt')       ],
     mtau        =slha_params[('SMINPUTS', 'Mtau')     ],
     tanb 	    =slha_params[('MINPAR', 'TB')         ],
+    prec        =slha_params[('SOFTSUSY','TOLERANCE') ],
+    mix         =slha_params[('SOFTSUSY','MIXING')    ],
+    verb        =slha_params[('SOFTSUSY','PRINTOUT')  ], 
+    qewsb       =slha_params[('SOFTSUSY','QEWSB')     ],
+    two_loop    =slha_params[('SOFTSUSY','2_LOOP')    ], 
+    n_higgs_loops=slha_params[('SOFTSUSY','numHiggsLoops')],      
     M_1         =slha_params[('EXTPAR', 'M1')         ],  
     M_2         =slha_params[('EXTPAR', 'M2')         ],   
     M_3         =slha_params[('EXTPAR', 'M3')         ],  
@@ -147,6 +181,61 @@ Block EXTPAR          # non-universal SUSY breaking parameters
     )
     return slha
 
+def get_nuhm2_input_slha(slha_params):
+    return """# INSPIRED BY: Example input in SLHA format, and suitable for input to
+# SOFTSUSY (v1.8 or higher): benchmark point - see arXiv:1109.3859
+Block MODSEL		     # Select model
+    1    0		     # non universal
+Block SMINPUTS		     # Standard Model inputs
+    1	{alpha_inv}	     # alpha^(-1) SM MSbar(MZ)
+    2   {g_fermi}  	     # G_Fermi
+    3   {alpha_s}  	     # alpha_s(MZ) SM MSbar
+    4   {mz}	   	     # MZ(pole)
+    5	{mb}	   	     # mb(mb) SM MSbar
+    6   {mtop}	   	     # mtop(pole)
+    7	{mtau}	   	     # mtau(pole)
+Block MINPAR		     # Input parameters
+    1   {m0} 	     # m0
+    2   {m12} 	     # m12
+    3   {tanb} 	     # tanb
+    4   {sign_mu} 	     # sign(mu)
+    5   {A0} 	     # A0
+Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
+    1   {prec}      # Numerical precision: suggested range 10^(-3...-6)
+    2   {mix}      # Quark mixing parameter: see manual
+    3   {verb}          # verbose options
+    4   {qewsb}         # electro weak symmetry breaking scale x*sqrt(m_stop1,m_stop2)
+    5   {two_loop}      # Include 2-loop scalar mass squared/trilinear RGEs
+    7   {n_higgs_loops}     # number of loops in REWSB/mh calculation
+Block EXTPAR          # non-universal SUSY breaking parameters
+    21  {mhd2}         # m^2_H_d
+    22  {mhu2}         # m^2_H_u""".format(
+    alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
+    g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
+    alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
+    mz          =slha_params[('SMINPUTS', 'MZ')       ],
+    mb          =slha_params[('SMINPUTS', 'Mb')       ],
+    mtop        =slha_params[('SMINPUTS', 'Mt')       ],
+    mtau        =slha_params[('SMINPUTS', 'Mtau')     ],
+    m0 	        =slha_params[('MINPAR', 'M0')         ],
+    m12 	    =slha_params[('MINPAR', 'M12')        ],
+    tanb 	    =slha_params[('MINPAR', 'TB')         ],
+    sign_mu     =slha_params[('MINPAR', 'signMUE')    ],
+    A0 	        =slha_params[('MINPAR', 'A')          ], 
+    prec        =slha_params[('SOFTSUSY','TOLERANCE') ],
+    mix         =slha_params[('SOFTSUSY','MIXING')    ],
+    verb        =slha_params[('SOFTSUSY','PRINTOUT')  ], 
+    qewsb       =slha_params[('SOFTSUSY','QEWSB')     ],
+    two_loop    =slha_params[('SOFTSUSY','2_LOOP')    ], 
+    n_higgs_loops=slha_params[('SOFTSUSY','numHiggsLoops')],      
+    mhd2        =slha_params[('EXTPAR', 'MHd2')       ], 
+    mhu2        =slha_params[('EXTPAR', 'MHu2')       ] 
+              )
+    
+def get_nuhm1_input_slha(slha_params):
+    #NOTE: MH2 is not defined in slhalib
+    slha_params[('EXTPAR', 'MHd2')]=slha_params[('EXTPAR', 'MH2')]  
+    slha_params[('EXTPAR', 'MHu2')]=slha_params[('EXTPAR', 'MH2')]
  
 def run(model, inputs,verbose=None):
     # set inputs to default
@@ -158,7 +247,11 @@ def run(model, inputs,verbose=None):
         inputslha=get_cmssm_input_slha(slha_params)
     elif model=='pMSSM':
         inputslha=get_pmssm_input_slha(slha_params)
+    elif model=='NUHM2':
+        inputslha=get_nuhm2_input_slha(slha_params)
+
     else:
+        print("ERROR: No valid model provided")
         return "", 1
     if verbose: print(inputslha)
 
