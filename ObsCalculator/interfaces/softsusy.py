@@ -236,6 +236,7 @@ def get_nuhm1_input_slha(slha_params):
     #NOTE: MH2 is not defined in slhalib
     slha_params[('EXTPAR', 'MHd2')]=slha_params[('EXTPAR', 'MH2')]  
     slha_params[('EXTPAR', 'MHu2')]=slha_params[('EXTPAR', 'MH2')]
+    return get_nuhm2_input_slha(slha_params)
  
 def run(model, inputs,verbose=None):
     # set inputs to default
