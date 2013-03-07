@@ -78,15 +78,10 @@ if __name__=="__main__" :
         if args.verbose:
             all_params['verbose']=args.verbose
         try:
-            slha_obj, observations,stdouts = point.run_point(model=model, **all_params)
+            slha_obj, combined_obs ,stdouts = point.run_point(model=model, **all_params)
         except TypeError:
             print("ERROR: Point failed to run")
             continue
-
-
-
-        slha_file=slha_obj.process()
-        combined_obs = OrderedDict(list(slha_file.items()) + list(observations.items()))
 
         all_constraints=Constraints_list.constraints
         #mc8 data set
