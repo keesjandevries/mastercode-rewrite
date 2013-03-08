@@ -185,7 +185,7 @@ def get_nuhm2_input_slha(slha_params):
     return """# INSPIRED BY: Example input in SLHA format, and suitable for input to
 # SOFTSUSY (v1.8 or higher): benchmark point - see arXiv:1109.3859
 Block MODSEL		     # Select model
-    1    0		     # non universal
+    1    1		     # sugra 
 Block SMINPUTS		     # Standard Model inputs
     1	{alpha_inv}	     # alpha^(-1) SM MSbar(MZ)
     2   {g_fermi}  	     # G_Fermi
@@ -244,12 +244,14 @@ def run(model, inputs,verbose=None):
     # update to get the parsed inputs
     slha_params.update(inputs)
 
-    if model=='cMSSM':
+    if   model=='cMSSM':
         inputslha=get_cmssm_input_slha(slha_params)
     elif model=='pMSSM':
         inputslha=get_pmssm_input_slha(slha_params)
     elif model=='NUHM2':
         inputslha=get_nuhm2_input_slha(slha_params)
+    elif model=='NUHM1':
+        inputslha=get_nuhm1_input_slha(slha_params)
 
     else:
         print("ERROR: No valid model provided")
