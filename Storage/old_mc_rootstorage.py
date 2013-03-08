@@ -114,14 +114,14 @@ VARS_dict={
 # Gluino mass
         ('MASS', 'MGl'): 95,
 # Higgs masses
-        ('MASS', 'Mh0'): 96,
-        ('MASS', 'MHH'): 97,
-        ('MASS', 'MA0'): 98,
-        ('MASS', 'MHp'): 99,
-        ('SoftSUSY', 'Mh0'): 104,
-        ('SoftSUSY', 'MHH'): 105,
-        ('SoftSUSY', 'MA0'): 106,
-        ('SoftSUSY', 'MHp'): 107,
+        ('MASS', 'mod_Mh0'): 96,
+        ('MASS', 'mod_MHH'): 97,
+        ('MASS', 'MA0')    : 98, # yep that's right, feynhiggs does not change MA0
+        ('MASS', 'mod_MHp'): 99,
+        ('MASS', 'Mh0'): 104,
+        ('MASS', 'MHH'): 105,
+        ('MASS', 'MA0'): 106,
+        ('MASS', 'MHp'): 107,
         }
 
 # WARNING: RESULT ORIENTED
