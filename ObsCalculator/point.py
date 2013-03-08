@@ -104,11 +104,8 @@ def run_point(model, **input_pars):
 
     # predictions start here
     predictor_output = OrderedDict()
-    # FIXME: this should be done less arbitrarily: Save softsusy-Higgs sector
-    predictor_output[(softsusy.name,'Mh0')]=slhafile[('MASS', 'Mh0')]
-    predictor_output[(softsusy.name,'MHH')]=slhafile[('MASS', 'MHH')]
-    predictor_output[(softsusy.name,'MA0')]=slhafile[('MASS', 'MA0')]
-    predictor_output[(softsusy.name,'MHp')]=slhafile[('MASS', 'MHp')]
+    # save spectrum
+    predictor_output.update(slhafile.process())
 
     # ===========================
     # run predictors on slha file
@@ -129,8 +126,11 @@ def run_point(model, **input_pars):
     
     
     # =====================================================
-    # combine all observables into one output
+    # save the modified slha obs as e.g. ('MASS','mod_mh0')
     # =====================================================
-    slha_obs=slhafile.process()
-    combined_obs = OrderedDict(list(slha_obs.items()) + list(predictor_output.items()))
-    return slhafile, combined_obs, stdouts
+    mod_slha_obs=slhafile.process()
+    for key, val in mod_slha_obs.items():
+        if not predictor_output.get(key)==val:
+            mod_key=(key[0],'mod_{}'.format(key[1]))
+            predictor_output[mod_key]=val
+    return slhafile, predictor_output, stdouts
