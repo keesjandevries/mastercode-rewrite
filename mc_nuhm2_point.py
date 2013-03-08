@@ -30,13 +30,6 @@ if __name__=="__main__" :
 
     all_params={
             'SoftSUSY':{
-                ('SMINPUTS', 'invAlfaMZ'): 127.934,
-                ('SMINPUTS', 'GF'): 1.16637e-05,
-                ('SMINPUTS', 'AlfasMZ'): 0.1172,
-                ('SMINPUTS', 'MZ'): 91.1876,
-                ('SMINPUTS', 'Mtau'): 1.777,
-                ('SMINPUTS', 'Mt'): 173.3,
-                ('SMINPUTS', 'Mb'): 4.25,
                 ('MINPAR', 'M0'): 300.535,
                 ('MINPAR', 'M12'): 905.0,
                 ('MINPAR', 'TB'): 16.255472,
