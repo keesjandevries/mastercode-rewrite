@@ -57,7 +57,6 @@ if __name__=="__main__" :
                     ('MINPAR', 'M0'):       m0,
                     ('MINPAR', 'M12'):      m12,
                     ('MINPAR', 'TB'):       tanb,
-                    ('MINPAR', 'signMUE'):  1,
                     ('MINPAR', 'A'):        A0,
                     ('EXTPAR', 'MH2'):      mh2,
                     ('SMINPUTS', 'Mt') :    mt,

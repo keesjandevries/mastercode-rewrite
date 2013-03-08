@@ -71,7 +71,6 @@ def get_obs(cube,ndim):
                 ('MINPAR', 'M0'):       m0,
                 ('MINPAR', 'M12'):      m12,
                 ('MINPAR', 'TB'):       tanb,
-                ('MINPAR', 'signMUE'):  1,
                 ('MINPAR', 'A'):        A0,
                 ('SMINPUTS', 'Mt') :    mt,
                 },

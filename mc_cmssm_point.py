@@ -33,7 +33,6 @@ if __name__=="__main__" :
                 ('MINPAR', 'M0'):       300.53,
                 ('MINPAR', 'M12'):      905.0,
                 ('MINPAR', 'TB'):       16.26,
-                ('MINPAR', 'signMUE'):  1.0,
                 ('MINPAR', 'A'):        -1303.97,
                 ('SMINPUTS', 'Mt') :    173.2,
                 },
