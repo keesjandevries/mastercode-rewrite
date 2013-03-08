@@ -23,6 +23,7 @@ default_inputs={
     ('SMINPUTS', 'Mt')          : 173.2,
     ('SMINPUTS', 'Mb')          : 4.2,
     ('SMINPUTS', 'Mtau')        : 1.77703,
+    ('MINPAR','signMUE')        : 1,
     #NOTE: BLOCK SOFTSUSY is not recognised by slhalib, so have our own definitions
     ('SOFTSUSY','TOLERANCE')    : 1.0e-3,
     ('SOFTSUSY','MIXING')       : 1.0 ,
