@@ -11,9 +11,9 @@ from ObsCalculator.interfaces import softsusy
 from ObsCalculator.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
 from ObsCalculator.interfaces import susypope
 
-default_slha_generator = softsusy
-default_slha_modifiers = [feynhiggs]
-default_predictors = default_slha_modifiers + [micromegas, superiso, bphysics, lspscat,#]
+default_spectrum_generator = softsusy
+default_spectrum_modifiers = [feynhiggs]
+default_predictors = default_spectrum_modifiers + [micromegas, superiso, bphysics, lspscat,#]
             susypope]
 
 
@@ -21,14 +21,14 @@ default_predictors = default_slha_modifiers + [micromegas, superiso, bphysics, l
 def run_point(model, **input_pars):
     """
     run_point is the core function of MC++
-    documentation is needed soon
+    documentation is needed soon, however, there is extensive commenting already
     """
-    #==================================
+    #==================
     # define predictors
-    #==================================
-    slha_generator  =default_slha_generator
-    slha_modifiers  =default_slha_modifiers
-    predictors      =default_predictors
+    #==================
+    spectrum_generator  =default_spectrum_generator
+    spectrum_modifiers  =default_spectrum_modifiers
+    predictors          =default_predictors
 
     #define standard outs dict
     stdouts = OrderedDict()
@@ -41,7 +41,7 @@ def run_point(model, **input_pars):
     #make an option to select all verbosity
     if 'all' in input_pars['verbose']:
         input_pars['verbose']=[pred.name for pred in predictors]
-        input_pars['verbose'].append(slha_generator.name)
+        input_pars['verbose'].append(spectrum_generator.name)
         input_pars['verbose'].append('spectrum')
 
     if input_pars.get('spectrumfile'):
@@ -49,7 +49,7 @@ def run_point(model, **input_pars):
         # if an slhafile is given, the spectrum generation is skipped
         # the slhafile also does not get modified
         #=============================================================
-        slha_modifiers=[]
+        spectrum_modifiers=[]
         slhafile = SLHA()
         slhafile.read(input_pars['spectrumfile'])
         if 'spectrum' in input_pars['verbose']:
@@ -61,10 +61,10 @@ def run_point(model, **input_pars):
         # ======================
 
         # check for verbosity
-        slha_gen_verbose=slha_generator.name in input_pars['verbose']
+        slha_gen_verbose=spectrum_generator.name in input_pars['verbose']
         # run the spectrum calculator
-        (obj,err), stdout = tools.get_ctypes_streams(func=slha_generator.run,
-                args=[model,input_pars[slha_generator.name]], kwargs={'verbose':slha_gen_verbose})
+        (obj,err), stdout = tools.get_ctypes_streams(func=spectrum_generator.run,
+                args=[model,input_pars[spectrum_generator.name]], kwargs={'verbose':slha_gen_verbose})
         # print standard out 
         if slha_gen_verbose:
             print(stdout)
@@ -84,6 +84,29 @@ def run_point(model, **input_pars):
         # make slha object 
         slhafile = SLHA(obj,input_pars.get('lookup'))
 
+        
+    # ======================
+    # predictions start here
+    # ======================
+    predictor_output = OrderedDict()
+
+    # =============================================================
+    # save inputs to spectrum calculater like ('MINPAR','in_M0')
+    # Motivation: in NUHM1 and NUHM2, m0, m12 and A0 are translated
+    # into EXTPAR parameters. We need this for consistent naming
+    # for e.g. constraints
+    # =============================================================
+    in_dict={}
+    for key, val in input_pars[spectrum_generator.name].items():
+        in_key =(key[0],'in_{0}'.format(key[1]))
+        in_dict[in_key]=val
+    predictor_output.update(in_dict)
+
+    # ======================================
+    # save spectrum before any modifications
+    # ======================================
+    predictor_output.update(slhafile.process())
+
     # =====================================================
     # WARNING: here is a functionality needed by mastercode
     #          it is not generic
@@ -101,17 +124,16 @@ def run_point(model, **input_pars):
             pass
         for oid, val in values.items():
             slhafile[oid]=val
+            #explicitely save these in predictor_output as modified slha values
+            mod_key=(oid[0],'mod_{}'.format(oid[1]))
+            predictor_output[mod_key]=val
 
-    # predictions start here
-    predictor_output = OrderedDict()
-    # save spectrum
-    predictor_output.update(slhafile.process())
 
-    # ===========================
-    # run predictors on slha file
-    # ===========================
+    # ===========================================
+    # run predictors on slha file and save output
+    # ===========================================
     for predictor in predictors:
-        is_modifier = predictor in slha_modifiers
+        is_modifier = predictor in spectrum_modifiers
         #FIXME: needs to get something like: pred_verbose=  predictor.name in input_pars['verbose']
         # and pred_verbose as one of tdhe options, 
         pred_verbose=(predictor.name in input_pars['verbose'])
