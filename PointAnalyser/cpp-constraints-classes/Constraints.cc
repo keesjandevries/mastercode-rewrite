@@ -1,5 +1,5 @@
 //FIXME: may want to make "Constraints.h/.cc" a sub module with configure, make and make install
-//so that it is usable from other codes as well. For now keep part of the interface
+//so that it is usable from other codes as well. For now: separate folder in PointAnalyser
 #include "Constraints.h"
 //NOTE: members of classes are indicated with "_" in front of the variable
 
@@ -44,16 +44,4 @@ double ContourConstraint::GetChi2(double* obs){
         constraint_obs.push_back(obs[*it]);
     }
     return _contour_chi2_function(constraint_obs, _data);
-}
-
-//FIXME: may want to make "Constraints.h/.cc" a sub module with configure, make and make install
-//so that it is usable from other codes as well. For now keep part of the interface
-extern "C"{
-    GaussConstraint * new_GaussConstraint(int *int_obs_ids, int len_int_obs_ids, 
-            double * gauss_data, int len_gauss_data, GaussFunc chi2function ){
-        std::vector<int> int_obs_ids_vec(int_obs_ids,int_obs_ids + len_int_obs_ids);
-        std::vector<double> gauss_data_vec(gauss_data,gauss_data + len_gauss_data);
-        return new GaussConstraint(int_obs_ids_vec,gauss_data_vec,chi2function);
-    }
-
 }
