@@ -26,15 +26,14 @@ def parse_args():
 if __name__=="__main__" :
     args = parse_args()
 
-    model = 'cMSSM' 
-
+    model = 'NUHM1' 
     all_params={
             'SoftSUSY':{
-                ('MINPAR', 'M0'):       300.53,
-                ('MINPAR', 'M12'):      905.0,
-                ('MINPAR', 'TB'):       16.26,
-                ('MINPAR', 'A'):        -1303.97,
-                ('SMINPUTS', 'Mt') :    173.2,
+                ('MINPAR', 'M0'): 0.23746778E+03,
+                ('MINPAR', 'M12'): 0.96880871E+03,
+                ('MINPAR', 'TB'): 0.15649644E+02,
+                ('MINPAR', 'A'): -0.18587870E+04,
+                ('EXTPAR', 'MH2'): -0.64995298E+07
                 },
             'mc_slha_update':{
                 ('SMINPUTS','MZ')   : 91.1876, 
@@ -60,11 +59,11 @@ if __name__=="__main__" :
 
 
     all_constraints=Constraints_list.constraints
-    #mc8 data set
+    #mc8 data set without atlas
     data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
             'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
             'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
-            'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
+            'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
             'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
     constraints={name: all_constraints[name] for name in data_set}
 
@@ -87,6 +86,4 @@ if __name__=="__main__" :
         root.root_open('temp/test.root')
         old_mc_rootstorage.write_point_to_root(combined_obs)
         root.root_close()
-
-
 

@@ -88,11 +88,9 @@ class SLHA(object):
             print("WARNING: cannot return lookup, because lookup is not initiated")
 
     def fill_slhadata_with_slhalib_nrs(self):
-        #FIXME: this is a hack. If you look in SLHADefs.h, the SPinfo follows the numerical values
+        #NOTE: in SLHADefs.h, the numerical values end with SPinfo
         for i in range(1,ofsetspinfo+1):
-            if not self.data[i]==invalid :
-                self.data[i]=float(i)
-
+            self.data[i]=float(i)
 
     def initialise_lookup(self):
         """
@@ -139,12 +137,13 @@ class SLHA(object):
             if line.startswith('B'):
                 # is a block
                 block_name = line.split()[1]
-                if 'Q' in line:
+                if 'Q=' in line:
                     data[(block_name,tuple([]),'Qscale')]= float(line.split('=')[1].split()[0])
             elif line.startswith('D'):
                 #FIXME: we may want to change this
                 print("WARNING: DECAY's are ignored in SLHA.get_blocks_indices_comments_values() ")
-            elif not block_name == 'SPINFO':
+                block_name=None
+            elif block_name and (not block_name == 'SPINFO') :
                 #FIXME: want to have the SPINFO as well at some point
                 items = line.split()
                 if len(items):

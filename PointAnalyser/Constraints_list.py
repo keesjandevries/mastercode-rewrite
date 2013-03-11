@@ -120,6 +120,10 @@ constraints_dict = {
             'oids': [('BPhysics', 'Psll')],
             'data': [4.6e-08, 1e-10, 2e-10],
             'func': LF.upperlimit},
+        'mc-old-bsmm': {   
+            'oids': [('BPhysics', 'Psll')],
+            'data': [1.08E-8 , 0.1E-9 ,    0.2E-9],
+            'func': LF.upperlimit},
         'Bsmumu_test': {   
             'oids': [('BPhysics', 'Psll')],
             'data': [2.3e-09, 1.73e-09],

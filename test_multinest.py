@@ -71,7 +71,6 @@ def get_obs(cube,ndim):
                 ('MINPAR', 'M0'):       m0,
                 ('MINPAR', 'M12'):      m12,
                 ('MINPAR', 'TB'):       tanb,
-                ('MINPAR', 'signMUE'):  1,
                 ('MINPAR', 'A'):        A0,
                 ('SMINPUTS', 'Mt') :    mt,
                 },
@@ -88,18 +87,14 @@ def get_obs(cube,ndim):
     all_params['lookup']=slha_lookup
 #    input_pars['verbose']=True
     try:
-        slha_obj, observations , stdouts = point.run_point(model=model, **all_params)
+        slha_obj, combined_obs, stdouts = point.run_point(model=model, **all_params)
     except TypeError:
         return None
 
-#    bpp.pprint(stdouts)
-
-    slha_file=slha_obj.process()
     if slha_lookup is None:
         set_global_lookup(slha_obj.get_lookup())
         print( "saved slhalookup")
 
-    combined_obs = dict(list(slha_file.items()) + list(observations.items()))
     return combined_obs
 
 def get_chi2(obs):

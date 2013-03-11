@@ -13,6 +13,8 @@ from PointAnalyser import Constraints_list
 import Storage.interfaces.ROOT as root
 from Storage import old_mc_rootstorage as rootstore
 
+#WARNING: NOT MAINTAINED ATM
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--model', '-m', dest='model', action='store', type=str,
@@ -22,6 +24,7 @@ def parse_args():
 
     return parser.parse_args()
 
+#WARNING: NOT MAINTAINED ATM
 if __name__=="__main__" :
     args = parse_args()
 
@@ -61,6 +64,7 @@ if __name__=="__main__" :
 #    all_params['verbose']=True
     all_params['SUSY-POPE']={'non_slha_inputs':{'DeltaAlfa5had':0.02759}}
     
+#WARNING: NOT MAINTAINED ATM
 
     try:
         slha_obj, observations,stdouts = point.run_point(model=model, **all_params)
@@ -71,6 +75,7 @@ if __name__=="__main__" :
     slha_file=slha_obj.process()
     combined_obs = OrderedDict(list(slha_file.items()) + list(observations.items()))
 
+#WARNING: NOT MAINTAINED ATM
     # I think this is the way to do it:
     # initialise all constraints
     all_constraints=Constraints_list.constraints
@@ -88,6 +93,7 @@ if __name__=="__main__" :
     #pass this constraints list to the chi2 function
     total, breakdown = Analyse.chi2(combined_obs,constraints)
 
+#WARNING: NOT MAINTAINED ATM
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
 #    bpp.pprint(combined_obs)
 #    susypope_obs={oid:val for oid, val in combined_obs.items() if oid[0]=='SUSY-POPE'}
@@ -104,5 +110,6 @@ if __name__=="__main__" :
     rootstore.write_point_to_root(combined_obs)
     root.root_close()
 
+#WARNING: NOT MAINTAINED ATM
 
 

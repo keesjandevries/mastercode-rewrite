@@ -40,7 +40,7 @@ if __name__=="__main__" :
     rread.root_open(args.in_file)
     ab_root.root_open(args.root_file)
 
-    model = 'cMSSM' 
+    model = 'NUHM1' 
     
     begin=args.begin
     step=args.njump
@@ -51,13 +51,14 @@ if __name__=="__main__" :
     for entry in range(begin,end,step):
         if 'n' in args.verbose: print("Entry number: {0}, ({1} out of {2})".format( entry, int((entry-begin)/step)+1, int((end-begin)/step)))
         VARS=rread.root_read(entry)
-        m0, m12, A0, tanb, mt, mz, Delta_alpha_had = [VARS[i] for i in [1,2,3,4,6,7,9]]
+        m0, m12, A0, tanb, mh2, mt, mz, Delta_alpha_had = [VARS[i] for i in [1,2,3,4,6,8,9,11]]
         all_params={
                 'SoftSUSY':{
                     ('MINPAR', 'M0'):       m0,
                     ('MINPAR', 'M12'):      m12,
                     ('MINPAR', 'TB'):       tanb,
                     ('MINPAR', 'A'):        A0,
+                    ('EXTPAR', 'MH2'):      mh2,
                     ('SMINPUTS', 'Mt') :    mt,
                     },
                 'mc_slha_update':{
@@ -69,6 +70,7 @@ if __name__=="__main__" :
                         }
                     }
                 }
+
         #check for command line input parameters
         if args.input_pars:
             all_params.update(eval(args.input_pars))
