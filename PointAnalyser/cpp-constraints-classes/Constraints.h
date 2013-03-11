@@ -1,5 +1,5 @@
 //FIXME: may want to make "Constraints.h/.cc" a sub module with configure, make and make install
-//so that it is usable from other codes as well. For now keep part of the interface
+//so that it is usable from other codes as well. For now: separate folder in PointAnalyser
 #ifndef  INC_CONSTRAINT_H
 #define INC_CONSTRAINT_H
 #include <iostream>
