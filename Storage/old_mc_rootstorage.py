@@ -17,13 +17,13 @@ max_rows = 110 # this number is also valid for nuhm2,
 VARS_dict={
         #parameters
         ('tot_X2', 'all')       :0,
-        ('MINPAR','M0')         :1,
-        ('MINPAR','M12')        :2,
-        ('MINPAR','A')          :3,
-        ('MINPAR','TB')         :4,
+        ('MINPAR','in_M0')      :1,
+        ('MINPAR','in_M12')     :2,
+        ('MINPAR','in_A')       :3,
+        ('MINPAR','in_TB')      :4,
         ('MINPAR','signMUE')    :5,
         ('SMINPUTS','Mt')       :6,
-        ('SMINPUTS','MZ')       :7,
+        ('SMINPUTS','mod_MZ')   :7,
         ('SUSY-POPE', 'GZ_in')  :8,
         ('SUSY-POPE', 'DAlpha_had_in'):9,
         #predictions
