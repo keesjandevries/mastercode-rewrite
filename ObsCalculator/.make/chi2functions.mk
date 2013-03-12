@@ -3,6 +3,7 @@ include $(DEF_DIR)/chi2functions.mk
 objs=$(srcs:%.cc=%.o)
 
 chi2functions: $(lib)  $(src_dir)/*h
+	cp $(src_dir)/*h $(INCLUDE_DIR)
 
 $(lib)	: $(objs)
 	$(ld) $(ldflags)  $(lib) $^ 
