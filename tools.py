@@ -10,7 +10,7 @@ import hashlib
 
 from socket import gethostname
 from time import gmtime, strftime
-from ctypes import Structure, c_double
+from ctypes import Structure, c_double, c_int
 from collections import OrderedDict
 
 class c_complex(Structure):
@@ -28,6 +28,10 @@ def ctypes_field_values(obj, title):
 def return_c_double_array(l):
     dbl_array=c_double*len(l)
     return dbl_array(*l)
+
+def return_c_int_array(l):
+    int_array=c_int*len(l)
+    return int_array(*l)
 
 def is_int(s):
     try:
