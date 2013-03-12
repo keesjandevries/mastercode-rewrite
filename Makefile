@@ -14,13 +14,15 @@ TAR_DIR=$(PREDICTOR_DIR)/.tars
 LIB_DIR=$(INSTALL_DIR)/lib
 INCLUDE_DIR=$(INSTALL_DIR)/include
 USER_DIR=$(PWD)/User
+MAKE_DIR=$(PWD)/ObsCalculator
 
 MARGS=INSTALL_DIR=$(INSTALL_DIR) 	TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
 	  INCLUDE_DIR=$(INCLUDE_DIR) 	DEF_DIR=$(DEF_DIR) \
 	  PREDICTOR_DIR=$(PREDICTOR_DIR) UTIL_DIR=$(UTIL_DIR) \
 	  INTERFACE_DIR=$(INTERFACE_DIR) LIB_DIR=$(LIB_DIR) \
 	  SAMPLE_DIR=$(SAMPLE_DIR) STORAGE_DIR=$(STORAGE_DIR) \
-	  POINTAN_DIR=$(POINTAN_DIR)	USER_DIR=$(USER_DIR)
+	  POINTAN_DIR=$(POINTAN_DIR)	USER_DIR=$(USER_DIR) \
+	  MAKE_DIR=$(MAKE_DIR)
 
 utils=slhalib multinest ROOT
 predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
@@ -40,13 +42,13 @@ all:
 
 clean:
 	for t in $(targets); do \
-		yes | make -f $(CALC_DIR)/.make/$$t.mk $@ $(MARGS) ; \
+		yes | make -f $(MAKE_DIR)/.make/$$t.mk $@ $(MARGS) ; \
 	done
 
 tarclean:
 	for t in $(targets); do \
-		make -f $(CALC_DIR)/.make/$$t.mk $@ $(MARGS) ; \
+		make -f $(MAKE_DIR)/.make/$$t.mk $@ $(MARGS) ; \
 	done
 
 %:
-	make -f $(CALC_DIR)/.make/$@.mk $(MARGS) ; \
+	make -f $(MAKE_DIR)/.make/$@.mk $(MARGS) ; \
