@@ -3,6 +3,7 @@ include $(DEF_DIR)/constraints.mk
 objs=$(srcs:%.cc=%.o)
 
 constraints: $(lib)  $(src_dir)/*h
+	cp $(src_dir)/*h $(INCLUDE_DIR)
 
 $(lib)	: $(objs)
 	$(ld) $(ldflags)  $(lib) $^ 
