@@ -1,6 +1,5 @@
 #include "Constraints.h"
 
-
 extern "C"{
     GaussConstraint * new_GaussConstraint(int *int_obs_ids, int len_int_obs_ids, 
             double * gauss_data, int len_gauss_data, GaussFunc chi2function ){
@@ -9,4 +8,8 @@ extern "C"{
         return new GaussConstraint(int_obs_ids_vec,gauss_data_vec,chi2function);
     }
 
+    double get_GaussChi2(GaussConstraint* gauss_constraint, double* obs ){
+        gauss_constraint->ShowInternalOids();
+        return gauss_constraint->GetChi2(obs);
+    }
 }
