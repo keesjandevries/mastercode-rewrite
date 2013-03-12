@@ -5,7 +5,7 @@
  ************************/
 std::map< std::string, GaussFunc>  get_GaussFunc_map(){
     std::map< std::string, GaussFunc> GaussFunc_map;
-    GaussFunc_map["gauss"]=&gaussian;
+    GaussFunc_map["gaussian"]=&gaussian;
     GaussFunc_map["lowerlimit"]=&lowerlimit;
     GaussFunc_map["upperlimit"]=&upperlimit;
     return GaussFunc_map;
