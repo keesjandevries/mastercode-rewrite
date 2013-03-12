@@ -1,8 +1,8 @@
-include $(DEF_DIR)/constraints.mk
+include $(DEF_DIR)/chi2functions.mk
 
 objs=$(srcs:%.cc=%.o)
 
-constraints: $(lib)  $(src_dir)/*h
+chi2functions: $(lib)  $(src_dir)/*h
 
 $(lib)	: $(objs)
 	$(ld) $(ldflags)  $(lib) $^ 
@@ -10,7 +10,7 @@ $(lib)	: $(objs)
 #FIXME: I don't understand why %.o makes sure the right directories are checked
 # This does seem to work though..
 %.o : %.cc 
-	$(cc) -c -fPIC  -o $@ $< -I$(src_dir)
+	$(cc) -c -fPIC  -o $@ $< -I$(src_dir) -I$(INCLUDE_DIR)
 
 .PHONY: clean all
 clean:
