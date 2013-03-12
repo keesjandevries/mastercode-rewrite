@@ -1,15 +1,16 @@
 include $(DEF_DIR)/constraints.mk
 
-objs=$(subst cc,o,$(srcs))
+objs=$(srcs:%.cc=%.o)
 
-constraints: $(lib) $(src_dir)/*h
-	cp $(src_dir)/*h $(INCLUDE_DIR)
+constraints: $(lib)  $(src_dir)/*h
 
-$(lib)	:$(objs)
+$(lib)	: $(objs)
 	$(ld) $(ldflags)  $(lib) $^ 
 
-$(scr_dir)/%.o : $(src_dir)/%.cc $(src_dir)/*h
-	$(cc) $(ccflags) -o $@ $< -I$(src_dir)
+#FIXME: I don't understand why %.o makes sure the right directories are checked
+# This does seem to work though..
+%.o : %.cc 
+	$(cc) -c -fPIC  -o $@ $< -I$(src_dir)
 
 .PHONY: clean all
 clean:
