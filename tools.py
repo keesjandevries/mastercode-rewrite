@@ -25,6 +25,9 @@ def ctypes_field_values(obj, title):
             d[attr] = c_obj[:]
     return {(title,key):val for (key,val) in d.items() }
 
+def return_c_double_array(l):
+    dbl_array=c_double*len(l)
+    return dbl_array(*l)
 
 def is_int(s):
     try:
