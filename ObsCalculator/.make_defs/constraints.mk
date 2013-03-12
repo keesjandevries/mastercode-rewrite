@@ -3,9 +3,8 @@ srcs=$(wildcard $(src_dir)/*cc)
 lib=$(LIB_DIR)/libconstraints.a
 
 interface_src=$(POINTAN_DIR)/interfaces/constraints.cc
-interface_lib=$(LIB_DIR)/libmconstraints.so
+interface_lib=$(LIB_DIR)/libmcconstraints.so
 
 cc=g++
 ld=ar
-ccflags= -fPIC -c -Wall
 ldflags=rvs 
