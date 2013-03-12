@@ -1,7 +1,5 @@
 #include "Chi2Functions.h"
 
-namespace lhfuncs{
-
 /************************
  * gaussian functions map
  ************************/
@@ -47,4 +45,3 @@ double ma_tanb_mc8(std::vector<double> obs, Contour * ma_tanb_95){
     double tanb_contour =ma_tanb_95->GetContourValue(ma_point);
     return 4*(tanb_point/tanb_contour)*(tanb_point/tanb_contour);
 }
-}// all include into namespace
