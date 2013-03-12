@@ -29,6 +29,14 @@ double GaussConstraint::get_sigma_square(std::vector<double> gauss_in_data){
     return sigma_square;
 }
 
+void GaussConstraint::ShowInternalOids(){
+    int count=0;
+    for (std::vector<int>::iterator it=_internal_oids.begin(); 
+            it!=_internal_oids.end();it++){
+        std::cout << "Internal oid " << count << " : " << *it <<std::endl;
+    }
+}
+
 /***************************
 * Contour  Constraint Class  
 ****************************/

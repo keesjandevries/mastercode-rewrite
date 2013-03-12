@@ -28,6 +28,7 @@ typedef double(*ContourFunc)(std::vector<double>, Contour*);
 class GaussConstraint{
     public:
         GaussConstraint(std::vector<int> /*oids*/ ,std::vector<double>  /*data*/,GaussFunc);
+        void ShowInternalOids();    // for debugging
         double GetChi2(double *);
         //Note: no copy or assignment operators are defined
         //following the google c++ style guide, this can be 
