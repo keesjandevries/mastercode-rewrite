@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 from PointAnalyser.interfaces.constraints import Constraint
+from PointAnalyser.interfaces.chi2functions import get_chi2_functions
 import argparse
 
 
@@ -21,4 +22,6 @@ def format_ids_and_values_to_dict(ids,values):
 
 if __name__=="__main__" :
     args = parse_args()
-    Constraint(1,[2.0,3.0],3)
+    d=get_chi2_functions(['gaussian'])
+    constr=Constraint([('bla','bla')],[2.0,3.0],d['gaussian'])
+    constr.get_chi2({('bla','bla'):5.0})
