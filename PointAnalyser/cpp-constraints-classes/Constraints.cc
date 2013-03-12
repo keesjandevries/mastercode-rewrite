@@ -10,8 +10,9 @@ GaussConstraint::GaussConstraint(std::vector<int> int_obs_ids, std::vector<doubl
     _internal_oids      = int_obs_ids;
     _data.mu            = gauss_in_data[0];
     _data.sigma_square  = get_sigma_square(gauss_in_data);
-    _gauss_chi2_function=chi2function;
+    _gauss_chi2_function= chi2function;
 }
+
 
 double GaussConstraint::GetChi2(double* obs){
     std::vector<double> constraint_obs;
@@ -33,7 +34,6 @@ void GaussConstraint::ShowInternalOids(){
     int count=0;
     for (std::vector<int>::iterator it=_internal_oids.begin(); 
             it!=_internal_oids.end();it++){
-        std::cout << "Internal oid " << count << " : " << *it <<std::endl;
     }
 }
 
