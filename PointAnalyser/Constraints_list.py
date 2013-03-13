@@ -8,7 +8,7 @@ constraints_dict = {
             'data' : [173.2,0.9], 
             'func' : LF.gauss },
         'MZ' :{ 
-            'oids' : [('SMINPUTS','MZ')],
+            'oids' : [('SMINPUTS','mod_MZ')],
             'data' : [91.1875  ,0.0021],  
             'func' : LF.gauss      ,},
         'GZ_in': {   
