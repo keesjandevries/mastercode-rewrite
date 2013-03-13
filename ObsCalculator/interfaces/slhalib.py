@@ -92,6 +92,34 @@ class SLHA(object):
         for i in range(1,ofsetspinfo+1):
             self.data[i]=float(i)
 
+    def create_lookup(self):
+        self.data=SLHAData()
+        #fill complex array with "invalid", which is equivalent to empty slha file 
+        for i in range(1,nslhadata+1):
+            self.data[i]=invalid
+        #fill every array element that could containt a number with its array index 
+        for i in range(1,ofsetspinfo+1):
+            self.data[i]=i
+        #retrieve block- and observables- names and make dict
+        block_indices_comment_nr_dict=self.get_blocks_indices_comments_values()
+        #fill lookup
+        lookup=OrderedDict()
+        for key, val in block_indices_comment_nr_dict.items():
+            # for the moment only need block and comment
+            block, indices, comment=key
+            try:
+                nr=int(val)
+            except TypeError:
+                print("WARNING: the value for block {0}, indices {1}, comment {2}".format(block,str(indices),comment))
+                print("has a non-integer value {0}".format(str(val)))
+            else:
+                oid=(block,comment)
+                lookup[nr]=oid
+        # also save reverse
+        for nr, oid in lookup.items():
+            lookup[oid]=nr
+        return lookup
+
     def initialise_lookup(self):
         """
         This function returns a dictionary
