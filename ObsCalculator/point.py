@@ -21,7 +21,7 @@ default_predictors = default_spectrum_modifiers + [micromegas, superiso, bphysic
 def run_point(model, **input_pars):
     """
     run_point is the core function of MC++
-    documentation is needed soon, however, there is extensive commenting already
+    documentation is needed soon, however, in this file you will find extensive commenting already
     """
     #==================
     # define predictors
