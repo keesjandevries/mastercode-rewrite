@@ -116,11 +116,11 @@ VARS_dict={
 # Higgs masses
         ('MASS', 'mod_Mh0'): 96,
         ('MASS', 'mod_MHH'): 97,
-        ('MASS', 'MA0')    : 98, # yep that's right, feynhiggs does not change MA0
+#        ('MASS', 'MA0')    : 98, # yep that's right, feynhiggs does not change MA0
         ('MASS', 'mod_MHp'): 99,
         ('MASS', 'Mh0'): 104,
         ('MASS', 'MHH'): 105,
-        ('MASS', 'MA0'): 106,
+        ('MASS', 'MA0'): [98,106],
         ('MASS', 'MHp'): 107,
         }
 
