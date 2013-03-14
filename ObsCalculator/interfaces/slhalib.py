@@ -31,13 +31,16 @@ class SLHAData(Structure):
 
 class SLHA(object):
     def __init__(self, data="",lookup=None):
-        self.lookup=lookup
+        if lookup:
+            self.lookup=lookup
+        else:
+            self.lookup=self.create_lookup()
         if data:
-            #cannot do produce lookup on the fly with the pipe_object_to_function
-            #therefore, do it separate
-            pipe_object_to_function(data, self.read,args=[],kwargs={'makelookup': False})
-            if not self.lookup:
-                self.initialise_lookup()
+#            #cannot do produce lookup on the fly with the pipe_object_to_function
+#            #therefore, do it separate
+            pipe_object_to_function(data, self.read,args=[],kwargs={})
+#            if not self.lookup:
+#                self.initialise_lookup()
 
     def __str__(self):
         tmp_name = "/tmp/mc-{u}".format(u=unique_str())
@@ -75,11 +78,9 @@ class SLHA(object):
     def write(self, filename):
         SLlib.write_slha(filename.encode('ascii'), byref(self.data))
 
-    def read(self, filename,makelookup=True):
+    def read(self, filename):
         self.data = SLHAData()
         SLlib.read_slha(filename.encode('ascii'), byref(self.data))
-        if (not self.lookup) and makelookup:
-            self.initialise_lookup()
 
     def get_lookup(self):
         if self.lookup:
@@ -87,12 +88,12 @@ class SLHA(object):
         else:
             print("WARNING: cannot return lookup, because lookup is not initiated")
 
-    def fill_slhadata_with_slhalib_nrs(self):
-        #NOTE: in SLHADefs.h, the numerical values end with SPinfo
-        for i in range(1,ofsetspinfo+1):
-            self.data[i]=float(i)
 
     def create_lookup(self):
+        """
+ This function returns a dictionary
+ { slhalib_nr: ('block','comment'), ... , ('block','comment'): slhalib_nr, ... }
+        """
         self.data=SLHAData()
         #fill complex array with "invalid", which is equivalent to empty slha file 
         for i in range(1,nslhadata+1):
@@ -120,36 +121,6 @@ class SLHA(object):
             lookup[oid]=nr
         return lookup
 
-    def initialise_lookup(self):
-        """
-        This function returns a dictionary
-        { slhalib_nr: ('block','comment'), ... , ('block','comment'): nr, ... }
-        """
-        #first backup the data
-        backup_data={nr:self.data[nr] for nr in range(1,ofsetspinfo+1) if not nr == invalid }
-        #fill slhafile with slhalib numbers
-        self.fill_slhadata_with_slhalib_nrs()
-        #retrieve block- and observables- names and make dict
-        block_indices_comment_nr_dict=self.get_blocks_indices_comments_values()
-        lookup=OrderedDict()
-        for key, val in block_indices_comment_nr_dict.items():
-            # for the moment only need block and comment
-            block, indices, comment=key
-            try:
-                nr=int(val)
-            except TypeError:
-                print("WARNING: the value for block {0}, indices {1}, comment {2}".format(block,str(indices),comment))
-                print("has a non-integer value {0}".format(str(val)))
-            else:
-                oid=(block,comment)
-                lookup[nr]=oid
-        # now also save reverse
-        for nr, oid in lookup.items():
-            lookup[oid]=nr
-        # restore data
-        for nr, val in backup_data.items():
-            self.data[nr]=val
-        self.lookup= lookup
                 
             
     def get_blocks_indices_comments_values(self):
@@ -172,7 +143,7 @@ class SLHA(object):
                 print("WARNING: DECAY's are ignored in SLHA.get_blocks_indices_comments_values() ")
                 block_name=None
             elif block_name and (not block_name == 'SPINFO') :
-                #FIXME: want to have the SPINFO as well at some point
+                #FIXME: possibly want to have the SPINFO as well at some point
                 items = line.split()
                 if len(items):
                     first_non_index = next(x for x in items if not is_int(x))
@@ -190,19 +161,14 @@ class SLHA(object):
 
     def process(self):
         data=OrderedDict()
-        for i in range(1,nslhadata+1):
+        for i in range(1,ofsetspinfo+1):
             val=self.data[i]
             if not val == invalid:
                 try:
                     oid=self.lookup[i]
                     data[oid]=val
                 except KeyError:
-                    continue
-#                try:
-#                    oid=('slha',self.lookup[i])
-#                except KeyError:
-#                    oid=('slha',i)
-#                data[oid]=val
+                    print("ERROR: {} not found in lookup".format(i)) 
         return data
 
 def send_to_predictor(slhadata, inputs ,predictor, update=False):
