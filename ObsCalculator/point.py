@@ -42,6 +42,7 @@ def run_point(model, **input_pars):
     if 'all' in input_pars['verbose']:
         input_pars['verbose']=[pred.name for pred in predictors]
         input_pars['verbose'].append(spectrum_generator.name)
+        input_pars['verbose'].append(slhamodule.name)
         input_pars['verbose'].append('spectrum')
 
     if input_pars.get('spectrumfile'):
@@ -51,7 +52,13 @@ def run_point(model, **input_pars):
         #=============================================================
         spectrum_modifiers=[]
         slhafile = SLHA()
-        slhafile.read(input_pars['spectrumfile'])
+        # make slha object 
+        none_return,stdout = tools.get_ctypes_streams(func=slhafile.read,args=[input_pars['spectrumfile']],kwargs={})
+        # handle standard outs
+        if slhamodule.name in input_pars['verbose']:
+            print(stdout)
+        stdouts.update({slhamodule.name:stdout})
+        # handle spectrum verbosity
         if 'spectrum' in input_pars['verbose']:
             print("NOTE: Running on spectrum file {0}.".format(input_pars['spectrumfile'])) 
             print('      Spectrum is not modified.')
@@ -73,7 +80,7 @@ def run_point(model, **input_pars):
         
         # If the spectrum calculater fails then there is no hope to calculate anything else.
         # Hence, return None is appropriate
-        if(err): return None
+        if(err): return None,None,None
 
         stdouts.update({slhamodule.name: stdout})
 
@@ -82,7 +89,11 @@ def run_point(model, **input_pars):
             print(obj)
 
         # make slha object 
-        slhafile = SLHA(obj,input_pars.get('lookup'))
+        slhafile,stdout = tools.get_ctypes_streams(func=SLHA,args=[obj,input_pars.get('lookup')],kwargs={})
+        # handle standard outs
+        if slhamodule.name in input_pars['verbose']:
+            print(stdout)
+        stdouts.update({slhamodule.name:stdout})
 
         
     # ======================
@@ -97,10 +108,11 @@ def run_point(model, **input_pars):
     # for e.g. constraints
     # =============================================================
     in_dict={}
-    for key, val in input_pars[spectrum_generator.name].items():
-        in_key =(key[0],'in_{0}'.format(key[1]))
-        in_dict[in_key]=val
-    predictor_output.update(in_dict)
+    if not 'spectrumfile' in input_pars:
+        for key, val in input_pars[spectrum_generator.name].items():
+            in_key =(key[0],'in_{0}'.format(key[1]))
+            in_dict[in_key]=val
+        predictor_output.update(in_dict)
 
     # ======================================
     # save spectrum before any modifications
@@ -135,7 +147,7 @@ def run_point(model, **input_pars):
     for predictor in predictors:
         is_modifier = predictor in spectrum_modifiers
         #FIXME: needs to get something like: pred_verbose=  predictor.name in input_pars['verbose']
-        # and pred_verbose as one of tdhe options, 
+        # and pred_verbose as one of the options, 
         pred_verbose=(predictor.name in input_pars['verbose'])
         result, stdout = tools.get_ctypes_streams(
                 func=slhamodule.send_to_predictor,
