@@ -41,6 +41,7 @@ def run(slhadata, inputs=None, update=False) :
     fhopts = FeynHiggsOpts(default_inputs,inputs)
 
     FHout = FeynHiggsPrecObs()
-    FHlib.run_feynhiggs(byref(FHout), byref(fhopts), byref(slhadata.data),
+    error = FHlib.run_feynhiggs(byref(FHout), byref(fhopts), byref(slhadata.data),
             update)
+    if error: print("ERROR: FH")
     return ctypes_field_values(FHout, name)
