@@ -44,6 +44,8 @@ def run_point(model, **input_pars):
         input_pars['verbose'].append(spectrum_generator.name)
         input_pars['verbose'].append(slhamodule.name)
         input_pars['verbose'].append('spectrum')
+        input_pars['verbose'].append('mcspectrum')
+        input_pars['verbose'].append('predspectrum')
 
     if input_pars.get('spectrumfile'):
         #=============================================================
@@ -139,6 +141,8 @@ def run_point(model, **input_pars):
             #explicitely save these in predictor_output as modified slha values
             mod_key=(oid[0],'mod_{}'.format(oid[1]))
             predictor_output[mod_key]=val
+        if 'mcspectrum' in input_pars['verbose']: 
+            print(slhafile)
 
 
     # ===========================================
@@ -158,7 +162,8 @@ def run_point(model, **input_pars):
         stdouts.update({predictor.name: stdout})
 
     
-    
+    if 'predspectrum' in input_pars['verbose']: 
+        print(slhafile)
     # =====================================================
     # save the modified slha obs as e.g. ('MASS','mod_mh0')
     # =====================================================
@@ -167,4 +172,5 @@ def run_point(model, **input_pars):
         if not predictor_output.get(key)==val:
             mod_key=(key[0],'mod_{}'.format(key[1]))
             predictor_output[mod_key]=val
+
     return slhafile, predictor_output, stdouts
