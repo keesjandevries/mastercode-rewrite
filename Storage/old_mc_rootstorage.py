@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+import sys
 import Storage.interfaces.ROOT as root
 import Storage.interfaces.ROOT_ab_out as ab_root
 #from example_point import point 
@@ -144,33 +145,41 @@ def fill_VARS(point,VARS,model='cMSSM'):
     return VARS
 
 #WARNING: RESULT ORIENTED
-def fill_VARS_2(point,VARS,model='cMSSM'):
+def fill_VARS_2(point,VARS,params,model='cMSSM'):
     for mcpp_oid, old_oid in VARS_dict.items():
         try:
             VARS[old_oid]=point[mcpp_oid]
         except TypeError:
-            for oldoid in old_oid:
-                VARS[oldoid]=point[mcpp_oid]
+            try:
+                for oldoid in old_oid:
+                    VARS[oldoid]=point[mcpp_oid]
+            except KeyError:
+                print(params,file=sys.stderr)
+        except KeyError:
+            print(params,file=sys.stderr)
 
     if model=='cMSSM':
-        VARS[37]=point[('BPhysics', 'RDMs')]/point[('BPhysics', 'RDMb')]
-        VARS[89]=sum([point[('MASS',squark)] for squark in ['MSf(2,3,1)','MSf(2,3,2)','MSf(2,4,1)','MSf(2,4,2)'] ] )/4. # ave over R: u,c,d,s squarks
-        VARS[90]=sum([point[('MASS',squark)] for squark in ['MSf(1,3,1)','MSf(1,3,2)','MSf(1,4,1)','MSf(1,4,2)'] ] )/4. # ave over L: u,c,d,s squarks
+        try:
+            VARS[37]=point[('BPhysics', 'RDMs')]/point[('BPhysics', 'RDMb')]
+            VARS[89]=sum([point[('MASS',squark)] for squark in ['MSf(2,3,1)','MSf(2,3,2)','MSf(2,4,1)','MSf(2,4,2)'] ] )/4. # ave over R: u,c,d,s squarks
+            VARS[90]=sum([point[('MASS',squark)] for squark in ['MSf(1,3,1)','MSf(1,3,2)','MSf(1,4,1)','MSf(1,4,2)'] ] )/4. # ave over L: u,c,d,s squarks
+        except KeyError:
+            print(params,file=sys.stderr)
     return VARS
 
 
 #WARNING: RESULT ORIENTED
-def write_point_to_root(point,model='cMSSM'):
+def write_point_to_root(point,params=None, model='cMSSM'):
     VARS=max_rows*[0.]
 #    VARS=fill_VARS(point,VARS,model)
-    VARS=fill_VARS_2(point,VARS,model)
+    VARS=fill_VARS_2(point,VARS,params,model)
     root.root_write(VARS)
 
 
 #WARNING: VERY RESULT ORIENTED
 def write_in_out_to_ab_root(in_vars,out_point,model='cMSSM'):
     VARS=max_rows*[0.]
-    out_vars=fill_VARS_2(out_point,VARS,model)
+    out_vars=fill_VARS_2(out_point,VARS,params,model)
     ab_root.root_write(in_vars, out_vars)
 
 
