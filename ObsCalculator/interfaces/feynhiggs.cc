@@ -34,7 +34,7 @@ extern "C" {
         SLHAWrite(&error, slhadata, slhafilename);
         return error;
     }
-    void run_feynhiggs(FeynHiggsPrecObs* out, FeynHiggsOpts* opts,
+    int run_feynhiggs(FeynHiggsPrecObs* out, FeynHiggsOpts* opts,
             COMPLEX* slhadata, bool update) {
 
         int error;
@@ -47,7 +47,7 @@ extern "C" {
 
         FHSetSLHA(&error, slhadata);
         if(error) {
-            exit(error);
+            return error;
         }
 
         double mhiggs[4];
@@ -63,7 +63,7 @@ extern "C" {
                 &(out->edmeTh), &(out->edmn), &(out->edmHg), &ccb);
         
         if(error != 0) {
-            std::cout << "FH FAILED" << std::endl;
+            return error;
             // FH has failed
         }
         else {
@@ -96,6 +96,7 @@ extern "C" {
                 //PrecObs_bsgamma.re   = out->bsgammaMSSM;
                 //PrecObs_bsgammaSM.re = out->bsgammaSM;
             }
+            return error;
         }
     }
 }
