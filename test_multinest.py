@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os, pprint, argparse
+import os, pprint, argparse, sys
 from collections import OrderedDict
 
 from Samplers.interfaces import multinest
@@ -96,17 +96,23 @@ def get_obs(cube,ndim):
                     }
                 }
             }
+    if 'parameters' in args.verbose : 
+        print(all_params)
+
     all_params['lookup']=lookup
     all_params['verbose']=args.verbose
     try:
         slha_obj, combined_obs, stdouts = point.run_point(model=model, **all_params)
     except TypeError:
         return None
-    if (not combined_obs) and ('errors' in args.verbose) or ('parameters' in args.verbose) : 
-        del all_params['lookup']
-        del all_params['verbose']
-        print(all_params)
-    return combined_obs
+    #WARNING: this if for debugging: 
+    # give parameters to the place where a problem occurs and trow it in stderr
+    del all_params['lookup']
+    del all_params['verbose']
+    if (not combined_obs) and ('errors' in args.verbose) : 
+        print("ERROR: error in some of the predictors")
+        print(all_params,file=sys.stderr)
+    return combined_obs, all_params 
 
 def get_chi2(obs):
     constraints={name: all_constraints[name] for name in data_set}
@@ -116,11 +122,11 @@ def get_chi2(obs):
 
 def myloglike(cube, ndim, nparams):
     chi2=default_chi
-    obs=get_obs(cube,ndim)
+    obs,params=get_obs(cube,ndim)
     if obs: 
         chi2=get_chi2(obs)
         obs[('tot_X2', 'all')]=chi2
-        rootstore.write_point_to_root(obs)
+        rootstore.write_point_to_root(obs,params)
     print("X^2={}".format(chi2))
     print()
 #    else: print("ERROR: in one of the programs")
