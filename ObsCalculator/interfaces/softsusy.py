@@ -27,7 +27,7 @@ default_inputs={
     ('MINPAR','signMUE')        : 1,
     #NOTE: BLOCK SOFTSUSY is not recognised by slhalib, so have our own definitions
     ('SOFTSUSY','TOLERANCE')    : 1.0e-3,
-    ('SOFTSUSY','MIXING')       : 1.0 ,
+    ('SOFTSUSY','MIXING')       : -1.0 ,
     ('SOFTSUSY','PRINTOUT')     : 0.0 ,
     ('SOFTSUSY','QEWSB')        : 1.0 ,
     ('SOFTSUSY','2_LOOP')       : 1.0 ,
@@ -65,7 +65,12 @@ Block MINPAR		     # Input parameters
     2   {m12} 	     # m12
     3   {tanb} 	     # tanb
     4   {sign_mu} 	     # sign(mu)
-    5   {A0} 	     # A0""".format(
+    5   {A0} 	     # A0
+Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
+    1   {prec}      # Numerical precision: suggested range 10^(-3...-6)
+    2   {mix}      # Quark mixing parameter: see manual
+
+    """.format(
     alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
     g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
     alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
@@ -103,24 +108,12 @@ def run(model, inputs,verbose=None):
     if verbose: print(inputslha)
 
     # then run on the inputslha file
-    c_str_buf = create_string_buffer(SLHA_MAX_SIZE)
-#    error = SPlib.run(c_char_p(inputslha.encode('ascii')),c_str_buf,10000)
-#    print("LOLHERE")
-#    myname = 'slhas/temp.slha'
-    myname = "/tmp/mc-{u}".format(u=unique_str())
-    with open(myname,'w') as myfile:
-        myfile.write(inputslha)
-    with open(myname,'r') as myfile:
-
-        my_out = subprocess.check_output(['./packages/bin/softpoint.x','leshouches'],stdin=myfile)
-
-#    myfile = open(myname,'r')
-#    my_out = subprocess.check_output(['./packages/bin/softpoint.x','leshouches'],stdin=myfile)
-#    from subprocess import Popen, PIPE
-#    p= Popen(['./packages/bin/softpoint.x','leshouches'],stdin=PIPE,stdout=PIPE,stderr=PIPE)
-#    my_out, my_err = p.communicate(inputslha)
-    my_out = my_out.decode('ascii')
-    print(my_out)
-    error = False
-    #return c_str_buf.value.decode('utf-8'), error
+    fname = "/tmp/mc-{u}".format(u=unique_str())
+    with open(fname,'w') as softpoint_input_file:
+        softpoint_input_file.write(inputslha)
+    with open(fname,'r') as softpoint_input_file:
+        my_out = subprocess.check_output(['./packages/bin/softpoint.x','leshouches'],stdin=softpoint_input_file)
+    my_out=my_out.decode('utf-8')
+    error =  ('invalid' in str(my_out))
+    if error: print("ERROR: softsusy point is invalid")
     return my_out, error
