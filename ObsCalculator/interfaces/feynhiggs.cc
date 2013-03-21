@@ -11,6 +11,10 @@
 
 const bool write_fh_slha = false;
 
+#ifndef COMPLEX
+#define COMPLEX DOUBLE_COMPLEX
+#endif
+
 struct FeynHiggsOpts {
     int mssmpart, fieldren, tanbren, higgsmix, p2approx, looplevel,
         tl_running_mt, tl_bot_resum;
@@ -31,12 +35,14 @@ extern "C" {
 
     int write_slha(const char slhafilename [], COMPLEX* slhadata) {
         int error;
-        SLHAWrite(&error, slhadata, slhafilename);
+        double_complex mytemp[nslhadata];
+        for(int i=0; i<nslhadata; ++i)
+            mytemp[i] = ToComplex(slhadata[i]);
+        SLHAWrite(&error, mytemp, slhafilename);
         return error;
     }
     int run_feynhiggs(FeynHiggsPrecObs* out, FeynHiggsOpts* opts,
             COMPLEX* slhadata, bool update) {
-
         int error;
         const int abort(0);
         FHSetDebug(0);
@@ -45,7 +51,12 @@ extern "C" {
                 opts->higgsmix, opts->p2approx, opts->looplevel,
                 opts->tl_running_mt, opts->tl_bot_resum, 0);
 
-        FHSetSLHA(&error, slhadata);
+        double_complex mytemp[nslhadata];
+        for(int i=0; i<nslhadata; ++i) {
+            mytemp[i] = ToComplex((slhadata[i]));
+        }
+        FHSetSLHA(&error, mytemp);
+
         if(error) {
             return error;
         }
@@ -60,7 +71,7 @@ extern "C" {
 
         FHConstraints(&error, &(out->gm2), &(out->DeltaRho),
                 &(out->MWMSSM), &(out->MWSM), &(out->SW2MSSM), &(out->SW2SM),
-                &(out->edmeTh), &(out->edmn), &(out->edmHg), &ccb);
+                &(out->edmeTh), &(out->edmn), &(out->edmHg));//, &ccb);
         
         if(error != 0) {
             return error;
