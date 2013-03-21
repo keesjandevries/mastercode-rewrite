@@ -1,4 +1,4 @@
-version=3.3.5
+version=3.0.13
 name=softsusy-$(version)
 src_dir=$(PREDICTOR_DIR)/$(name)
 lib_dir=$(INSTALL_DIR)/lib/
