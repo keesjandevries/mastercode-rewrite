@@ -145,7 +145,7 @@ def fill_VARS(point,VARS,model='cMSSM'):
     return VARS
 
 #WARNING: RESULT ORIENTED
-def fill_VARS_2(point,VARS,params,model='cMSSM'):
+def fill_VARS_2(point,VARS,params=None,model='cMSSM'):
     for mcpp_oid, old_oid in VARS_dict.items():
         try:
             VARS[old_oid]=point[mcpp_oid]
@@ -177,7 +177,7 @@ def write_point_to_root(point,params=None, model='cMSSM'):
 
 
 #WARNING: VERY RESULT ORIENTED
-def write_in_out_to_ab_root(in_vars,out_point,model='cMSSM'):
+def write_in_out_to_ab_root(in_vars,out_point,params=None,model='cMSSM'):
     VARS=max_rows*[0.]
     out_vars=fill_VARS_2(out_point,VARS,params,model)
     ab_root.root_write(in_vars, out_vars)
