@@ -10,3 +10,5 @@
 *.points
 *c.txt
 *csummary.txt
+chains/*
+chains2/*
