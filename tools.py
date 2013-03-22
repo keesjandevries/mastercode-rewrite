@@ -46,8 +46,10 @@ def show_header(header, sub=''):
 
 def unique_str():
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
-    ustr = "{host}-{pid}-{time}".format(host=gethostname(),
-            pid=os.getpid(), time=t_now)
+    function_name=os.path.splitext(os.path.split(sys._getframe(1).f_code.co_filename)[1])[0] # to only keep the name without .py
+    ustr = "{host}-{pid}-{time}-{fname}".format(host=gethostname(),
+            pid=os.getpid(), time=t_now,fname=function_name)
+    print(ustr)
     return ustr
 
 def setup_pipe(reader, writer, pipe_name=None):
