@@ -9,6 +9,9 @@ from tools import  pickle_object
 from PointAnalyser import Analyse
 from PointAnalyser import Constraints_list
 
+#data set
+from User.data_sets import data_sets
+
 #storage
 import Storage.interfaces.ROOT as root
 from Storage import old_mc_rootstorage 
@@ -21,6 +24,8 @@ def parse_args():
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity')
     parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
             default=None, help='override all_params')
+    parser.add_argument('--dataset'    , '-d', dest='data_set'  , action='store', 
+            default="mc8", help='data set for X^2 calculation')
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -61,11 +66,16 @@ if __name__=="__main__" :
 
     all_constraints=Constraints_list.constraints
     #mc8 data set
-    data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
-            'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
-            'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
-            'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
-            'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
+    try:
+        data_set=data_sets[args.data_set]
+    except KeyError:
+        print("WARNING: \"{}\" invalid data set. No X^2 is calculated".format(args.data_set))
+        data_set=[]
+    #data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
+    #        'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
+    #        'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
+    #        'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
+    #        'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
     constraints={name: all_constraints[name] for name in data_set}
 
     #pass this constraints list to the chi2 function
