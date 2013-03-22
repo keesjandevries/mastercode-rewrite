@@ -12,6 +12,8 @@ from PointAnalyser import Constraints_list
 import Storage.interfaces.ROOT as root
 from ObsCalculator.interfaces.slhalib import SLHA
 
+from User.data_sets import data_sets
+
 def parse_args():
     #WARNING: this option list is rather ad hoc
     # feel free to ammend it!
@@ -22,6 +24,8 @@ def parse_args():
             default='temp/test_mn.root',  help='output root file')
     parser.add_argument('--multinest-dir'    , '-m', dest='multinest_dir'  , action='store', 
             default="chains", help='mulitnest parameter: directory for storing mulinest parameters ')
+    parser.add_argument('--dataset'    , '-d', dest='data_set'  , action='store', 
+            default="mc8", help='data set for X^2 calculation')
     parser.add_argument('--tolerance'    , '-t', dest='tolerance'  , action='store', type=float,
             default=0.5, help='multinest parameter: evidence tolerance')
     parser.add_argument('--nlive', '-l', dest='nlive'  , action='store', type=int,
@@ -32,20 +36,57 @@ def parse_args():
             default=-1, help='multinest parameter: seed (negative for seed from sys clock) ')
     parser.add_argument('--resume','-R', dest='resume', action='store_true', 
             default=False,  help='multinest parameter: resume existing jobs using parameters from multinest dir')
+    parser.add_argument('--boxes', dest='boxes', action='store_true', 
+            default=False,  help='RESULT ORIENTED: extract box number N from subdir_N and assign box')
     return parser.parse_args()
-
 ##################################################
-# DEFINITIONS NEEDED inside myprior, and myloglike 
+# WARNING: RESULT ORIENTED boxes study
 ##################################################
-param_ranges=OrderedDict([
-            ('m0',(0,4000)),
-            ('m12',(0,4000)),
-            ('A0',(-5000,5000)),
-            ('tanb',(1,65)), # softsusy only takes tanb>=1.
+#args=parse_args()
+#
+def get_param_ranges():
+    par_range=dict([
+    ('m0',(0.,4000.)),
+    ('m12',(0.,4000.)),
+    ('A0',(-5000.,5000.)),
+    ('tanb',(1.,65.)),]) # softsusy only takes tanb>=1.
+    
+    if args.boxes:
+        m0N, m12N, A0N, tanbN = 3,3,3,3
+    
+        interval_integers=[]
+        for m0i in range(m0N):
+            for m12i in range(m12N):
+                for A0i in range(A0N):
+                    for tanbi in range(tanbN):
+                        interval_integers.append({'m0':m0i,'m12':m12i,'A0':A0i,'tanb':tanbi,})
+        
+        n_box=0 # RESULT ORIENTED subdir looks like subdir_N
+        for v in args.multinest_dir.split('/'):
+            if 'subdir' in v:
+                n_box=int(v.split('_')[-1])
+        
+        range_ints=interval_integers[n_box-1]
+        for var in par_range.keys():
+            min_par=par_range[var][0]+range_ints[var]*(par_range[var][1]-par_range[var][0])/3.
+            max_par=par_range[var][0]+(range_ints[var]+1)*(par_range[var][1]-par_range[var][0])/3.
+            par_range[var]=(min_par,max_par)
+        print("BOX RANGES: ",par_range)
+    return OrderedDict([
+            ('m0',  par_range['m0']),
+            ('m12', par_range['m12']),
+            ('A0',  par_range['A0']),
+            ('tanb',par_range['tanb']),
             ('mt',(171.4,175)),
             ('mz',(91.1833,91.1917)),
             ('Delta_alpha_had',(0.02729,0.02769))
            ] )
+##################################################
+# DEFINITIONS NEEDED inside myprior, and myloglike 
+##################################################
+args = parse_args()
+param_ranges=get_param_ranges()
+
 
 default_chi=1e9
 
@@ -55,11 +96,7 @@ all_constraints=Constraints_list.constraints
 
 bpp = pprint.PrettyPrinter(indent=4, depth=3)
 
-data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
-            'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
-            'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
-            'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
-            'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
+data_set=data_sets[args.data_set]
 
 ###############################################
 
@@ -134,7 +171,12 @@ def myloglike(cube, ndim, nparams):
 
 
 if __name__=="__main__" :
-    args = parse_args()
+#    args = parse_args()
+    my_seed=args.seed
+    if args.boxes:
+        for v in args.multinest_dir.split('/'):
+            if 'subdir' in v:
+                my_seed=int(v.split('_')[-1])
 
     if not os.path.exists(args.multinest_dir): os.mkdir(args.multinest_dir)
     
@@ -149,7 +191,7 @@ if __name__=="__main__" :
             sampling_efficiency     = 0.3, 
             n_live_points           = args.nlive , 
             max_iter                = args.max_iter,
-            seed                    = args.seed,
+            seed                    = my_seed,
             outputfiles_basename    = '{}/'.format(args.multinest_dir),
             evidence_tolerance      = args.tolerance)
     root.root_close()
