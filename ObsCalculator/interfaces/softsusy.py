@@ -2,7 +2,7 @@
 import subprocess
 
 from ctypes import cdll,  c_char_p, create_string_buffer
-from tools import unique_str 
+from tools import unique_str , rm 
 
 
 name = "SoftSUSY"
@@ -113,6 +113,7 @@ def run(model, inputs,verbose=None):
         softpoint_input_file.write(inputslha)
     with open(fname,'r') as softpoint_input_file:
         my_out = subprocess.check_output(['./packages/bin/softpoint.x','leshouches'],stdin=softpoint_input_file)
+    rm(fname)
     my_out=my_out.decode('utf-8')
     error =  ('invalid' in str(my_out))
     if error: print("ERROR: softsusy point is invalid")
