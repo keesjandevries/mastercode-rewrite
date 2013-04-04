@@ -14,6 +14,9 @@ import Storage.interfaces.ROOT_ab_out as ab_root
 import Storage.interfaces.ROOT_read as rread
 from Storage import old_mc_rootstorage 
 
+#data set
+from User.data_sets import data_sets
+
 def parse_args():
     # WARNING: this code was written in a result oriented fashion
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -32,6 +35,8 @@ def parse_args():
             default=10, help='number of entries')
     parser.add_argument('--njump', '-J', dest='njump', action='store', type=int,
             default=1, help='number of entries to jump after sampling')
+    parser.add_argument('--dataset'    , '-d', dest='data_set'  , action='store', 
+            default="mc8", help='data set for X^2 calculation')
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -44,7 +49,7 @@ if __name__=="__main__" :
     
     begin=args.begin
     step=args.njump
-    end=args.end*step
+    end=begin+args.end*step
     if end > rread.root_get_entries():
         end= rread.root_get_entries()
     # WARNING: this code was written in a result oriented fashion
@@ -84,11 +89,11 @@ if __name__=="__main__" :
 
         all_constraints=Constraints_list.constraints
         #mc8 data set
-        data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
-                'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
-                'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
-                'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
-                'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
+        try:
+            data_set=data_sets[args.data_set]
+        except KeyError:
+            print("WARNING: \"{}\" invalid data set. No X^2 is calculated".format(args.data_set))
+            data_set=[]
         constraints={name: all_constraints[name] for name in data_set}
         #pass this constraints list to the chi2 function
         total, breakdown = Analyse.chi2(combined_obs,constraints)
