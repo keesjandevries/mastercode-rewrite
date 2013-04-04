@@ -18,15 +18,15 @@ def parse_args():
     #WARNING: this option list is rather ad hoc
     # feel free to ammend it!
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--tmp_dir', '-T', dest='tmp_dir', action='store', type=str,
+    parser.add_argument('--tmp-dir',  dest='tmp_dir', action='store', type=str,
             default=None, help='directory where temporary files get stored')
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', 
             nargs="+", help='verbosity', default=[])
     parser.add_argument('--output-root' , '-o', dest='root_out', action='store', 
             default='temp/test_mn.root',  help='output root file')
-    parser.add_argument('--multinest-dir'    , '-m', dest='multinest_dir'  , action='store', 
+    parser.add_argument('--multinest-dir' ,   dest='multinest_dir'  , action='store', 
             default="chains", help='mulitnest parameter: directory for storing mulinest parameters ')
-    parser.add_argument('--dataset'    , '-d', dest='data_set'  , action='store', 
+    parser.add_argument('--data-set'  ,  dest='data_set'  , action='store', 
             default="mc8", help='data set for X^2 calculation')
     parser.add_argument('--tolerance'    , '-t', dest='tolerance'  , action='store', type=float,
             default=0.5, help='multinest parameter: evidence tolerance')
@@ -38,6 +38,8 @@ def parse_args():
             default=-1, help='multinest parameter: seed (negative for seed from sys clock) ')
     parser.add_argument('--resume','-R', dest='resume', action='store_true', 
             default=False,  help='multinest parameter: resume existing jobs using parameters from multinest dir')
+    parser.add_argument('--suppress-mc-info', dest='suppress_info', action='store_true', 
+            default=False,  help='suppress dumping the multinest parameters. Not recommended')
     parser.add_argument('--boxes', dest='boxes', action='store_true', 
             default=False,  help='RESULT ORIENTED: extract box number N from subdir_N and assign box')
     parser.add_argument('--multinest-para-scan', dest='multinest_para_scan', action='store_true', 
@@ -107,6 +109,8 @@ def get_multinest_parameters():
             if 'subdir' in v:
                 n_param=int(v.split('_')[-1])
         samplingefficiency, nlive, tolerance= multinest_pars[n_param]
+    if args.boxes:
+        samplingefficiency=0.1 # is what we used previously
     return samplingefficiency, nlive , tolerance
 ##################################################
 # DEFINITIONS NEEDED inside myprior, and myloglike 
@@ -122,6 +126,7 @@ lookup=SLHA().get_lookup()
 all_constraints=Constraints_list.constraints
 
 bpp = pprint.PrettyPrinter(indent=4, depth=3)
+#bpp = pprint.PrettyPrinter(indent=4, depth=3)
 
 data_set=data_sets[args.data_set]
 
@@ -214,6 +219,24 @@ if __name__=="__main__" :
     print(args.verbose)
     # this is where multinest is actually run
     root.root_open(args.root_out)
+    if not args.suppress_info:
+        info="""
+nlive                   = {nlive}
+tolerance               = {tol}
+sampling effictiency    = {eff}
+seed                    = {seed}
+resume                  = {res}
+parameter boundaries    = 
+{boundaries}
+        """.format(
+                nlive=nlive, tol=tolerance, eff=samplingefficiency, res=args.resume,
+                seed=my_seed,
+                boundaries=bpp.pformat(get_param_ranges()), 
+                )
+        fname='{}/mc_mn_info.txt'.format(args.multinest_dir)
+        with open(fname,'w') as info_file:
+            info_file.write(info)
+
     multinest.run(myloglike, 
             myprior, 
             n_dims                  = len(param_ranges),
