@@ -3,7 +3,7 @@ import pprint, math
 from collections import OrderedDict, Counter
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from tools import c_complex, pipe_object_to_function, unique_str, is_int, rm
+from tools import c_complex, pipe_object_to_function,  is_int, rm, unique_filename
 
 name = "SLHALib"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')
@@ -30,7 +30,8 @@ class SLHAData(Structure):
         return self.carray[key-1].re
 
 class SLHA(object):
-    def __init__(self, data="",lookup=None):
+    def __init__(self, data="",lookup=None,tmp_dir=None):
+        self._tmp_dir=tmp_dir
         if lookup:
             self.lookup=lookup
         else:
@@ -38,12 +39,16 @@ class SLHA(object):
         if data:
 #            #cannot do produce lookup on the fly with the pipe_object_to_function
 #            #therefore, do it separate
-            pipe_object_to_function(data, self.read,args=[],kwargs={})
-#            if not self.lookup:
-#                self.initialise_lookup()
+            fname=unique_filename(self._tmp_dir)
+            with open(fname,'w') as softpoint_input_file:
+                softpoint_input_file.write(data)
+            self.read(fname)
+            rm(fname)
+#            error=pipe_object_to_function(pipe_file_name, data, self.read,args=[],kwargs={})
+#            if error: print("HERE SLHA LIB GIVES AN ERROR")
 
     def __str__(self):
-        tmp_name = "/tmp/mc-{u}".format(u=unique_str())
+        tmp_name=unique_filename(self._tmp_dir)
         self.write(tmp_name)
         f=open(tmp_name)
         txt=f.read()

@@ -18,6 +18,7 @@ default_predictors = default_spectrum_modifiers + [micromegas, superiso, bphysic
 
 
 #FIXME: model should not be a neseccarry input, since also able to run on slha
+#FIXME: want to separate input parameters (like m0, m12, Delta_Alpha_had, ... ) from options (like verbose)
 def run_point(model, **input_pars):
     """
     run_point is the core function of MC++
@@ -29,6 +30,16 @@ def run_point(model, **input_pars):
     spectrum_generator  =default_spectrum_generator
     spectrum_modifiers  =default_spectrum_modifiers
     predictors          =default_predictors
+    #=====================================
+    # define directory for temporary files
+    #=====================================
+    if 'tmp_dir' in input_pars:
+        tmp_dir_input={'tmp_dir':input_pars['tmp_dir']}
+        for predictor in [spectrum_generator] + predictors:
+            try:
+                input_pars[predictor.name].update(tmp_dir_input)
+            except:
+                input_pars[predictor.name]=tmp_dir_input
 
     #define standard outs dict
     stdouts = OrderedDict()
@@ -53,7 +64,7 @@ def run_point(model, **input_pars):
         # the slhafile also does not get modified
         #=============================================================
         spectrum_modifiers=[]
-        slhafile = SLHA()
+        slhafile = SLHA(input_pars.get('tmp_dir'))
         # make slha object 
         none_return,stdout = tools.get_ctypes_streams(func=slhafile.read,args=[input_pars['spectrumfile']],kwargs={})
         # handle standard outs
@@ -91,7 +102,8 @@ def run_point(model, **input_pars):
             print(obj)
 
         # make slha object 
-        slhafile,stdout = tools.get_ctypes_streams(func=SLHA,args=[obj,input_pars.get('lookup')],kwargs={})
+        slhafile,stdout = tools.get_ctypes_streams(func=SLHA,args=[obj,input_pars.get('lookup'),input_pars.get('tmp_dir')],kwargs={})
+#        slhafile=SLHA(obj,input_pars.get('lookup'),input_pars.get('tmp_dir'))
         # handle standard outs
         if slhamodule.name in input_pars['verbose']:
             print(stdout)
@@ -153,6 +165,12 @@ def run_point(model, **input_pars):
         #FIXME: needs to get something like: pred_verbose=  predictor.name in input_pars['verbose']
         # and pred_verbose as one of the options, 
         pred_verbose=(predictor.name in input_pars['verbose'])
+        if pred_verbose: 
+            verbose_true={'verbose': True }
+            if input_pars.get(predictor.name):
+                input_pars[predictor.name].update(verbose_true)
+            else:
+                input_pars[predictor.name]=verbose_true
         result, stdout = tools.get_ctypes_streams(
                 func=slhamodule.send_to_predictor,
                 args=[slhafile,input_pars.get(predictor.name),predictor, is_modifier])
