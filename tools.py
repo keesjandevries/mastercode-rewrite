@@ -44,39 +44,47 @@ def show_header(header, sub=''):
     print("* {h}{s} *".format(h=header, s=(': '+sub if sub else '')))
     print(block)
 
-def unique_str():
+def unique_filename(dir_name=None):
+    unique_string=unique_str(2)
+    if not dir_name:
+        dir_name='/tmp/'
+    unq_filename= '{}/mc-{}'.format(dir_name,unique_string)
+    print(unq_filename)
+    return unq_filename
+
+def unique_str(depth=1):
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
-    function_name=os.path.splitext(os.path.split(sys._getframe(1).f_code.co_filename)[1])[0] # to only keep the name without .py
+    function_name=os.path.splitext(os.path.split(sys._getframe(depth).f_code.co_filename)[1])[0] # to only keep the name without .py
     ustr = "{host}-{pid}-{time}-{fname}".format(host=gethostname(),
             pid=os.getpid(), time=t_now,fname=function_name)
-    print(ustr)
     return ustr
 
-def setup_pipe(reader, writer, pipe_name=None):
-    if pipe_name is None:
-        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
-    try:
-        os.mkfifo(pipe_name)
-    except OSError as e:
-        print("Failed to create FIFO: %s" % e)
-        exit()
+#def setup_pipe(reader, writer, pipe_name=None):
+#    if pipe_name is None:
+#        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
+#    try:
+#        os.mkfifo(pipe_name)
+#    except OSError as e:
+#        print("Failed to create FIFO: %s" % e)
+#        exit()
+#
+#    child_pid = os.fork()
+#    if child_pid == 0 :
+#    # child process
+#        reader(pipe_name)
+#        os._exit(child_pid)
+#    else:
+#    # parent process
+#        output = writer(pipe_name)
+#        os.unlink(pipe_name)
+#        os.waitpid(child_pid,0)
+#        return output
 
-    child_pid = os.fork()
-    if child_pid == 0 :
-    # child process
-        reader(pipe_name)
-        os._exit(child_pid)
-    else:
-    # parent process
-        output = writer(pipe_name)
-        os.unlink(pipe_name)
-        os.waitpid(child_pid,0)
-        return output
 
-
-def pipe_object_to_function(obj, function, args=[], kwargs={}, pipe_name=None):
-    if pipe_name is None:
-        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
+def pipe_object_to_function(pipe_name,obj, function, args=[], kwargs={} ):
+    #We should not use hard coded directories
+#    if pipe_name is None:
+#        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     args.insert(0,pipe_name)
     try:
         os.mkfifo(pipe_name)

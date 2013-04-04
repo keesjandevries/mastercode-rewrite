@@ -2,7 +2,7 @@
 import subprocess
 
 from ctypes import cdll,  c_char_p, create_string_buffer
-from tools import unique_str , rm 
+from tools import  rm , unique_filename
 
 
 name = "SoftSUSY"
@@ -108,7 +108,7 @@ def run(model, inputs,verbose=None):
     if verbose: print(inputslha)
 
     # then run on the inputslha file
-    fname = "/tmp/mc-{u}".format(u=unique_str())
+    fname=unique_filename(inputs.get('tmp_dir'))
     with open(fname,'w') as softpoint_input_file:
         softpoint_input_file.write(inputslha)
     with open(fname,'r') as softpoint_input_file:
