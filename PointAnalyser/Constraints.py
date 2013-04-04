@@ -30,7 +30,7 @@ Otherwise,
             print('ERROR: Provided invalid input set {0}'.format(self._ids))
             print('\tSetting chi2 to 0 for this constraint')
         except TypeError:
-            print('ERROR: Please provide dictionary that can be accessed using point[id1][id2]')
+            print('ERROR: in X^2 calulation. Please provide dictionary that can be accessed using point[(\'id1\',\'id2\')]')
             print('\tSetting chi2 to 0 for this constraint')
         else:
             try:
