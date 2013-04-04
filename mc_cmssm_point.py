@@ -24,6 +24,8 @@ def parse_args():
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity')
     parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
             default=None, help='override all_params')
+    parser.add_argument('--tmp_dir', '-t', dest='tmp_dir', action='store', type=str,
+            default=None, help='directory where temporary files get stored')
     parser.add_argument('--dataset'    , '-d', dest='data_set'  , action='store', 
             default="mc8", help='data set for X^2 calculation')
     return parser.parse_args()
@@ -53,6 +55,10 @@ if __name__=="__main__" :
     #check for command line input parameters
     if args.input_pars:
         all_params.update(eval(args.input_pars))
+
+    #check for tmp_dir
+    if args.tmp_dir:
+        all_params.update({'tmp_dir':args.tmp_dir})
         
     #check verbosity
     if args.verbose:
@@ -61,6 +67,10 @@ if __name__=="__main__" :
         slha_obj, combined_obs ,stdouts = point.run_point(model=model, **all_params)
     except TypeError:
         print("ERROR: Point failed to run")
+        exit()
+
+    if slha_obj is None:
+        print("Exiting because slha_obj is None")
         exit()
 
 
