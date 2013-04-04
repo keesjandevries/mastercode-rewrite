@@ -91,7 +91,7 @@ constraints_dict = {
             'func' : LF.gauss},
         'HiggsLEP': {   
             'oids': [('FeynHiggs', 'mh')],
-            'data': [115.0, 1.0, 1.5],
+            'data': [115.0, 1.1, 1.5],
             'func': LF.lowerlimit},
         'gminus2mu': {   
             'oids': [('FeynHiggs','gm2')],
