@@ -18,6 +18,8 @@ def parse_args():
     #WARNING: this option list is rather ad hoc
     # feel free to ammend it!
     parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--tmp_dir', '-T', dest='tmp_dir', action='store', type=str,
+            default=None, help='directory where temporary files get stored')
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', 
             nargs="+", help='verbosity', default=[])
     parser.add_argument('--output-root' , '-o', dest='root_out', action='store', 
@@ -38,6 +40,8 @@ def parse_args():
             default=False,  help='multinest parameter: resume existing jobs using parameters from multinest dir')
     parser.add_argument('--boxes', dest='boxes', action='store_true', 
             default=False,  help='RESULT ORIENTED: extract box number N from subdir_N and assign box')
+    parser.add_argument('--multinest-para-scan', dest='multinest_para_scan', action='store_true', 
+            default=False,  help='RESULT ORIENTED: test the various multinest parameters')
     return parser.parse_args()
 ##################################################
 # WARNING: RESULT ORIENTED boxes study
@@ -81,6 +85,29 @@ def get_param_ranges():
             ('mz',(91.1833,91.1917)),
             ('Delta_alpha_had',(0.02729,0.02769))
            ] )
+##################################################
+# WARNING: RESULT ORIENTED multinest parameters study
+##################################################
+#args=parse_args()
+#
+def get_multinest_parameters():
+    samplingefficiency=0.3 #DEFAULT from multinest api, tuned for 
+    nlive=args.nlive
+    tolerance=args.tolerance
+    multinest_pars=[]
+    if args.multinest_para_scan:
+        #make list of parameters
+        for eff in [0.8,0.5,0.3,0.1]:
+            for n in [100,500,100,5000,10000]:
+                for t in [0.5,0.1,0.01,0.001,0.0001]:
+                    multinest_pars.append((eff,n,t))
+        #get subdir number to select parameters from list
+        n_param=1000 # RESULT ORIENTED: Out of range!!
+        for v in args.multinest_dir.split('/'):
+            if 'subdir' in v:
+                n_param=int(v.split('_')[-1])
+        samplingefficiency, nlive, tolerance= multinest_pars[n_param]
+    return samplingefficiency, nlive , tolerance
 ##################################################
 # DEFINITIONS NEEDED inside myprior, and myloglike 
 ##################################################
@@ -136,6 +163,9 @@ def get_obs(cube,ndim):
     if 'parameters' in args.verbose : 
         print(all_params)
 
+    if args.tmp_dir:
+        all_params.update({'tmp_dir':args.tmp_dir})
+
     all_params['lookup']=lookup
     all_params['verbose']=args.verbose
     try:
@@ -179,6 +209,7 @@ if __name__=="__main__" :
                 my_seed=int(v.split('_')[-1])
 
     if not os.path.exists(args.multinest_dir): os.mkdir(args.multinest_dir)
+    samplingefficiency, nlive , tolerance = get_multinest_parameters()
     
     print(args.verbose)
     # this is where multinest is actually run
@@ -188,11 +219,11 @@ if __name__=="__main__" :
             n_dims                  = len(param_ranges),
             resume                  = args.resume, 
             verbose                 = ('multinest' in args.verbose), 
-            sampling_efficiency     = 0.3, 
-            n_live_points           = args.nlive , 
+            sampling_efficiency     = samplingefficiency, 
+            n_live_points           = nlive , 
             max_iter                = args.max_iter,
             seed                    = my_seed,
             outputfiles_basename    = '{}/'.format(args.multinest_dir),
-            evidence_tolerance      = args.tolerance)
+            evidence_tolerance      = tolerance)
     root.root_close()
     
