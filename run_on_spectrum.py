@@ -20,6 +20,8 @@ def parse_args():
     parser.add_argument('--root_save'  , '-r', dest='root_save', action='store_true', help='save to root file')
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity')
     parser.add_argument('--input_spectrum' , '-i', dest='input_spectrum', action='store', help='input spectrum file')
+    parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
+            default=None, help='override all_params')
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -28,6 +30,8 @@ if __name__=="__main__" :
     model = 'DUMMY' 
 
     all_params={'spectrumfile':args.input_spectrum }
+    if args.input_pars:
+        all_params.update(eval(args.input_pars))
 
     #check verbosity
     if args.verbose:
