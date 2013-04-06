@@ -20,6 +20,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
     parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdonw')
+    parser.add_argument('--observable-keys'  , dest='observable_keys', action='store_true', help='print X^2 breakdonw')
     parser.add_argument('--root_save'  , '-r', dest='root_save', action='store_true', help='save to root file')
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity')
     parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
@@ -108,5 +109,6 @@ if __name__=="__main__" :
         old_mc_rootstorage.write_point_to_root(combined_obs)
         root.root_close()
 
-
-
+    # print only observable keys
+    if args.observable_keys:
+        bpp.pprint([key for key in combined_obs.keys()])
