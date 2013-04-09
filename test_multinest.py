@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os, pprint, argparse, sys
+import os, pprint, argparse, sys,pickle 
 from collections import OrderedDict
 
 from Samplers.interfaces import multinest
@@ -12,6 +12,8 @@ from PointAnalyser import Constraints_list
 import Storage.interfaces.ROOT as root
 from ObsCalculator.interfaces.slhalib import SLHA
 
+from tools import unique_str
+
 from User.data_sets import data_sets
 
 def parse_args():
@@ -23,7 +25,7 @@ def parse_args():
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', 
             nargs="+", help='verbosity', default=[])
     parser.add_argument('--output-root' , '-o', dest='root_out', action='store', 
-            default='temp/test_mn.root',  help='output root file')
+            default=None,  help='output root file')
     parser.add_argument('--multinest-dir' ,   dest='multinest_dir'  , action='store', 
             default="chains", help='mulitnest parameter: directory for storing mulinest parameters ')
     parser.add_argument('--data-set'  ,  dest='data_set'  , action='store', 
@@ -44,6 +46,8 @@ def parse_args():
             default=False,  help='RESULT ORIENTED: extract box number N from subdir_N and assign box')
     parser.add_argument('--multinest-para-scan', dest='multinest_para_scan', action='store_true', 
             default=False,  help='RESULT ORIENTED: test the various multinest parameters')
+    parser.add_argument('--pickle-out', dest='pickle_out', action='store_true', 
+            default=False,  help='This is what we want. Store points to pickled dictionaries: unique_string.pkl')
     return parser.parse_args()
 ##################################################
 # WARNING: RESULT ORIENTED boxes study
@@ -100,8 +104,8 @@ def get_multinest_parameters():
     if args.multinest_para_scan:
         #make list of parameters
         for eff in [0.8,0.5,0.3,0.1]:
-            for n in [100,500,100,5000,10000]:
-                for t in [0.5,0.1,0.01,0.001,0.0001]:
+            for n in [1000,5000,10000,20000]:
+                for t in [0.001,0.0001]:
                     multinest_pars.append((eff,n,t))
         #get subdir number to select parameters from list
         n_param=1000 # RESULT ORIENTED: Out of range!!
@@ -193,15 +197,20 @@ def get_chi2(obs):
 
 
 def myloglike(cube, ndim, nparams):
-    chi2=default_chi
     obs,params=get_obs(cube,ndim)
     if obs: 
         chi2=get_chi2(obs)
-        obs[('tot_X2', 'all')]=chi2
-        rootstore.write_point_to_root(obs,params)
-    print("X^2={}".format(chi2))
-    print()
-#    else: print("ERROR: in one of the programs")
+        if args.root_out:
+            obs[('tot_X2', 'all')]=chi2
+            rootstore.write_point_to_root(obs,params)
+    else:
+        chi2=default_chi
+        obs=params
+    if args.pickle_out:
+        with open('{}/{}.pkl'.format(args.multinest_dir, unique_str()),'wb') as pickle_file:
+            pickle.dump(obs,pickle_file)
+    if 'X' in args.verbose: 
+        print("X^2={}".format(chi2))
     return -chi2
 
 
@@ -215,10 +224,12 @@ if __name__=="__main__" :
 
     if not os.path.exists(args.multinest_dir): os.mkdir(args.multinest_dir)
     samplingefficiency, nlive , tolerance = get_multinest_parameters()
-    
+
+    #print whith verbosity options were selected
+    print('SELECTED VERBOSITY OPTIONS:')
     print(args.verbose)
-    # this is where multinest is actually run
-    root.root_open(args.root_out)
+
+    #dump sampling info in the sampling file
     if not args.suppress_info:
         info="""
 nlive                   = {nlive}
@@ -237,6 +248,11 @@ parameter boundaries    =
         with open(fname,'w') as info_file:
             info_file.write(info)
 
+    #open root file before calling the sampling algorithm
+    if args.root_out:
+        root.root_open(args.root_out)
+
+    # run multinest 
     multinest.run(myloglike, 
             myprior, 
             n_dims                  = len(param_ranges),
@@ -248,5 +264,7 @@ parameter boundaries    =
             seed                    = my_seed,
             outputfiles_basename    = '{}/'.format(args.multinest_dir),
             evidence_tolerance      = tolerance)
-    root.root_close()
+    #close root file after sampling
+    if args.root_out:
+        root.root_close()
     
