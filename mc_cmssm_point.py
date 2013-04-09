@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os, sys, select, argparse, pprint, json
+import os, sys, select, argparse, pprint, json, pickle
 from collections import OrderedDict
 
 #from ObsCalculator import point
@@ -17,17 +17,19 @@ import Storage.interfaces.ROOT as root
 from Storage import old_mc_rootstorage 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser = argparse.ArgumentParser(description='Run mastercode for cmssm point')
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
-    parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdonw')
-    parser.add_argument('--observable-keys'  , dest='observable_keys', action='store_true', help='print X^2 breakdonw')
+    parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdown')
+    parser.add_argument('--observable-keys'  , dest='observable_keys', action='store_true', help='print observable keys')
+    parser.add_argument('--store-pickle'     , dest='store_pickle', action='store', type=str,
+            default=None ,help='store obervables in pickle file')
     parser.add_argument('--root_save'  , '-r', dest='root_save', action='store_true', help='save to root file')
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity')
     parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
             default=None, help='override all_params')
     parser.add_argument('--tmp_dir', '-t', dest='tmp_dir', action='store', type=str,
             default=None, help='directory where temporary files get stored')
-    parser.add_argument('--dataset'    , '-d', dest='data_set'  , action='store', 
+    parser.add_argument('--data-set'    , '-d', dest='data_set'  , action='store', 
             default="mc8", help='data set for X^2 calculation')
     return parser.parse_args()
 
@@ -112,3 +114,9 @@ if __name__=="__main__" :
     # print only observable keys
     if args.observable_keys:
         bpp.pprint([key for key in combined_obs.keys()])
+
+    # store observables to piclked file
+    if args.store_pickle:
+        with open(args.store_pickle,'wb') as pickle_file:
+            pickle.dump(combined_obs,pickle_file)
+
