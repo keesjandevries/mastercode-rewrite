@@ -2,6 +2,7 @@ def gauss(point, mu, sigma):
     x = point[0]
     return ((x-mu)/sigma)**2
 
+
 def ratio_gauss(point, mu, sigma):
     x1 = point[0]
     x2 = point[1]
@@ -25,6 +26,21 @@ def lowerlimit(point, mu, sigma):
     else:
         chi2 = 0
     return chi2
+
+def multi_lowerlimit(point, mu, sigma):
+    chi2 = 0
+    x = min(point)
+    if x < mu:
+        chi2 = gauss([x],mu,sigma)
+    else:
+        chi2 = 0
+    return chi2
+
+# other function
+def neutralino_lsp(point): # FIXME: mu and sigma are not right
+    #point[0] is the neutralino
+    return sum([ (abs(mass)-point[0])**2 for mass in point  if (abs(mass) < point[0])] )
+
 
 # contour likelihood functions
 def power_n_inv_scaling(bc, r,n):

@@ -12,9 +12,11 @@ Otherwise,
         """ 
         self._ids = ids
         self._func = func
-        if mode is 'simple':
+        if mode == 'simple':
             self._data = [data[0],sqrt(sum([d**2 for d in data[1:]]))]
-        else:
+        elif mode == 'neutralino-lsp':
+            self._data = data
+        elif mode == 'contour':
             self._data = [ Contour(*arg) for arg in data ]
             for contour in self._data:
                 assert contour.dim == len(ids)

@@ -2,6 +2,86 @@ from PointAnalyser import LikelihoodFunctions as LF
 from PointAnalyser.Constraints import Constraint
 
 constraints_dict = {
+############################# MC-OLD-ONCE HARD-CODED #########
+        'LEP-chargino':{
+            'oids': [ ('MASS', 'MCha(1)'), ('MASS', 'MCha(2)')],
+            'data': [103., 1.],
+            'func': LF.multi_lowerlimit},
+        'LEP-neutralino':{
+            'oids': [ ('MASS', 'MNeu(1)')],
+            'data': [50., 1.],
+            'func': LF.lowerlimit},
+        'LEP-slepton':{
+            'oids': [
+                ('MASS', 'MSf(1,2,1)'),#se_L
+                ('MASS', 'MSf(2,2,1)'),#se_R
+                ('MASS', 'MSf(1,2,2)'),#smu_L
+                ('MASS', 'MSf(2,2,2)'),#smu_R
+                ('MASS', 'MSf(1,2,3)'),#stau_1
+                ('MASS', 'MSf(2,2,3)'),#stau_2
+                ],
+            'data': [90., 1.],
+            'func': LF.multi_lowerlimit},
+        'LEP-sneutrino':{
+            'oids': [
+                ('MASS', 'MSf(1,2,1)'),#sneutrino_e
+                ('MASS', 'MSf(1,2,2)'),#sneutrino_mu
+                ('MASS', 'MSf(1,2,3)'),#sneutrino_tau
+                ],
+            'data': [90., 1.],
+            'func': LF.multi_lowerlimit},
+        'LEP-squark':{
+            'oids': [
+                ('MASS', 'MSf(1,3,1)'),#su_L
+                ('MASS', 'MSf(2,3,1)'),#su_R
+                ('MASS', 'MSf(1,3,2)'),#sc_L
+                ('MASS', 'MSf(2,3,2)'),#sc_R
+                ('MASS', 'MSf(1,3,3)'),#st_1
+                ('MASS', 'MSf(2,3,3)'),#st_2
+                ('MASS', 'MSf(1,4,1)'),#sd_L
+                ('MASS', 'MSf(2,4,1)'),#sd_R
+                ('MASS', 'MSf(1,4,2)'),#ss_L
+                ('MASS', 'MSf(2,4,2)'),#ss_R
+                ('MASS', 'MSf(1,4,3)'),#sb_1
+                ('MASS', 'MSf(2,4,3)'),#sb_2
+                ],
+            'data': [90., 1.],
+            'func': LF.multi_lowerlimit},
+        'neutralino-lsp':{
+            'oids': [
+                #firt index should have the neutralino
+                ('MASS', 'MNeu(1)'),   
+                #charginos
+                ('MASS', 'MCha(1)'),
+                ('MASS', 'MCha(2)'),
+                #sleptons
+                ('MASS', 'MSf(1,2,1)'),#se_L
+                ('MASS', 'MSf(2,2,1)'),#se_R
+                ('MASS', 'MSf(1,2,2)'),#smu_L
+                ('MASS', 'MSf(2,2,2)'),#smu_R
+                ('MASS', 'MSf(1,2,3)'),#stau_1
+                ('MASS', 'MSf(2,2,3)'),#stau_2
+                #sneutrinos
+                ('MASS', 'MSf(1,2,1)'),#sneutrino_e
+                ('MASS', 'MSf(1,2,2)'),#sneutrino_mu
+                ('MASS', 'MSf(1,2,3)'),#sneutrino_tau
+                #squarks
+                ('MASS', 'MSf(1,3,1)'),#su_L
+                ('MASS', 'MSf(2,3,1)'),#su_R
+                ('MASS', 'MSf(1,3,2)'),#sc_L
+                ('MASS', 'MSf(2,3,2)'),#sc_R
+                ('MASS', 'MSf(1,3,3)'),#st_1
+                ('MASS', 'MSf(2,3,3)'),#st_2
+                ('MASS', 'MSf(1,4,1)'),#sd_L
+                ('MASS', 'MSf(2,4,1)'),#sd_R
+                ('MASS', 'MSf(1,4,2)'),#ss_L
+                ('MASS', 'MSf(2,4,2)'),#ss_R
+                ('MASS', 'MSf(1,4,3)'),#sb_1
+                ('MASS', 'MSf(2,4,3)'),#sb_2
+                ],
+            'data' : [],
+            'func' : LF.neutralino_lsp, 
+            'mode' : 'neutralino-lsp' },
 ############################# NUISANCE #######################
         'Mt': {
             'oids' : [('SMINPUTS', 'Mt')],

@@ -56,6 +56,5 @@ if __name__=="__main__" :
                 point=format_ids_and_values_to_dict(ids,args.values)
                 chi2=constraint.get_chi2(point)
                 print('Constraint: ',args.constraint, ' for values: ',args.values, ', gives chi2: ', chi2)
-
-
-
+            else:
+                print('WARNING: you did not provide the correct number of input values: provide{}'.format(ids))
