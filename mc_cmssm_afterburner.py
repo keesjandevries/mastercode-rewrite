@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os, sys, select, argparse, pprint, json
+import os, sys, select, argparse, pprint, json, pickle
 from collections import OrderedDict
 
 #from ObsCalculator import point
@@ -31,12 +31,14 @@ def parse_args():
             default=None, help='override all_params')
     parser.add_argument('--nstart', '-B', dest='begin', action='store', type=int,
             default=0, help='start entry')
-    parser.add_argument('--npoints', '-N', dest='end', action='store', type=int,
+    parser.add_argument('--npoints', '-N', dest='tot_points', action='store', type=int,
             default=10, help='number of entries')
     parser.add_argument('--njump', '-J', dest='njump', action='store', type=int,
             default=1, help='number of entries to jump after sampling')
     parser.add_argument('--dataset'    , '-d', dest='data_set'  , action='store', 
             default="mc8", help='data set for X^2 calculation')
+    parser.add_argument('--pickle-in',dest='pickle_in', action='store', 
+            default=None,  help='Name of pickled file containing entry numbers')
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -49,12 +51,22 @@ if __name__=="__main__" :
     
     begin=args.begin
     step=args.njump
-    end=begin+args.end*step
+    end=begin+args.tot_points*step
     if end > rread.root_get_entries():
         end= rread.root_get_entries()
     # WARNING: this code was written in a result oriented fashion
-    for entry in range(begin,end,step):
-        if 'n' in args.verbose: print("Entry number: {0}, ({1} out of {2})".format( entry, int((entry-begin)/step)+1, int((end-begin)/step)))
+    entry_range=range(begin,end,step)
+
+    #allow that the entries come from a piclked file 
+    if args.pickle_in:
+        with open(args.pickle_in,'rb') as pickle_file:
+            entry_range=pickle.load(pickle_file)
+            if args.tot_points < len(entry_range):
+                entry_range=entry_range[:args.tot_points]
+    
+    number_points=len(entry_range)
+    for nth_entry, entry in enumerate(entry_range):
+        if 'n' in args.verbose: print("Entry number: {0}, ({1} out of {2})".format( entry, nth_entry+1, number_points))
         VARS=rread.root_read(entry)
         m0, m12, A0, tanb, mt, mz, Delta_alpha_had = [VARS[i] for i in [1,2,3,4,6,7,9]]
         all_params={
