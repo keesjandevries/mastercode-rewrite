@@ -13,7 +13,7 @@ const double Beps = 1e-5;
 // or modify this module
 
 extern "C" {
-    void run_micromegas(char slhafilename[], MicromegasPrecObs* out) {
+    int run_micromegas(char slhafilename[], MicromegasPrecObs* out) {
         double omegaMu,bsg, bll, sigppMu;
 
         // get slha file
@@ -21,6 +21,7 @@ extern "C" {
         if (error != 0) {
             std::cout << "*** Error: micromegas fail to open " <<
                 slhafilename << std::endl;//SLHAFILE
+            return error;
         }
 
         //calculate relic density
@@ -32,13 +33,13 @@ extern "C" {
         error = sortOddParticles(mess);
         if(error != 0) {
                 std::cout << "Can not calculate " << mess << std::endl;
-                return;
+                return error;
         }
 
         char lsp_label [] = "~o1";
         if(strcmp(mess,lsp_label) != 0) {
             std::cout << "~o1 is not LSP" << std::endl;
-            return;
+            return error;
         }
 
         double Xf;
@@ -50,6 +51,7 @@ extern "C" {
         if(error != 0) {
             std::cout << "! Calculation failed: no point in continuing" <<
                 std::endl;
+            return error;
         }
         // calculate sigma_p_si
         double pA0[2],pA5[2],nA0[2],nA5[2];
@@ -58,5 +60,6 @@ extern "C" {
         nucleonAmplitudes(FeScLoop, pA0,pA5,nA0,nA5);
         SCcoeff=4/M_PI*3.8937966E8*pow(Nmass*Mcdm/(Nmass+ Mcdm),2.);
         out->sigma_p_si=SCcoeff*pA0[0]*pA0[0];
+        return 0;
     }
 }

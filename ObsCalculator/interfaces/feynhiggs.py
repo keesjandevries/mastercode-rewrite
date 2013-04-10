@@ -44,4 +44,4 @@ def run(slhadata, inputs=None, update=False) :
     error = FHlib.run_feynhiggs(byref(FHout), byref(fhopts), byref(slhadata.data),
             update)
     if error: print("ERROR: FH")
-    return ctypes_field_values(FHout, name)
+    return ctypes_field_values(FHout, name, error)

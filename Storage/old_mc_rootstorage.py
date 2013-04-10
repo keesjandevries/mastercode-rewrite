@@ -154,9 +154,9 @@ def fill_VARS_2(point,VARS,params=None,model='cMSSM'):
                 for oldoid in old_oid:
                     VARS[oldoid]=point[mcpp_oid]
             except KeyError:
-                print(params,file=sys.stderr)
+                if params:  print(params,file=sys.stderr)
         except KeyError:
-            print(params,file=sys.stderr)
+            if params: print(params,file=sys.stderr)
 
     if model=='cMSSM':
         try:
@@ -164,7 +164,7 @@ def fill_VARS_2(point,VARS,params=None,model='cMSSM'):
             VARS[89]=sum([point[('MASS',squark)] for squark in ['MSf(2,3,1)','MSf(2,3,2)','MSf(2,4,1)','MSf(2,4,2)'] ] )/4. # ave over R: u,c,d,s squarks
             VARS[90]=sum([point[('MASS',squark)] for squark in ['MSf(1,3,1)','MSf(1,3,2)','MSf(1,4,1)','MSf(1,4,2)'] ] )/4. # ave over L: u,c,d,s squarks
         except KeyError:
-            print(params,file=sys.stderr)
+            if params: print(params,file=sys.stderr)
     return VARS
 
 

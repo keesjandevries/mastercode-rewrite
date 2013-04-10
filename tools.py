@@ -16,13 +16,15 @@ from collections import OrderedDict
 class c_complex(Structure):
     _fields_ = [('re', c_double), ('im', c_double)]
 
-def ctypes_field_values(obj, title):
+def ctypes_field_values(obj, title,error=None):
     d = OrderedDict([(attr, getattr(obj,attr)) for (attr, a_type) in
         obj._fields_])
     for (attr, a_type) in obj._fields_:
         if 'ctypes' in str(a_type._type_):
             c_obj = getattr(obj, attr)
             d[attr] = c_obj[:]
+    if error is not None:
+        d['error']=error
     return {(title,key):val for (key,val) in d.items() }
 
 
@@ -49,7 +51,6 @@ def unique_filename(dir_name=None):
     if not dir_name:
         dir_name='/tmp/'
     unq_filename= '{}/mc-{}'.format(dir_name,unique_string)
-    print(unq_filename)
     return unq_filename
 
 def unique_str(depth=1):

@@ -79,10 +79,11 @@ def run(slhadata, inputs=None, update=False):
     n_slha = susypopeNoneSLHA(default_inputs['non_slha_inputs'],inputs.get('non_slha_inputs'))
 
     spout = susypopeObs()
-    SPlib.run_susypope(byref(slhadata.data), byref(n_slha), byref(flags),
+    error=SPlib.run_susypope(byref(slhadata.data), byref(n_slha), byref(flags),
             byref(spout),verbose)
 #    susypope_outputs=ctypes_field_values(spout, name)
     susypope_outputs=get_relevant_observables(spout)
     susypope_outputs[(name,'GZ_in')]=n_slha.ZWidthexp
     susypope_outputs[(name,'DAlpha_had_in')]=n_slha.DeltaAlfa5had
+    susypope_outputs[(name,'error')]=error
     return susypope_outputs

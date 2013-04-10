@@ -17,4 +17,5 @@ def run(slhadata, inputs=None, update=False) :
     slhadata.write(fname)
     SIlib.run_superiso(c_char_p(fname.encode('ascii')), byref(SIout))
     rm(fname)
+    #FIXME: No error handling yet
     return ctypes_field_values(SIout, name)

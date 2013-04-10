@@ -196,31 +196,25 @@ int set_flags(susypopeFlags * flags){
 
 extern "C" {
 
-    void run_susypope(std::complex<double>* slhadata, susypopeNoneSLHA* n_slha,
+    int run_susypope(std::complex<double>* slhadata, susypopeNoneSLHA* n_slha,
         susypopeFlags* flags, susypopeObs* out, bool verbose=false) {
         int error(0);
         error = set_flags(flags);
-        if (error) std::cout << "set flags failed" << std::endl;
+        if (error) {
+            std::cout << "set flags failed" << std::endl;
+            return error;
+        }
         error = set_parameters(slhadata, n_slha, verbose);
-        if (error) std::cout << "set parameters failed" << std::endl;
+        if (error) {
+            std::cout << "set parameters failed" << std::endl;
+            return error;
+        }
         calcobs_amw_(error, out->MSSMObs, out->SMObs);
-        if (error) std::cout << "calcobs failed" << std::endl;
-
-        // extract observables in more readable terms
-//        out->MW             =  out->SMObs[0 ];
-//        out->sin_theta_eff  =  out->SMObs[26];
-//        out->Gamma_z        =  out->SMObs[10];
-//        out->Rl             =  out->SMObs[21];
-//        out->Rb             =  out->SMObs[25];
-//        out->Rc             =  out->SMObs[24];
-//        out->Afb_b          =  out->SMObs[33];
-//        out->Afb_c          =  out->SMObs[34];
-//        out->Ab          =  out->SMObs[30];
-//        out->Ac          =  out->SMObs[31];
-//        out->Al             =  out->SMObs[29];
-//        out->Afb_l          =  out->SMObs[33];
-//        out->sigma_had      =  out->SMObs[20];
-
+        if (error){ 
+            std::cout << "calcobs failed" << std::endl;
+            return error;
+        }
+        return 0;
     }
 }
 

@@ -20,6 +20,6 @@ def run(slhadata, inputs=None, update=False) :
 
     fname=unique_filename(inputs.get('tmp_dir'))
     writer(fname)
-    reader(fname)
+    error=reader(fname)
     rm(fname)
-    return ctypes_field_values(MOout, name)
+    return ctypes_field_values(MOout, name,error)

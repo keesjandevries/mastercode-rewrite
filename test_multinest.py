@@ -185,9 +185,18 @@ def get_obs(cube,ndim):
     # give parameters to the place where a problem occurs and trow it in stderr
     del all_params['lookup']
     del all_params['verbose']
-    if (not combined_obs) and ('errors' in args.verbose) : 
-        print("ERROR: error in some of the predictors")
-        print(all_params,file=sys.stderr)
+    if ('errors' in args.verbose) : 
+        any_error=False
+        if not combined_obs:
+            print("ERROR: in Spectrum Calculator",file=sys.stderr)
+            any_error=True
+        else:
+            for name in ['FeynHiggs','Micromegas','BPhysics','SUSY-POPE']:
+                if combined_obs[(name,'error')]:
+                    print('ERROR: in {}'.format(name),file=sys.stderr)
+                    any_error=True
+        if any_error:
+            print('\nParameters are: {}\n'.format(all_params),file=sys.stderr)
     return combined_obs, all_params 
 
 def get_chi2(obs):
@@ -198,14 +207,20 @@ def get_chi2(obs):
 
 def myloglike(cube, ndim, nparams):
     obs,params=get_obs(cube,ndim)
+            
     if obs: 
         chi2=get_chi2(obs)
-        if args.root_out:
-            obs[('tot_X2', 'all')]=chi2
-            rootstore.write_point_to_root(obs,params)
+        #RESULT ORIENTED: for sampling set error to default if error in one of the predictors  
+        for name in ['FeynHiggs','Micromegas','BPhysics','SUSY-POPE']:
+            if obs[(name,'error')]:
+                chi2=default_chi
+        obs[('tot_X2', 'all')]=chi2
     else:
         chi2=default_chi
         obs=params
+    # write everything to root files
+    if args.root_out:
+        rootstore.write_point_to_root(obs)
     if args.pickle_out:
         with open('{}/{}.pkl'.format(args.multinest_dir, unique_str()),'wb') as pickle_file:
             pickle.dump(obs,pickle_file)
@@ -237,10 +252,12 @@ tolerance               = {tol}
 sampling effictiency    = {eff}
 seed                    = {seed}
 resume                  = {res}
+data set                = {dataset}
 parameter boundaries    = 
 {boundaries}
         """.format(
                 nlive=nlive, tol=tolerance, eff=samplingefficiency, res=args.resume,
+                dataset=args.data_set,
                 seed=my_seed,
                 boundaries=bpp.pformat(get_param_ranges()), 
                 )
