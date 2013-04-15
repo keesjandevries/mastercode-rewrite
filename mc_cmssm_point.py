@@ -20,6 +20,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run mastercode for cmssm point')
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
     parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdown')
+    parser.add_argument('--suppress-chi2-calc' , dest='suppress_chi2_calc', action='store_true', help='suppress chi2 calculation for testing')
     parser.add_argument('--observable-keys'  , dest='observable_keys', action='store_true', help='print observable keys')
     parser.add_argument('--store-pickle'     , dest='store_pickle', action='store', type=str,
             default=None ,help='store obervables in pickle file')
@@ -76,23 +77,25 @@ if __name__=="__main__" :
         print("Exiting because slha_obj is None")
         exit()
 
-
-    all_constraints=Constraints_list.constraints
-    #mc8 data set
-    try:
-        data_set=data_sets[args.data_set]
-    except KeyError:
-        print("WARNING: \"{}\" invalid data set. No X^2 is calculated".format(args.data_set))
-        data_set=[]
+    if not args.suppress_chi2_calc:
+        all_constraints=Constraints_list.constraints
+        #mc8 data set
+        try:
+            data_set=data_sets[args.data_set]
+        except KeyError:
+            print("WARNING: \"{}\" invalid data set. No X^2 is calculated".format(args.data_set))
+            data_set=[]
     #data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
     #        'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
     #        'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
     #        'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
     #        'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
-    constraints={name: all_constraints[name] for name in data_set}
+    if not args.suppress_chi2_calc:
+        constraints={name: all_constraints[name] for name in data_set}
 
     #pass this constraints list to the chi2 function
-    total, breakdown = Analyse.chi2(combined_obs,constraints)
+    if not args.suppress_chi2_calc:
+        total, breakdown = Analyse.chi2(combined_obs,constraints)
 
     bpp = pprint.PrettyPrinter(indent=4, depth=3)
 
