@@ -21,8 +21,10 @@ def parse_args():
 if __name__=="__main__" :
     args=parse_args()
     filename=args.filename
-    lookup=SLHA().get_lookup()
-#    slhafile.read(filename,False)
+    slhafile=SLHA()
+    lookup=slhafile.get_lookup()
+    slhafile.read(filename)
+    print(slhafile[('MASS', 'Mh0')])
 #    slhafile.read(filename)
 #    for v in slhafile.data:
 #        print(v)
