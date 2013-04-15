@@ -279,6 +279,7 @@ parameter boundaries    =
             n_live_points           = nlive , 
             max_iter                = args.max_iter,
             seed                    = my_seed,
+
             outputfiles_basename    = '{}/'.format(args.multinest_dir),
             evidence_tolerance      = tolerance)
     #close root file after sampling
