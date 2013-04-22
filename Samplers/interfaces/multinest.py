@@ -91,7 +91,7 @@ def run(LogLikelihood,
 		desirable to have separate samples & mode statistics for modes 
 		with local log-evidence value greater than a
 		particular value in which case nullZ should be set to that 
-		value. If there isn't any particulrly interesting
+		value. If there isnt any particulrly interesting
 		nullZ value, then nullZ should be set to a very large negative 
 		number (e.g. -1.d90).
 		
