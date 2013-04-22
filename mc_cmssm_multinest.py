@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os, pprint, argparse, sys,pickle 
+import os, pprint, argparse, sys,pickle ,re
 from collections import OrderedDict
 
 from Samplers.interfaces import multinest
@@ -24,7 +24,7 @@ def parse_args():
             For more info see the documentation on python's argparse function.
             ''',
             formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-            fromfile_prefix_chars='@')
+            fromfile_prefix_chars='@') #FIXME: I'm not happy yet with how files are read in
     mcpp = parser.add_argument_group('mcpp arguments')
     multinest = parser.add_argument_group('multinest settings','For more info see README of Multinest')
     #mastercode specific arguments
@@ -33,7 +33,9 @@ def parse_args():
     mcpp.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', 
             nargs="+", help='verbosity, e.g. parameters, X, errors, multinest, or mcpp verbosity',default=[])
     mcpp.add_argument('--output-root' , '-o', dest='root_out', action='store', 
-            default=None,  help='output root file ')
+            default='temp/',  help='output root directory ')
+    mcpp.add_argument('--root-prefix' ,  action='store', 
+            default='cmssm-multinest-step-',  help='output root file prefix ')
     mcpp.add_argument('--suppress-mc-info', dest='suppress_info', action='store_true', 
             default=False,  help='suppress dumping the multinest parameters. Not recommended')
     mcpp.add_argument('--pickle-out', dest='pickle_out', action='store_true', 
@@ -89,6 +91,13 @@ def parse_args():
             help='relevant only if compiling with MPI')
     return parser.parse_args()
 
+def get_root_file_name(output_dir):
+    root_file_step_numbers=[ int(re.search(r'\d+', f).group()) for f in os.listdir(output_dir) if args.root_prefix in f]
+    if not len(root_file_step_numbers) == 0: 
+        current_step=max(root_file_step_numbers)+1
+    else: 
+        current_step=1
+    return '{}/{}{}.root'.format(output_dir,args.root_prefix,current_step)
 
 def get_param_ranges():
     return OrderedDict([
@@ -229,7 +238,8 @@ if __name__=="__main__" :
 
     #open root file before calling the sampling algorithm
     if args.root_out:
-        root.root_open(args.root_out)
+        if not os.path.exists(args.root_out): os.makedirs(args.root_out)
+        root.root_open(get_root_file_name(args.root_out))
 
     #run multinest
     multinest.run(LogLikelihood     = myloglike,
