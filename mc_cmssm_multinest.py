@@ -2,6 +2,7 @@
 import os, pprint, argparse, sys,pickle ,re
 from collections import OrderedDict
 
+#FIXME: use interface from github though check performance!!!!
 from Samplers.interfaces import multinest
 from ObsCalculator import point
 from Storage import old_mc_rootstorage as rootstore
