@@ -257,7 +257,7 @@ if __name__=="__main__" :
 	        n_iter_before_update    = args.n_iter_before_update, 
             null_log_evidence       = args.null_log_evidence,    #-1e90,
 	        max_modes               = args.max_modes,
-            outputfiles_basename    = '{}/'.format(args.multinest_dir),
+            outputfiles_basename    = '{}/root-'.format(args.multinest_dir), # 'root-' to get root-.txt
             seed                    = args.seed,
             verbose                 = ('multinest' in args.verbose), 
             resume                  = args.resume, 
