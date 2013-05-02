@@ -14,6 +14,7 @@ from User.data_sets import data_sets
 from PointAnalyser import Analyse
 from PointAnalyser import Constraints_list
 
+#WARNING: THIS CODE WORKS, BUT IT'S SLOW
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Fill points randomly for the moment')
@@ -22,7 +23,7 @@ def parse_args():
     parser.add_argument('--n-points','-n',  action='store', type=int, default=10000,
               help='Name of input date base file')
     parser.add_argument('--data-set'  ,  default="mc8", help='data set for X^2 calculation')
-    parser.add_argument('--root-save'  , '-r',   help='save to root file')
+    parser.add_argument('-o','--output-root',   help='root output file name', required=True )
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -40,13 +41,13 @@ if __name__=="__main__" :
         #number of points
         n_points=args.n_points
         #open root file
-        root.root_open(args.root_save)
+        root.root_open(args.output_root)
         #get observables lookuk
         lookup = sql.get_observable_ids(con,cur)    # lookup={col1: ( .. , .. ) , .... }
         #FIXME: this statement should make a sensible selection, for now just a number of points
         cur.execute('select * from points limit {}'.format(n_points))
         for row in cur:
-            point={ oid: row[col]  for col, oid in lookup.items()}
+            point={ oid: row[col]  for col, oid in lookup.items()} # this here is slow
             total, breakdown = Analyse.chi2(point,constraints)
             point[('tot_X2', 'all')]=total
             old_mc_rootstorage.write_point_to_root(point)
