@@ -3,6 +3,17 @@
 import sqlite3 , sys 
 
 # FIXME: this function is now duplicated from fill_points. Will and up in something lite mc_sql_tools.py
+def get_observable_ids(con,cur):
+    cur.execute('select point_column, obs_id_field1 , obs_id_field2 from obs_id_lookup')
+    obs_id_lookup=cur.fetchall()
+    columns=[]
+    oids={}
+    for col, id1, id2 in obs_id_lookup:
+        columns.append(col)
+        oids[col]=(id1,id2)
+    return oids
+
+#FIXME: reconsider this function in the light of sqlite2.Row
 def get_columns_and_observable_ids(con,cur):
     cur.execute('select point_column, obs_id_field1 , obs_id_field2 from obs_id_lookup')
     obs_id_lookup=cur.fetchall()
