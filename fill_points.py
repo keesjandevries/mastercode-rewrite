@@ -8,8 +8,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Fill points randomly for the moment')
     parser.add_argument('--input-file','-i', dest='input_file', action='store', 
             default='test.db',  help='Name of input date base file',required=True)
-    parser.add_argument('--pickle-in',dest='pickle_in', action='store', 
-            default=None,  help='Name of pickled file containing (a) points(s)',required=True)
+    parser.add_argument('--pickle-in',dest='pickle_in', action='store',nargs='+' ,
+              help='Name of pickled file containing (a) points(s)',required=True)
     return parser.parse_args()
 
 
@@ -39,15 +39,15 @@ def mc_points_to_rows(con,cur,points,collection_id=1):
         #The following checks whether
         #   the point contains all the information in the lookup table, 
         #   the lookup table is complete
-        try:
-            observables=[point[mc_obs_ids[col]] for col in obs_columns]
-        except KeyError:
-            #This crashes if the KeyError was caused in calling mc_obs_ids[col], which should not happend
-            print("WARNING: presumably point does not contain key {}".format(mc_obs_ids[col]))
+        observables=[]
+        for col in obs_columns:
+            observable=point.get(mc_obs_ids[col],-123456789.)
+            observables.append(observable) 
+            if observable==-123456789.:
+                print("WARNING: presumably point does not contain key {}".format(mc_obs_ids[col]))
         if len(point) > len(obs_columns):
             print("WARNING: DATABASE IS MISSING COLUMNS")
             print("         FIXME: A function is needed to take care of this")
-
         #Et voila: le point :D :D
         rows.append(tuple([collection_id]+observables))
     return rows
@@ -60,9 +60,11 @@ if __name__=="__main__" :
         con=sqlite3.connect(args.input_file)
         cur=con.cursor()
         #get point from pickles file
-        with open(args.pickle_in,'rb') as pickle_file:
-            point=pickle.load(pickle_file)
-        rows=mc_points_to_rows(con,cur,[point])
+        points=[]
+        for fname in args.pickle_in:
+            with open(fname,'rb') as pickle_file:
+                points.append(pickle.load(pickle_file))
+        rows=mc_points_to_rows(con,cur,points)
         dump_rows(con,cur,rows)
     
     # Finalise ...
