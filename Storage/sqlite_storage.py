@@ -1,10 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import sqlite3 , sys 
-
-
-
 
 # FIXME: this function is now duplicated from fill_points. Will and up in something lite mc_sql_tools.py
 def get_columns_and_observable_ids(con,cur):
