@@ -92,9 +92,60 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
     )
     return slha
 
+def get_nuhm2_input_slha(slha_params):
+    return """# INSPIRED BY: Example input in SLHA format, and suitable for input to
+# SOFTSUSY (v1.8 or higher): benchmark point - see arXiv:1109.3859
+Block MODSEL		     # Select model
+    1    1		     # sugra 
+Block SMINPUTS		     # Standard Model inputs
+    1	{alpha_inv}	     # alpha^(-1) SM MSbar(MZ)
+    2   {g_fermi}  	     # G_Fermi
+    3   {alpha_s}  	     # alpha_s(MZ) SM MSbar
+    4   {mz}	   	     # MZ(pole)
+    5	{mb}	   	     # mb(mb) SM MSbar
+    6   {mtop}	   	     # mtop(pole)
+    7	{mtau}	   	     # mtau(pole)
+Block MINPAR		     # Input parameters
+    1   {m0} 	     # m0
+    2   {m12} 	     # m12
+    3   {tanb} 	     # tanb
+    4   {sign_mu} 	     # sign(mu)
+    5   {A0} 	     # A0
+Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
+    2   1      # Quark mixing parameter: see manual
+Block EXTPAR          # non-universal SUSY breaking parameters
+    21  {mhd2}         # m^2_H_d
+    22  {mhu2}         # m^2_H_u""".format(
+    alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
+    g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
+    alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
+    mz          =slha_params[('SMINPUTS', 'MZ')       ],
+    mb          =slha_params[('SMINPUTS', 'Mb')       ],
+    mtop        =slha_params[('SMINPUTS', 'Mt')       ],
+    mtau        =slha_params[('SMINPUTS', 'Mtau')     ],
+    m0 	        =slha_params[('MINPAR', 'M0')         ],
+    m12 	    =slha_params[('MINPAR', 'M12')        ],
+    tanb 	    =slha_params[('MINPAR', 'TB')         ],
+    sign_mu     =slha_params[('MINPAR', 'signMUE')    ],
+    A0 	        =slha_params[('MINPAR', 'A')          ], 
+    prec        =slha_params[('SOFTSUSY','TOLERANCE') ],
+    mix         =slha_params[('SOFTSUSY','MIXING')    ],
+    verb        =slha_params[('SOFTSUSY','PRINTOUT')  ], 
+    qewsb       =slha_params[('SOFTSUSY','QEWSB')     ],
+    two_loop    =slha_params[('SOFTSUSY','2_LOOP')    ], 
+    n_higgs_loops=slha_params[('SOFTSUSY','numHiggsLoops')],      
+    mhd2        =slha_params[('EXTPAR', 'MHd2')       ], 
+    mhu2        =slha_params[('EXTPAR', 'MHu2')       ] 
+              )
 
+def get_nuhm1_input_slha(slha_params):
+    #NOTE: MH2 is not defined in slhalib
+    slha_params[('EXTPAR', 'MHd2')]=slha_params[('EXTPAR', 'MH2')]  
+    slha_params[('EXTPAR', 'MHu2')]=slha_params[('EXTPAR', 'MH2')]
+    return get_nuhm2_input_slha(slha_params)
 
-def run(model, inputs,verbose=None):
+def run( inputs,verbose=None):
+    model=inputs['model']
     # set inputs to default
     slha_params=default_inputs.copy()
     # update to get the parsed inputs
@@ -102,6 +153,8 @@ def run(model, inputs,verbose=None):
 
     if   model=='cMSSM':
         inputslha=get_cmssm_input_slha(slha_params)
+    elif model=='NUHM1':
+        inputslha=get_nuhm1_input_slha(slha_params)
     else:
         print("ERROR: No valid model provided")
         return "", 1

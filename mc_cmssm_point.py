@@ -37,10 +37,9 @@ def parse_args():
 if __name__=="__main__" :
     args = parse_args()
 
-    model = 'cMSSM' 
-
     all_params={
             'SoftSUSY':{
+                'model'         :       'cMSSM',
                 ('MINPAR', 'M0'):       300.53,
                 ('MINPAR', 'M12'):      905.0,
                 ('MINPAR', 'TB'):       16.26,
@@ -56,6 +55,7 @@ if __name__=="__main__" :
                     }
                 }
             }
+
     #check for command line input parameters
     if args.input_pars:
         all_params.update(eval(args.input_pars))
@@ -68,7 +68,7 @@ if __name__=="__main__" :
     if args.verbose:
         all_params['verbose']=args.verbose
     try:
-        slha_obj, combined_obs ,stdouts = point.run_point(model=model, **all_params)
+        slha_obj, combined_obs ,stdouts = point.run_point(**all_params)
     except TypeError:
         print("ERROR: Point failed to run")
         exit()

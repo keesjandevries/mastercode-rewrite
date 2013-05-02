@@ -19,7 +19,7 @@ default_predictors = default_spectrum_modifiers + [micromegas, superiso, bphysic
 
 #FIXME: model should not be a neseccarry input, since also able to run on slha
 #FIXME: want to separate input parameters (like m0, m12, Delta_Alpha_had, ... ) from options (like verbose)
-def run_point(model, **input_pars):
+def run_point( **input_pars):
     """
     run_point is the core function of MC++
     documentation is needed soon, however, there is extensive commenting already
@@ -84,7 +84,7 @@ def run_point(model, **input_pars):
         slha_gen_verbose=spectrum_generator.name in input_pars['verbose']
         # run the spectrum calculator
         (obj,err), stdout = tools.get_ctypes_streams(func=spectrum_generator.run,
-                args=[model,input_pars[spectrum_generator.name]], kwargs={'verbose':slha_gen_verbose})
+                args=[input_pars[spectrum_generator.name]], kwargs={'verbose':slha_gen_verbose})
         # print standard out 
         if slha_gen_verbose:
             print(stdout)
