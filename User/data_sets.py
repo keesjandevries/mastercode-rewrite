@@ -14,4 +14,5 @@ data_sets={
             'Rc', 'Rb',  'Rl', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu' ,
             'LEP-chargino', 'LEP-neutralino', 'LEP-slepton', 'LEP-sneutrino', 'LEP-squark','neutralino-lsp'
             ],
+'dummy':   ['Higgs125','MZ','DAlpha_had','Mt'] # one dummy observable and 3 nuisance for the moment
 }
