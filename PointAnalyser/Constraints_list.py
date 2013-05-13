@@ -246,12 +246,12 @@ constraints_dict = {
             'func': LF.gauss},
 ########################################### CONSTRAINTS FROM LIKELIHOODS ###############        
         'M0M12': {
-            'oids': [('MINPAR', 'M0'),('MINPAR', 'M12')],
+            'oids': [('MINPAR', 'M0_in'),('MINPAR', 'M12_in')],
             'data': [('PointAnalyser/m0m12.txt', 'radial', 0.95, 2,'linear')],
             'func': LF.power_4_inv_single_contour, 
             'mode': 'contour'},
         'atlas5_m0_m12': {
-            'oids': [('MINPAR', 'M0'),('MINPAR', 'M12')],
+            'oids': [('MINPAR', 'in_M0'),('MINPAR', 'in_M12')],
             'data': [('PointAnalyser/atlas_5fb_m0_m12.txt', 'radial', 0.95, 2,'linear')],
             'func': LF.power_4_inv_single_contour, 
             'mode': 'contour'},
