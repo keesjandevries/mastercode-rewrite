@@ -23,6 +23,7 @@ VARS_dict={
         ('MINPAR','in_A')       :3,
         ('MINPAR','in_TB')      :4,
         ('MINPAR','signMUE')    :5,
+        ('EXTPAR', 'in_MH2')    :[6,7],
         ('SMINPUTS','Mt')       :6,
         ('SMINPUTS','mod_MZ')   :7,
         ('SUSY-POPE', 'GZ_in')  :8,
@@ -146,25 +147,30 @@ def fill_VARS(point,VARS,model='cMSSM'):
 
 #WARNING: RESULT ORIENTED
 def fill_VARS_2(point,VARS,params=None,model='cMSSM'):
+    nuhm1=( ('EXTPAR','in_MH2') in point.keys())
     for mcpp_oid, old_oid in VARS_dict.items():
         try:
-            VARS[old_oid]=point[mcpp_oid]
+            index=old_oid
+            if nuhm1 and old_oid>5 and not mcpp_oid== ('EXTPAR','in_MH2'):index+=2
+            VARS[index]=point[mcpp_oid]
         except TypeError:
             try:
                 for oldoid in old_oid:
-                    VARS[oldoid]=point[mcpp_oid]
+                    index=oldoid
+                    if nuhm1 and oldoid>5 and not mcpp_oid== ('EXTPAR','in_MH2'):index+=2
+                    VARS[index]=point[mcpp_oid]
             except KeyError:
                 if params:  print(params,file=sys.stderr)
         except KeyError:
             if params: print(params,file=sys.stderr)
-
-    if model=='cMSSM':
-        try:
-            VARS[37]=point[('BPhysics', 'RDMs')]/point[('BPhysics', 'RDMb')]
-            VARS[89]=sum([point[('MASS',squark)] for squark in ['MSf(2,3,1)','MSf(2,3,2)','MSf(2,4,1)','MSf(2,4,2)'] ] )/4. # ave over R: u,c,d,s squarks
-            VARS[90]=sum([point[('MASS',squark)] for squark in ['MSf(1,3,1)','MSf(1,3,2)','MSf(1,4,1)','MSf(1,4,2)'] ] )/4. # ave over L: u,c,d,s squarks
-        except KeyError:
-            if params: print(params,file=sys.stderr)
+    try:
+        VARS[37+2*int(nuhm1)]=point[('BPhysics', 'RDMs')]/point[('BPhysics', 'RDMb')]
+        VARS[89+2*int(nuhm1)]=sum([point[('MASS',squark)] for squark in 
+            ['MSf(2,3,1)','MSf(2,3,2)','MSf(2,4,1)','MSf(2,4,2)'] ] )/4. # ave over R: u,c,d,s squarks
+        VARS[90+2*int(nuhm1)]=sum([point[('MASS',squark)] for squark in 
+            ['MSf(1,3,1)','MSf(1,3,2)','MSf(1,4,1)','MSf(1,4,2)'] ] )/4. # ave over L: u,c,d,s squarks
+    except KeyError:
+        if params: print(params,file=sys.stderr)
     return VARS
 
 
