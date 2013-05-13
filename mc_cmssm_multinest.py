@@ -34,7 +34,7 @@ def parse_args():
     mcpp.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', 
             nargs="+", help='verbosity, e.g. parameters, X, errors, multinest, or mcpp verbosity',default=[])
     mcpp.add_argument('--output-root' , '-o', dest='root_out', action='store', 
-            default='temp/',  help='output root directory ')
+            default='chains/',  help='output root directory ')
     mcpp.add_argument('--root-prefix' ,  action='store', 
             default='cmssm-multinest-step-',  help='output root file prefix ')
     mcpp.add_argument('--suppress-mc-info', dest='suppress_info', action='store_true', 
@@ -43,6 +43,7 @@ def parse_args():
             default=False,  help='This is what we want. Store points to pickled dictionaries: unique_string.pkl')
     mcpp.add_argument('--data-set'  ,  dest='data_set'  , action='store', 
             default="mc8", help='data set for X^2 calculation')
+    mcpp.add_argument('--model', default='cMSSM', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1'])
     mcpp.add_argument('--m0-range', action='store', nargs=2, type=float,
             default=[0.,4000.], help='parameter range: m0')
     mcpp.add_argument('--m12-range', action='store', nargs=2, type=float,
@@ -57,6 +58,8 @@ def parse_args():
             default=[91.1833,91.1917], help='parameter range: mz')
     mcpp.add_argument('--delta-alpha-had-range', action='store', nargs=2, type=float,
             default=[0.02729,0.02769], help='parameter range: delta_alpha_had')
+    mcpp.add_argument('--mh2-range', action='store', nargs=2, type=float,
+            default=[-1e7,1e7], help='parameter range: mh2 (when model=NUHM1)')
     #multinest specific arguments
     multinest.add_argument('--multinest-dir' ,     action='store', 
             default="chains", help='directory for storing mulinest parameters ')
@@ -101,7 +104,7 @@ def get_root_file_name(output_dir):
     return '{}/{}{}.root'.format(output_dir,args.root_prefix,current_step)
 
 def get_param_ranges():
-    return OrderedDict([
+    param_ranges= OrderedDict([
     ('m0',  tuple(args.m0_range)),
     ('m12', tuple(args.m12_range)),
     ('A0',  tuple(args.A0_range)),
@@ -110,6 +113,9 @@ def get_param_ranges():
     ('mz',  tuple(args.mz_range)),
     ('Delta_alpha_had',tuple(args.delta_alpha_had_range))
     ])
+    if args.model == 'NUHM1':
+        param_ranges['mh2']=tuple(args.mh2_range)
+    return param_ranges
 ##################################################
 # DEFINITIONS NEEDED inside myprior, and myloglike 
 ##################################################
@@ -134,7 +140,6 @@ def myprior(cube, ndim, nparams):
         cube[i]=(high-low)*cube[i]+low
 
 def get_obs(cube,ndim):
-    model='cMSSM'
     m0=cube[0]
     m12=cube[1]
     A0=cube[2]
@@ -142,11 +147,12 @@ def get_obs(cube,ndim):
     mt=cube[4]
     mz=cube[5]
     Delta_alpha_had=cube[6]
-
-    model = 'cMSSM' 
+    if args.model == 'NUHM1':
+        mh2=cube[7]
 
     all_params={
             'SoftSUSY':{
+                'model'         :       args.model,
                 ('MINPAR', 'M0'):       m0,
                 ('MINPAR', 'M12'):      m12,
                 ('MINPAR', 'TB'):       tanb,
@@ -162,6 +168,8 @@ def get_obs(cube,ndim):
                     }
                 }
             }
+    if args.model == 'NUHM1':
+        all_params['SoftSUSY'][('EXTPAR', 'MH2')]=mh2
     if 'parameters' in args.verbose : 
         print(all_params)
 
@@ -171,7 +179,7 @@ def get_obs(cube,ndim):
     all_params['lookup']=lookup
     all_params['verbose']=args.verbose
     try:
-        slha_obj, combined_obs, stdouts = point.run_point(model=model, **all_params)
+        slha_obj, combined_obs, stdouts = point.run_point( **all_params)
     except TypeError:
         return None
     #WARNING: this if for debugging: 
