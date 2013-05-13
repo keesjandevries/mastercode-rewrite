@@ -16,6 +16,9 @@ from User.data_sets import data_sets
 import Storage.interfaces.ROOT as root
 from Storage import old_mc_rootstorage 
 
+#pretty printer
+pp = pprint.PrettyPrinter(indent=4)
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Run mastercode for cmssm point')
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
@@ -39,12 +42,14 @@ if __name__=="__main__" :
 
     all_params={
             'SoftSUSY':{
+#                'model'         :       'NUHM1',
                 'model'         :       'cMSSM',
                 ('MINPAR', 'M0'):       300.53,
                 ('MINPAR', 'M12'):      905.0,
                 ('MINPAR', 'TB'):       16.26,
                 ('MINPAR', 'A'):        -1303.97,
                 ('SMINPUTS', 'Mt') :    173.2,
+#                ('EXTPAR','MH2') :       1,
                 },
             'mc_slha_update':{
                 ('SMINPUTS','MZ')   : 91.1876, 
@@ -85,11 +90,6 @@ if __name__=="__main__" :
         except KeyError:
             print("WARNING: \"{}\" invalid data set. No X^2 is calculated".format(args.data_set))
             data_set=[]
-    #data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
-    #        'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
-    #        'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
-    #        'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
-    #        'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
     if not args.suppress_chi2_calc:
         constraints={name: all_constraints[name] for name in data_set}
 
@@ -97,14 +97,12 @@ if __name__=="__main__" :
     if not args.suppress_chi2_calc:
         total, breakdown = Analyse.chi2(combined_obs,constraints)
 
-    bpp = pprint.PrettyPrinter(indent=4, depth=3)
 
     # optional printing
     if args.obs:
-        bpp.pprint(combined_obs)
+        pp.pprint(combined_obs)
     if args.breakdown:
-        bpp.pprint(breakdown)
-        print('Total chi2:',total)
+        Analyse.print_chi2_breakdown(combined_obs, constraints)
 
     # save to root
     if args.root_save:
@@ -116,7 +114,7 @@ if __name__=="__main__" :
 
     # print only observable keys
     if args.observable_keys:
-        bpp.pprint([key for key in combined_obs.keys()])
+        pp.pprint([key for key in combined_obs.keys()])
 
     # store observables to piclked file
     if args.store_pickle:
