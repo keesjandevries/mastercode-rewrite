@@ -31,8 +31,7 @@ def parse_args():
             help='look for ')
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', 
             nargs="+", help='verbosity', default=[])
-    parser.add_argument('--input_spectrum' , '-i', dest='input_spectrum', action='store', nargs="+",
-            default=[], help='')
+    parser.add_argument('-i','--input-spectrum' ,  nargs="+",  default=[], help='input specturm file(s)')
     return parser.parse_args()
 
 
