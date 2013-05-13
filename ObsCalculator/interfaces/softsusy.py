@@ -111,11 +111,13 @@ Block MINPAR		     # Input parameters
     3   {tanb} 	     # tanb
     4   {sign_mu} 	     # sign(mu)
     5   {A0} 	     # A0
-Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    2   1      # Quark mixing parameter: see manual
 Block EXTPAR          # non-universal SUSY breaking parameters
     21  {mhd2}         # m^2_H_d
-    22  {mhu2}         # m^2_H_u""".format(
+    22  {mhu2}         # m^2_H_u
+Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
+    1   {prec}      # Numerical precision: suggested range 10^(-3...-6)
+    2   1      # Quark mixing parameter: see manual
+    """.format(
     alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
     g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
     alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
