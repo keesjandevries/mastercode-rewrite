@@ -108,7 +108,6 @@ def run_point( **input_pars):
         if slhamodule.name in input_pars['verbose']:
             print(stdout)
         stdouts.update({slhamodule.name:stdout})
-
         
     # ======================
     # predictions start here
@@ -155,7 +154,6 @@ def run_point( **input_pars):
             predictor_output[mod_key]=val
         if 'mcspectrum' in input_pars['verbose']: 
             print(slhafile)
-
 
     # ===========================================
     # run predictors on slha file and save output
