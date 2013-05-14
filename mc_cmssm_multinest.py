@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 #FIXME: use interface from github though check performance!!!!
 from Samplers.interfaces import multinest
-from ObsCalculator import point
+from ObsCalculator import point, inputs
 from Storage import old_mc_rootstorage as rootstore
 
 from PointAnalyser import Analyse
@@ -140,6 +140,7 @@ def myprior(cube, ndim, nparams):
         cube[i]=(high-low)*cube[i]+low
 
 def get_obs(cube,ndim):
+    #FIXME: 
     m0=cube[0]
     m12=cube[1]
     A0=cube[2]
@@ -150,26 +151,12 @@ def get_obs(cube,ndim):
     if args.model == 'NUHM1':
         mh2=cube[7]
 
-    all_params={
-            'SoftSUSY':{
-                'model'         :       args.model,
-                ('MINPAR', 'M0'):       m0,
-                ('MINPAR', 'M12'):      m12,
-                ('MINPAR', 'TB'):       tanb,
-                ('MINPAR', 'A'):        A0,
-                ('SMINPUTS', 'Mt') :    mt,
-                },
-            'mc_slha_update':{
-                ('SMINPUTS','MZ')   : mz, 
-                },
-            'SUSY-POPE':{
-                'non_slha_inputs':{
-                    'DeltaAlfa5had' : Delta_alpha_had,
-                    }
-                }
-            }
+    # Get formatted input, Feel free to have a look !!!
+    if args.model == 'cMSSM':
+        all_params= inputs.get_mc_cmssm_inputs(m0,m12,tanb,A0    ,mt,mz,Delta_alpha_had)
     if args.model == 'NUHM1':
-        all_params['SoftSUSY'][('EXTPAR', 'MH2')]=mh2
+        all_params= inputs.get_mc_nuhm1_inputs(m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had)
+
     if 'parameters' in args.verbose : 
         print(all_params)
 
