@@ -27,7 +27,7 @@ def parse_args():
     parser.add_argument('--observable-keys'  , dest='observable_keys', action='store_true', help='print observable keys')
     parser.add_argument('--store-pickle'     , dest='store_pickle', action='store', type=str,
             default=None ,help='store obervables in pickle file')
-    parser.add_argument('--root_save'  , '-r', dest='root_save', action='store_true', help='save to root file')
+    parser.add_argument('--root-save'  , '-r',  help='save to root file')
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity')
     parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
             default=None, help='override all_params')
@@ -108,7 +108,7 @@ if __name__=="__main__" :
     if args.root_save:
         # NOTE: for old_mc_rootstorage, need X^2 
         combined_obs[('tot_X2','all')]=total
-        root.root_open('temp/test.root')
+        root.root_open(args.root_save)
         old_mc_rootstorage.write_point_to_root(combined_obs)
         root.root_close()
 
