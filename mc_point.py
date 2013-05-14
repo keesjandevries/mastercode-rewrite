@@ -3,7 +3,7 @@ import os, sys, select, argparse, pprint, json, pickle
 from collections import OrderedDict
 
 #from ObsCalculator import point
-from ObsCalculator import point
+from ObsCalculator import point, inputs
 from tools import  pickle_object
 
 from PointAnalyser import Analyse
@@ -35,11 +35,16 @@ def parse_args():
             default=None, help='directory where temporary files get stored')
     parser.add_argument('--data-set'    , '-d', dest='data_set'  , action='store', 
             default="mc8", help='data set for X^2 calculation')
+    parser.add_argument('--mc-cmssm', nargs=7, type=float,
+            help="Mastercode cmssm point specify: m0,m12,tanb,A0,mt,mz,Delta_alpha_had")
+    parser.add_argument('--mc-nuhm1', nargs=8, type=float,
+            help="Mastercode nuhm1 point specify: m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had")
     return parser.parse_args()
 
 if __name__=="__main__" :
     args = parse_args()
 
+    #FIXME: make option like --default-mc-cmssm
     all_params={
             'SoftSUSY':{
 #                'model'         :       'NUHM1',
@@ -60,6 +65,12 @@ if __name__=="__main__" :
                     }
                 }
             }
+
+    #this is afterburner style 
+    if args.mc_cmssm :
+        all_params=inputs.get_mc_cmssm_inputs(*(args.mc_cmssm))
+    if args.mc_nuhm1 :
+        all_params=inputs.get_mc_nuhm1_inputs(*(args.mc_nuhm1))
 
     #check for command line input parameters
     if args.input_pars:
