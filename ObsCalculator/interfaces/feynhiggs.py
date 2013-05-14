@@ -5,11 +5,12 @@ from ctypes import cdll, c_int, c_double, byref, Structure
 from tools import ctypes_field_values
 from tools import set_obj_inputs_and_defaults
 
+from ObsCalculator.interfaces.slhalib import  invalid
+
 name = "FeynHiggs"
 FHlib = cdll.LoadLibrary('packages/lib/libmcfeynhiggs.so')
 
 nslhadata = FHlib.get_nslhadata()
-
 
 default_inputs={
     'mssmpart'      :4, 
@@ -36,12 +37,30 @@ class FeynHiggsPrecObs(Structure):
             ('EDMHg', c_double), ('mh', c_double), ('mH', c_double),
             ('mA', c_double), ('mHpm', c_double)]
 
-def run(slhadata, inputs=None, update=False) :
-    assert len(slhadata) == nslhadata
-    fhopts = FeynHiggsOpts(default_inputs,inputs)
+# For NUHM1 and NUHM2, BLOCK EXTPAR had to be ignored by FeynHiggs
+# Previously, this was accomplished with a hack in FeynHiggs-2.8.7/src/SLHA/SLHARead.F
+# but we now parse the slhadata directly, so we have to set these to "invalid"
+def drop_extpar(slhafile):
+    oids=[oid for oid in slhafile.get_lookup().keys() if isinstance(oid,tuple)]
+    extpars=([oid for oid in oids if oid[0]=='EXTPAR'])
+    recovery={}
+    for extpar in extpars:
+        recovery[extpar]=slhafile[extpar]
+        slhafile[extpar]=invalid
+    return slhafile, recovery
 
+def run(slhafile, inputs=None, update=False) :
+    assert len(slhafile) == nslhadata
+    fhopts = FeynHiggsOpts(default_inputs,inputs)
+    recovery={}
+    if inputs:
+        if inputs.get('drop_extpar'):
+            slhafile, recovery=drop_extpar(slhafile)
     FHout = FeynHiggsPrecObs()
-    error = FHlib.run_feynhiggs(byref(FHout), byref(fhopts), byref(slhadata.data),
+    error = FHlib.run_feynhiggs(byref(FHout), byref(fhopts), byref(slhafile.data),
             update)
+    #If (!) extpar is dropped for running FH it has to be put back
+    for key, value in recovery.items():
+        slhafile[key]=value
     if error: print("ERROR: FH")
     return ctypes_field_values(FHout, name, error)
