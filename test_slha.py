@@ -24,7 +24,9 @@ if __name__=="__main__" :
     slhafile=SLHA()
     lookup=slhafile.get_lookup()
     slhafile.read(filename)
-    print(slhafile[('MASS', 'Mh0')])
+    oids=[oid for oid in lookup.keys() if isinstance(oid,tuple)]
+    extpars=([oid for oid in oids if oid[0]=='EXTPAR'])
+#    print(slhafile[('MASS', 'Mh0')])
 #    slhafile.read(filename)
 #    for v in slhafile.data:
 #        print(v)
@@ -41,20 +43,21 @@ if __name__=="__main__" :
 #    print(slhafile2[('SMINPUTS','Mt')])
 #    slhafile2.write('temp2.slha')
 #       print(slhafile.data_to_dict_using_variables())
-    bpp = pprint.PrettyPrinter(indent=4, depth=5)
-    bpp.pprint(lookup)
-#    bpp.pprint(slhafile2.get_lookup())
+    pp = pprint.PrettyPrinter(indent=4, depth=5)
+    pp.pprint(extpars)
+#    pp.pprint(lookup)
+#    pp.pprint(slhafile2.get_lookup())
 #    print(slhafile)
 
 #    slhafile[('MSOFT', 'MHu2')]=90.
 #    print(slhafile[('MSOFT', 'MHu2')])
-#    bpp.pprint(slhafile.process())
-#    bpp.pprint(slhafile.create_lookup())
+#    pp.pprint(slhafile.process())
+#    pp.pprint(slhafile.create_lookup())
 #    print(slhafile) 
-#    bpp.pprint(slhafile.get_oid_val_dict(Variables.get_ids(),True))
-#    bpp.pprint(slhafile.all_unambiguous_suggestions())
+#    pp.pprint(slhafile.get_oid_val_dict(Variables.get_ids(),True))
+#    pp.pprint(slhafile.all_unambiguous_suggestions())
     
-#    bpp.pprint(slhafile.process_all())
+#    pp.pprint(slhafile.process_all())
 
 
 
