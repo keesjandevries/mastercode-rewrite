@@ -59,7 +59,7 @@ def parse_args():
     mcpp.add_argument('--delta-alpha-had-range', action='store', nargs=2, type=float,
             default=[0.02729,0.02769], help='parameter range: delta_alpha_had')
     mcpp.add_argument('--mh2-range', action='store', nargs=2, type=float,
-            default=[-1e7,1e7], help='parameter range: mh2 (when model=NUHM1)')
+            default=[-2e7,2e7], help='parameter range: mh2 (when model=NUHM1),note: further than ever')
     #multinest specific arguments
     multinest.add_argument('--multinest-dir' ,     action='store', 
             default="chains", help='directory for storing mulinest parameters ')
