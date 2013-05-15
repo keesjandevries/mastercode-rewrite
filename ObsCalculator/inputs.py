@@ -45,3 +45,21 @@ def get_mc_nuhm1_inputs(m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had):
                 'drop_extpar' : True,
                 }
             }
+#NOTE: this is a first order function, only setting SoftSUSY slha input
+def get_mc_7d_pmssm_inputs(msq12,msq3,msl, M1, A, MA,tanb,mu):
+    return {
+            'SoftSUSY':{
+                'model'     :   '7dpMSSM',   
+                #values that we set equal
+                ('MC_EXTPAR','MC_Msq12') :msq12, 
+                ('MC_EXTPAR','MC_Msq3')  :msq3, 
+                ('MC_EXTPAR','MC_Msl')   :msl,       
+                ('MC_EXTPAR','MC_A')     :A,
+                #M2=2*M1, M3=6*M1
+                ('EXTPAR','M1')          :M1,
+                #Directly set
+                ('MINPAR','TB')          :tanb,
+                ('EXTPAR', 'MUE')        :mu,
+                ('EXTPAR', 'MA0')        :MA,
+                },
+            }

@@ -39,6 +39,8 @@ def parse_args():
             help="Mastercode cmssm point specify: m0,m12,tanb,A0,mt,mz,Delta_alpha_had")
     parser.add_argument('--mc-nuhm1', nargs=8, type=float,
             help="Mastercode nuhm1 point specify: m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had")
+    parser.add_argument('--mc-7dpmssm', nargs=8, type=float,
+            help="Mastercode 7dpmssm point specify: msq12,msq3,msl, M1, A, MA,tanb,mu")
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -71,6 +73,8 @@ if __name__=="__main__" :
         all_params=inputs.get_mc_cmssm_inputs(*(args.mc_cmssm))
     if args.mc_nuhm1 :
         all_params=inputs.get_mc_nuhm1_inputs(*(args.mc_nuhm1))
+    if args.mc_7dpmssm :
+        all_params=inputs.get_mc_7d_pmssm_inputs(*(args.mc_7dpmssm))
 
     #check for command line input parameters
     if args.input_pars:
