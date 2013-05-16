@@ -41,7 +41,7 @@ def parse_args():
             help="Run cmssm mc8 best fit point: m0,m12,tanb,A0,mt,mz,Delta_alpha_had") # FIXME: metavariable is stupid
     parser.add_argument('--mc-nuhm1', nargs=8, type=float,
             help="Mastercode nuhm1 point specify: m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had")
-    parser.add_argument('--mc-8d-pmssm', nargs=8, type=float,
+    parser.add_argument('--mc-pmssm8', nargs=8, type=float,
             help="Mastercode 8d pmssm point specify: msq12,msq3,msl, M1, A, MA,tanb,mu")
     return parser.parse_args()
 
@@ -77,8 +77,8 @@ if __name__=="__main__" :
         all_params=inputs.get_mc_cmssm_inputs(271.378279475, 920.368119935, 14.4499538001, -1193.57068242, 173.474173, 91.1877452551, 0.0274821578423)
     if args.mc_nuhm1 :
         all_params=inputs.get_mc_nuhm1_inputs(*(args.mc_nuhm1))
-    if args.mc_8d_pmssm :
-        all_params=inputs.get_mc_8d_pmssm_inputs(*(args.mc_8d_pmssm))
+    if args.mc_pmssm8 :
+        all_params=inputs.get_mc_pmssm8_inputs(*(args.mc_pmssm8))
 
     #check for command line input parameters
     if args.input_pars:
@@ -121,7 +121,7 @@ if __name__=="__main__" :
     if args.obs:
         pp.pprint(combined_obs)
     if args.breakdown:
-        Analyse.print_chi2_breakdown(combined_obs, constraints)
+        Analyse.print_chi2_breakdown(combined_obs, constraints,data_set)
 
     # save to root
     if args.root_save:

@@ -4,7 +4,7 @@ import argparse
 from ObsCalculator.interfaces.slhalib import SLHA, SLHAData, nslhadata, invalid, ofsetspinfo
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Pmssm 8d model from cmssm slha-file')
+    parser = argparse.ArgumentParser(description='Pmssm 8d model from cmssm slha-file, by averaging parameters from block msoft')
     parser.add_argument('filename'  ,   help='input cmssm slha file')
     return parser.parse_args()
 
@@ -53,4 +53,4 @@ if __name__=="__main__" :
     #MA
     MA=slhafile[('MASS', 'MA0')]
 
-    print('./mc_point.py --mc-8d-pmssm {} {} {} {} {} {} {} {}'.format(msq12,msq3,msl, M1, A, MA,tanb,mu))
+    print('./mc_point.py --mc-pmssm8 {} {} {} {} {} {} {} {}'.format(msq12,msq3,msl, M1, A, MA,tanb,mu))
