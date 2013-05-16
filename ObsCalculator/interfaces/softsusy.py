@@ -227,7 +227,7 @@ def get_nuhm1_input_slha(slha_params):
     slha_params[('EXTPAR', 'MHu2')]=slha_params[('EXTPAR', 'MH2')]
     return get_nuhm2_input_slha(slha_params)
 
-def get_7d_pmssm_input_slha(slha_params):
+def get_8d_pmssm_input_slha(slha_params):
     #NOTE: These variables are not defined in slhalib, therefor mark as 'MC_...'
     #First and second generation squarks
     slha_params[('EXTPAR', 'MSQ(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mqL1
@@ -274,8 +274,8 @@ def run( inputs,verbose=None):
         inputslha=get_nuhm1_input_slha(slha_params)
     elif model=='pMSSM':
         inputslha=get_pmssm_input_slha(slha_params)
-    elif model=='7dpMSSM':
-        inputslha=get_7d_pmssm_input_slha(slha_params)
+    elif model=='8d_pMSSM':
+        inputslha=get_8d_pmssm_input_slha(slha_params)
     else:
         print("ERROR: No valid model provided")
         return "", 1

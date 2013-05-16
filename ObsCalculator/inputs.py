@@ -46,10 +46,10 @@ def get_mc_nuhm1_inputs(m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had):
                 }
             }
 #NOTE: this is a first order function, only setting SoftSUSY slha input
-def get_mc_7d_pmssm_inputs(msq12,msq3,msl, M1, A, MA,tanb,mu):
+def get_mc_8d_pmssm_inputs(msq12,msq3,msl, M1, A, MA,tanb,mu):
     return {
             'SoftSUSY':{
-                'model'     :   '7dpMSSM',   
+                'model'     :   '8d_pMSSM',   
                 #values that we set equal
                 ('MC_EXTPAR','MC_Msq12') :msq12, 
                 ('MC_EXTPAR','MC_Msq3')  :msq3, 

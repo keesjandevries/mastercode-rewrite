@@ -37,12 +37,12 @@ def parse_args():
             default="mc8", help='data set for X^2 calculation')
     parser.add_argument('--mc-cmssm-default', action='store_true', 
             help="Mastercode cmssm point: m0=271.3,m12=920.3,tanb=14.4,A0=-1193.57,mt=173.47,mz=91.18774,Delta_alpha_had=0.027482")
-    parser.add_argument('--mc-cmssm', nargs=7, type=float, metavar=''
+    parser.add_argument('--mc-cmssm', nargs=7, type=float, 
             help="Run cmssm mc8 best fit point: m0,m12,tanb,A0,mt,mz,Delta_alpha_had") # FIXME: metavariable is stupid
     parser.add_argument('--mc-nuhm1', nargs=8, type=float,
             help="Mastercode nuhm1 point specify: m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had")
-    parser.add_argument('--mc-7dpmssm', nargs=8, type=float,
-            help="Mastercode 7dpmssm point specify: msq12,msq3,msl, M1, A, MA,tanb,mu")
+    parser.add_argument('--mc-8d-pmssm', nargs=8, type=float,
+            help="Mastercode 8d pmssm point specify: msq12,msq3,msl, M1, A, MA,tanb,mu")
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -77,8 +77,8 @@ if __name__=="__main__" :
         all_params=inputs.get_mc_cmssm_inputs(271.378279475, 920.368119935, 14.4499538001, -1193.57068242, 173.474173, 91.1877452551, 0.0274821578423)
     if args.mc_nuhm1 :
         all_params=inputs.get_mc_nuhm1_inputs(*(args.mc_nuhm1))
-    if args.mc_7dpmssm :
-        all_params=inputs.get_mc_7d_pmssm_inputs(*(args.mc_7dpmssm))
+    if args.mc_8d_pmssm :
+        all_params=inputs.get_mc_8d_pmssm_inputs(*(args.mc_8d_pmssm))
 
     #check for command line input parameters
     if args.input_pars:
