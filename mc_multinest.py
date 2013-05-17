@@ -42,12 +42,12 @@ def parse_args():
     mcpp.add_argument('--pickle-out', dest='pickle_out', action='store_true', 
             default=False,  help='This is what we want. Store points to pickled dictionaries: unique_string.pkl')
     mcpp.add_argument('--data-set'  ,  dest='data_set'  , action='store', 
-            default="mc8", help='data set for X^2 calculation')
+            default="pmssm_with_Oh2", help='data set for X^2 calculation')
     mcpp.add_argument('--model', default='pMSSM8', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8'])
     mcpp.add_argument('--nuisance-parameter-ranges', default='User/nuisance_parameter_ranges.json', 
-            help='json file with parameter ranges for msq12,msq3,msl,M1,A,MA,tanb,mu,mt,mz,delta_alpha_had')
+            help='json file with parameter ranges for mt,mz,delta_alpha_had')
     mcpp.add_argument('--pmssm8-ranges', default='User/pmssm8_ranges.json', 
-            help='json file with parameter ranges for msq12,msq3,msl,M1,A,MA,tanb,mu,mt,mz,delta_alpha_had')
+            help='json file with parameter ranges for msq12,msq3,msl,M1,A,MA,tanb,mu')
     #multinest specific arguments
     multinest.add_argument('--multinest-dir' ,     action='store', 
             default="chains", help='directory for storing mulinest parameters ')
@@ -130,8 +130,8 @@ def myprior(cube, ndim, nparams):
 
 def get_obs(cube,ndim):
     #make a python list out of the cube
-    parameter=[cube[i] for i in range(ndim)]
-    # Get formatted input. See what is looks like with option "-v parameters"  
+    parameters=[cube[i] for i in range(ndim)]
+    # Get formatted input. See what is looks like with option "-v inputs"  
 #    if args.model == 'cMSSM':
 #        all_params= inputs.get_mc_cmssm_inputs(*parameters)
 #    if args.model == 'NUHM1':
@@ -139,7 +139,10 @@ def get_obs(cube,ndim):
     if args.model == 'pMSSM8':
         all_params= inputs.get_mc_pmssm8_inputs(*parameters)
 
-    if 'parameters' in args.verbose : 
+    if 'parameters' in args.verbose:
+        print(*parameters)
+
+    if 'inputs' in args.verbose : 
         print(all_params)
 
     if args.tmp_dir:
