@@ -41,8 +41,8 @@ def parse_args():
             help="Run cmssm mc8 best fit point: m0,m12,tanb,A0,mt,mz,Delta_alpha_had") # FIXME: metavariable is stupid
     parser.add_argument('--mc-nuhm1', nargs=8, type=float,
             help="Mastercode nuhm1 point specify: m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had")
-    parser.add_argument('--mc-pmssm8', nargs=8, type=float,
-            help="Mastercode 8d pmssm point specify: msq12,msq3,msl, M1, A, MA,tanb,mu")
+    parser.add_argument('--mc-pmssm8', nargs=11, type=float,
+            help="Mastercode 8d pmssm point specify: msq12,msq3,msl, M1, A, MA,tanb,mu,mt,mz,Delta_alpha_had")
     return parser.parse_args()
 
 if __name__=="__main__" :
