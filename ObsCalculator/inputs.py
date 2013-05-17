@@ -46,7 +46,7 @@ def get_mc_nuhm1_inputs(m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had):
                 }
             }
 #NOTE: this is a first order function, only setting SoftSUSY slha input
-def get_mc_pmssm8_inputs(msq12,msq3,msl, M1, A, MA,tanb,mu):
+def get_mc_pmssm8_inputs(msq12,msq3,msl, M1, A, MA,tanb,mu,mt,mz,Delta_alpha_had):
     return {
             'SoftSUSY':{
                 'model'     :   'pMSSM8',   
@@ -61,5 +61,15 @@ def get_mc_pmssm8_inputs(msq12,msq3,msl, M1, A, MA,tanb,mu):
                 ('MINPAR','TB')          :tanb,
                 ('EXTPAR', 'MUE')        :mu,
                 ('EXTPAR', 'MA0')        :MA,
+                #And the top mass
+                ('SMINPUTS', 'Mt') :    mt,
+                },
+            'mc_slha_update':{
+                ('SMINPUTS','MZ')   : mz, 
+                },
+            'SUSY-POPE':{
+                'non_slha_inputs':{
+                    'DeltaAlfa5had' : Delta_alpha_had,
+                    }
                 },
             }
