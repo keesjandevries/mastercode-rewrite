@@ -48,27 +48,6 @@ def parse_args():
 if __name__=="__main__" :
     args = parse_args()
 
-    #FIXME: make option like --default-mc-cmssm
-    all_params={
-            'SoftSUSY':{
-#                'model'         :       'NUHM1',
-                'model'         :       'cMSSM',
-                ('MINPAR', 'M0'):       300.53,
-                ('MINPAR', 'M12'):      905.0,
-                ('MINPAR', 'TB'):       16.26,
-                ('MINPAR', 'A'):        -1303.97,
-                ('SMINPUTS', 'Mt') :    173.2,
-#                ('EXTPAR','MH2') :       1,
-                },
-            'mc_slha_update':{
-                ('SMINPUTS','MZ')   : 91.1876, 
-                },
-            'SUSY-POPE':{
-                'non_slha_inputs':{
-                    'DeltaAlfa5had' : 0.02759,
-                    }
-                }
-            }
 
     #this is afterburner style 
     if args.mc_cmssm :
