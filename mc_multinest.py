@@ -43,23 +43,11 @@ def parse_args():
             default=False,  help='This is what we want. Store points to pickled dictionaries: unique_string.pkl')
     mcpp.add_argument('--data-set'  ,  dest='data_set'  , action='store', 
             default="mc8", help='data set for X^2 calculation')
-    mcpp.add_argument('--model', default='cMSSM', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8'])
-    mcpp.add_argument('--m0-range', action='store', nargs=2, type=float,
-            default=[0.,4000.], help='parameter range: m0')
-    mcpp.add_argument('--m12-range', action='store', nargs=2, type=float,
-            default=[0.,4000.], help='parameter range: m12')
-    mcpp.add_argument('--A0-range', action='store', nargs=2, type=float,
-            default=[-5000.,5000.], help='parameter range: A0')
-    mcpp.add_argument('--tanb-range', action='store', nargs=2, type=float,
-            default=[1.,62.], help='parameter range: tanb')
-    mcpp.add_argument('--mt-range', action='store', nargs=2, type=float,
-            default=[171.4,175], help='parameter range: mt')
-    mcpp.add_argument('--mz-range', action='store', nargs=2, type=float,
-            default=[91.1833,91.1917], help='parameter range: mz')
-    mcpp.add_argument('--delta-alpha-had-range', action='store', nargs=2, type=float,
-            default=[0.02729,0.02769], help='parameter range: delta_alpha_had')
-    mcpp.add_argument('--mh2-range', action='store', nargs=2, type=float,
-            default=[-2e7,2e7], help='parameter range: mh2 (when model=NUHM1),note: further than ever')
+    mcpp.add_argument('--model', default='pMSSM8', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8'])
+    mcpp.add_argument('--nuisance-parameter-ranges', default='User/nuisance_parameter_ranges.json', 
+            help='json file with parameter ranges for msq12,msq3,msl,M1,A,MA,tanb,mu,mt,mz,delta_alpha_had')
+    mcpp.add_argument('--pmssm8-ranges', default='User/pmssm8_ranges.json', 
+            help='json file with parameter ranges for msq12,msq3,msl,M1,A,MA,tanb,mu,mt,mz,delta_alpha_had')
     #multinest specific arguments
     multinest.add_argument('--multinest-dir' ,     action='store', 
             default="chains", help='directory for storing mulinest parameters ')
@@ -104,33 +92,18 @@ def get_root_file_name(output_dir):
     return '{}/{}{}.root'.format(output_dir,args.root_prefix,current_step)
 
 def get_param_ranges():
-    if args.model in ['cMSSM','NUHM1'] :
-        param_ranges= OrderedDict([
-        ('m0',  tuple(args.m0_range)),
-        ('m12', tuple(args.m12_range)),
-        ('A0',  tuple(args.A0_range)),
-        ('tanb',tuple(args.tanb_range)), # softsusy only takes tanb>=1.
-        ('mt',  tuple(args.mt_range)),
-        ('mz',  tuple(args.mz_range)),
-        ('Delta_alpha_had',tuple(args.delta_alpha_had_range))
-        ])
-    if args.model == 'NUHM1':
-        param_ranges['mh2']=tuple(args.mh2_range)
+    with open(args.nuisance_parameter_ranges,'r') as f:
+        nuisance_parameter_ranges=json.load(f)
     if args.model == 'pMSSM8':
-        #FIXME: this needs revision
-        with open('User/pmssm_ranges.json','r') as f:
+        with open(args.pmssm8_ranges,'r') as f:
             pmssm8_ranges=json.load(f)
-#        msq12,msq3,msl, M1, A, MA,tanb,mu
-        param_ranges= OrderedDict([(name, pmssm8_ranges[name]) for name in ['msq12','msq3','msl', 'M1', 'A']])
-#        ('msq12',   tuple(args.msq12_range)),
-#        ('msq3',    tuple(args.msq3_range)),
-#        ('msl',     tuple(args.msl_range)),
-#        ('M1',      tuple(args.M1_range)), # softsusy only takes M1>=1.
-#        ('A',       tuple(args.A_range)),
-#        ('MA',      tuple(args.MA_range)),
-#        ('tanb',    tuple(args.delta_alpha_had_range)),
-#        ('mu',      tuple(args.delta_alpha_had_range)),
-#        ])
+        pmssm8_ranges.update(nuisance_parameter_ranges)
+        #The order here should match that of inputs.get_mc_pmssm8_inputs(... )
+        #FIXME: there must be a better way of doing this
+        param_ranges= OrderedDict([(name, pmssm8_ranges[name]) for name in 
+            ['msq12','msq3','msl', 'M1', 'A','MA','tanb','mu','mt','mz','delta_alpha_had']])
+        #FIXME: may want to have mt, mz, delta_alpha_had seperate
+    # don't use cMSSM and NUHM1 for the moment
     return param_ranges
 ##################################################
 # DEFINITIONS NEEDED inside myprior, and myloglike 
@@ -156,24 +129,15 @@ def myprior(cube, ndim, nparams):
         cube[i]=(high-low)*cube[i]+low
 
 def get_obs(cube,ndim):
-    #FIXME: 
-    m0=cube[0]
-    m12=cube[1]
-    A0=cube[2]
-    tanb=cube[3]
-    mt=cube[4]
-    mz=cube[5]
-    Delta_alpha_had=cube[6]
-    if args.model == 'NUHM1':
-        mh2=cube[7]
-
-    # Get formatted input, Feel free to have a look !!!
-    if args.model == 'cMSSM':
-        all_params= inputs.get_mc_cmssm_inputs(m0,m12,tanb,A0    ,mt,mz,Delta_alpha_had)
-    if args.model == 'NUHM1':
-        all_params= inputs.get_mc_nuhm1_inputs(m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had)
+    #make a python list out of the cube
+    parameter=[cube[i] for i in range(ndim)]
+    # Get formatted input. See what is looks like with option "-v parameters"  
+#    if args.model == 'cMSSM':
+#        all_params= inputs.get_mc_cmssm_inputs(*parameters)
+#    if args.model == 'NUHM1':
+#        all_params= inputs.get_mc_nuhm1_inputs(*parameters)
     if args.model == 'pMSSM8':
-        all_params= inputs.get_mc_pmssm8_inputs(cube[0],cube[1],cube[2],cube[3],cube[4],1417.42496, 14.4499538, 1309.6731)
+        all_params= inputs.get_mc_pmssm8_inputs(*parameters)
 
     if 'parameters' in args.verbose : 
         print(all_params)
