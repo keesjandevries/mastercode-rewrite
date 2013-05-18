@@ -35,8 +35,8 @@ def parse_args():
             nargs="+", help='verbosity, e.g. parameters, X, errors, multinest, or mcpp verbosity',default=[])
     mcpp.add_argument('--output-root' , '-o', dest='root_out', action='store', 
             default='chains/',  help='output root directory ')
-    mcpp.add_argument('--root-prefix' ,  action='store', 
-            default='cmssm-multinest-step-',  help='output root file prefix ')
+#    mcpp.add_argument('--root-prefix' ,  action='store', 
+#            default='cmssm-multinest-step-',  help='output root file prefix ')
     mcpp.add_argument('--suppress-mc-info', dest='suppress_info', action='store_true', 
             default=False,  help='suppress dumping the multinest parameters. Not recommended')
     mcpp.add_argument('--pickle-out', dest='pickle_out', action='store_true', 
@@ -84,12 +84,13 @@ def parse_args():
     return parser.parse_args()
 
 def get_root_file_name(output_dir):
-    root_file_step_numbers=[ int(re.search(r'\d+', f).group()) for f in os.listdir(output_dir) if args.root_prefix in f]
+    root_prefix='{}-mn-step-'.format(args.model)
+    root_file_step_numbers=[ int(re.search(r'\d+', f).group()) for f in os.listdir(output_dir) if root_prefix in f]
     if not len(root_file_step_numbers) == 0: 
         current_step=max(root_file_step_numbers)+1
     else: 
         current_step=1
-    return '{}/{}{}.root'.format(output_dir,args.root_prefix,current_step)
+    return '{}/{}{}.root'.format(output_dir,root_prefix,current_step)
 
 def get_param_ranges():
     with open(args.nuisance_parameter_ranges,'r') as f:
@@ -193,7 +194,8 @@ def myloglike(cube, ndim, nparams):
         obs=params
     # write everything to root files
     if args.root_out:
-        rootstore.write_point_to_root(obs)
+        VARS=rootstore.get_VARS(obs, args.model)
+        root.root_write(VARS)
     if args.pickle_out:
         with open('{}/{}.pkl'.format(args.multinest_dir, unique_str()),'wb') as pickle_file:
             pickle.dump(obs,pickle_file)
