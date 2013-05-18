@@ -69,9 +69,11 @@ if __name__=="__main__" :
     for nth_entry, entry in enumerate(entry_range):
         if 'n' in args.verbose: print("Entry number: {0}, ({1} out of {2})".format( entry, nth_entry+1, number_points))
         VARS=rread.root_read(entry)
-        m0, m12, A0, tanb, mt, mz, Delta_alpha_had = [VARS[i] for i in [1,2,3,4,6,7,9]]
+        #model dependent lookup of observables
         if args.model == 'cMSSM':
+            m0, m12, A0, tanb, mt, mz, Delta_alpha_had = [VARS[i] for i in [1,2,3,4,6,7,9]]
             all_params=inputs.get_mc_cmssm_inputs(m0,m12,tanb,A0,mt,mz,Delta_alpha_had )
+
         #check for command line input parameters
         if args.input_pars:
             all_params.update(eval(args.input_pars))
@@ -108,7 +110,7 @@ if __name__=="__main__" :
         # save to root
         point[('tot_X2','all')]=total
         #WARNING: the following is extremetly result oriented
-        VARS=VARS[:74]+VARS[-35:]
+        VARS=VARS[:74]+VARS[-35:]   # FIXME: This should be dealt with using old_mc_rootstorage :)
         VARSOUT=old_mc_rootstorage.get_VARS(point,point[('m', 'in_o')])
         ab_root.root_write(VARS,VARSOUT)
 
