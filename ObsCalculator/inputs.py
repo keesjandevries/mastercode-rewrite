@@ -45,7 +45,7 @@ def get_mc_nuhm1_inputs(m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had):
                 'drop_extpar' : True,
                 }
             }
-#NOTE: this is a first order function, only setting SoftSUSY slha input
+
 def get_mc_pmssm8_inputs(msq12,msq3,msl, M1, A, MA,tanb,mu,mt,mz,Delta_alpha_had):
     return {
             'SoftSUSY':{
