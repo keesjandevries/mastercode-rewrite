@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument('--store-pickle'     , dest='store_pickle', action='store', type=str,
             default=None ,help='store obervables in pickle file')
     parser.add_argument('--root-save'  , '-r',  help='save to root file')
-    parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity')
+    parser.add_argument('--verbose'    , '-v', dest='verbose'  , default=[], action='store', nargs="+", help='verbosity')
     parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
             default=None, help='override all_params')
     parser.add_argument('--tmp_dir', '-t', dest='tmp_dir', action='store', type=str,
@@ -73,6 +73,9 @@ if __name__=="__main__" :
     #check for tmp_dir
     if args.tmp_dir:
         all_params.update({'tmp_dir':args.tmp_dir})
+    #print inputs like  
+    if 'inputs' in args.verbose : 
+        print(all_params)
         
     #check verbosity
     if args.verbose:
