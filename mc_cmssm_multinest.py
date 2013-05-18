@@ -20,7 +20,7 @@ from User.data_sets import data_sets
 def parse_args():
     # feel free to ammend it!
     parser = argparse.ArgumentParser(
-            description='''Run mcpp with multinest.
+            description='''WARNING: SOON TO BE REPLACED BY \"mc_multinest.py\". Run mcpp with multinest.
             Note you can set using files like this: "./test_multinest.py @command_line_options.txt".
             For more info see the documentation on python's argparse function.
             ''',
@@ -208,7 +208,8 @@ def myloglike(cube, ndim, nparams):
         obs=params
     # write everything to root files
     if args.root_out:
-        rootstore.write_point_to_root(obs)
+         VARS=rootstore.get_VARS(obs, args.model)
+         root.root_write(VARS)
     if args.pickle_out:
         with open('{}/{}.pkl'.format(args.multinest_dir, unique_str()),'wb') as pickle_file:
             pickle.dump(obs,pickle_file)
