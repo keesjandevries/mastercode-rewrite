@@ -130,9 +130,10 @@ spectrum_array_ids={
         ('MASS', 'MHp'): 33,
         }
 
-# WARING: THIS FUNCTION IS BETTER THAN THOSE ABOVE, BUT SHOULD STILL BE REPLACED ASAP
-# THIS IS RESULT ORIENTED
-# It reproduces the hardcoded order of observables as it was done in mc-old :(
+#WARNING: THIS FUNCTIONALITY IS SOON TO BE REPLACED
+#THIS IS THE OLD WAY OF STORING OBSERVALBES TO ROOT FILES
+#UNFORTUNATLY NOT ALL THE ANALYSIS TOOLS ARE READY FOR A NEW FORMAT YET
+#HENCE THIS STUPID WAY OF DOING IT
 def get_VARS(point,model):
     # VARS=[X2, parameters, nuisance parameters, predictions, spectrum]
     # following the relative numbering scheme as defined above :(
