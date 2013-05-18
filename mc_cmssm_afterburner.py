@@ -3,7 +3,7 @@ import os, sys, select, argparse, pprint, json, pickle
 from collections import OrderedDict
 
 #from ObsCalculator import point
-from ObsCalculator import point
+from ObsCalculator import point, inputs
 from tools import  pickle_object
 
 from PointAnalyser import Analyse
@@ -39,6 +39,7 @@ def parse_args():
             default="mc8", help='data set for X^2 calculation')
     parser.add_argument('--pickle-in',dest='pickle_in', action='store', 
             default=None,  help='Name of pickled file containing entry numbers')
+    parser.add_argument('--model', default='cMSSM', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8'])
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -69,23 +70,8 @@ if __name__=="__main__" :
         if 'n' in args.verbose: print("Entry number: {0}, ({1} out of {2})".format( entry, nth_entry+1, number_points))
         VARS=rread.root_read(entry)
         m0, m12, A0, tanb, mt, mz, Delta_alpha_had = [VARS[i] for i in [1,2,3,4,6,7,9]]
-        all_params={
-                'SoftSUSY':{
-                    ('MINPAR', 'M0'):       m0,
-                    ('MINPAR', 'M12'):      m12,
-                    ('MINPAR', 'TB'):       tanb,
-                    ('MINPAR', 'A'):        A0,
-                    ('SMINPUTS', 'Mt') :    mt,
-                    },
-                'mc_slha_update':{
-                    ('SMINPUTS','MZ')   : mz, 
-                    },
-                'SUSY-POPE':{
-                    'non_slha_inputs':{
-                        'DeltaAlfa5had' : Delta_alpha_had,
-                        }
-                    }
-                }
+        if args.model == 'cMSSM':
+            all_params=inputs.get_mc_cmssm_inputs(m0,m12,tanb,A0,mt,mz,Delta_alpha_had )
         #check for command line input parameters
         if args.input_pars:
             all_params.update(eval(args.input_pars))
@@ -94,7 +80,7 @@ if __name__=="__main__" :
         if args.verbose:
             all_params['verbose']=args.verbose
         try:
-            slha_obj, combined_obs ,stdouts = point.run_point(model=model, **all_params)
+            slha_obj, point ,stdouts = point.run_point(model=model, **all_params)
         except TypeError:
             print("ERROR: Point failed to run")
             continue
@@ -108,22 +94,23 @@ if __name__=="__main__" :
             data_set=[]
         constraints={name: all_constraints[name] for name in data_set}
         #pass this constraints list to the chi2 function
-        total, breakdown = Analyse.chi2(combined_obs,constraints)
+        total, breakdown = Analyse.chi2(point,constraints)
 
         bpp = pprint.PrettyPrinter(indent=4, depth=3)
 
         # optional printing
         if args.obs:
-            bpp.pprint(combined_obs)
+            bpp.pprint(point)
         if args.breakdown:
             bpp.pprint(breakdown)
             print('Total chi2:',total)
 
         # save to root
-        combined_obs[('tot_X2','all')]=total
+        point[('tot_X2','all')]=total
         #WARNING: the following is extremetly result oriented
-        VARS=VARS[:74]+VARS[-34:]
-        old_mc_rootstorage.write_in_out_to_ab_root(VARS,combined_obs)
+        VARS=VARS[:74]+VARS[-35:]
+        VARSOUT=old_mc_rootstorage.get_VARS(point,point[('m', 'in_o')])
+        ab_root.root_write(VARS,VARSOUT)
 
     # close root files after for loop
     rread.root_close()
