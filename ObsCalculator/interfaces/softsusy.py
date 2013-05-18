@@ -140,13 +140,128 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
     mhu2        =slha_params[('EXTPAR', 'MHu2')       ] 
               )
 
+def get_pmssm_input_slha(slha_params):
+    #FIXME: maybe want to plugin the BLOCK SOFTSUSY again
+    slha="""#
+Block MODSEL		     # Select model
+    1    0		     # non universal
+Block SMINPUTS		     # Standard Model inputs
+    1	{alpha_inv}	     # alpha^(-1) SM MSbar(MZ)
+    2   {g_fermi}  	     # G_Fermi
+    3   {alpha_s}  	     # alpha_s(MZ) SM MSbar
+    4   {mz}	   	     # MZ(pole)
+    5	{mb}	   	     # mb(mb) SM MSbar
+    6   {mtop}	   	     # mtop(pole)
+    7	{mtau}	   	     # mtau(pole)
+Block MINPAR		     # Input parameters
+    3   {tanb}	     # tanb
+Block EXTPAR          # non-universal SUSY breaking parameters
+      0   -1.000000000000000e+00	 # Set MX=MSUSY 
+      1  {M_1}         # M_1(MX)
+      2  {M_2}         # M_2(MX)
+      3  {M_3}         # M_3(MX)
+     11  {At}         # At(MX)
+     12  {Ab}         # Ab(MX)
+     13  {Atau}         # Atau(MX)
+     23  {mu}         # mu(MX)
+     26  {mA}         # mA(pole)
+     31  {meL}         # meL(MX)
+     32  {mmuL}         # mmuL(MX)
+     33  {mtauL}         # mtauL(MX)
+     34  {meR}         # meR(MX)
+     35  {mmuR}         # mmuR(MX)
+     36  {mtauR}         # mtauR(MX)
+     41  {mqL1}         # mqL1(MX)
+     42  {mqL2}         # mqL2(MX)
+     43  {mqL3}         # mqL3(MX)
+     44  {muR}         # muR(MX)
+     45  {mcR}         # mcR(MX)
+     46  {mtR}         # mtR(MX)
+     47  {mdR}         # mdR(MX)
+     48  {msR}         # msR(MX)
+     49  {mbR}         # mbR(MX)""".format(
+    alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
+    g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
+    alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
+    mz          =slha_params[('SMINPUTS', 'MZ')       ],
+    mb          =slha_params[('SMINPUTS', 'Mb')       ],
+    mtop        =slha_params[('SMINPUTS', 'Mt')       ],
+    mtau        =slha_params[('SMINPUTS', 'Mtau')     ],
+    tanb 	    =slha_params[('MINPAR', 'TB')         ],
+    prec        =slha_params[('SOFTSUSY','TOLERANCE') ],
+    mix         =slha_params[('SOFTSUSY','MIXING')    ],
+    verb        =slha_params[('SOFTSUSY','PRINTOUT')  ], 
+    qewsb       =slha_params[('SOFTSUSY','QEWSB')     ],
+    two_loop    =slha_params[('SOFTSUSY','2_LOOP')    ], 
+    n_higgs_loops=slha_params[('SOFTSUSY','numHiggsLoops')],      
+    M_1         =slha_params[('EXTPAR', 'M1')         ],  
+    M_2         =slha_params[('EXTPAR', 'M2')         ],   
+    M_3         =slha_params[('EXTPAR', 'M3')         ],  
+    At          =slha_params[('EXTPAR', 'Atau')       ],  
+    Ab          =slha_params[('EXTPAR', 'At')         ],  
+    Atau        =slha_params[('EXTPAR', 'Ab')         ],  
+    mu          =slha_params[('EXTPAR', 'MUE')        ],  
+    mA          =slha_params[('EXTPAR', 'MA0')        ],  
+    meL         =slha_params[('EXTPAR', 'MSL(1)')     ],        
+    mmuL        =slha_params[('EXTPAR', 'MSL(2)')     ],        
+    mtauL       =slha_params[('EXTPAR', 'MSL(3)')     ],        
+    meR         =slha_params[('EXTPAR', 'MSE(1)')     ],        
+    mmuR        =slha_params[('EXTPAR', 'MSE(2)')     ],        
+    mtauR       =slha_params[('EXTPAR', 'MSE(3)')     ],        
+    mqL1        =slha_params[('EXTPAR', 'MSQ(1)')     ],        
+    mqL2        =slha_params[('EXTPAR', 'MSQ(2)')     ],        
+    mqL3        =slha_params[('EXTPAR', 'MSQ(3)')     ],        
+    muR         =slha_params[('EXTPAR', 'MSU(1)')     ],        
+    mcR         =slha_params[('EXTPAR', 'MSU(2)')     ],        
+    mtR         =slha_params[('EXTPAR', 'MSU(3)')     ],        
+    mdR         =slha_params[('EXTPAR', 'MSD(1)')     ],        
+    msR         =slha_params[('EXTPAR', 'MSD(2)')     ],                 
+    mbR         =slha_params[('EXTPAR', 'MSD(3)')     ]        
+    )
+    return slha
+
 def get_nuhm1_input_slha(slha_params):
     #NOTE: MH2 is not defined in slhalib
+    #FIXME: for this reason maybe should also mark these 'MC_EXTPAR','MC_MH2'
     slha_params[('EXTPAR', 'MHd2')]=slha_params[('EXTPAR', 'MH2')]  
     slha_params[('EXTPAR', 'MHu2')]=slha_params[('EXTPAR', 'MH2')]
     return get_nuhm2_input_slha(slha_params)
 
-def run( inputs,verbose=None):
+def get_pmssm8_input_slha(slha_params):
+    #NOTE: These variables are not defined in slhalib, therefor mark as 'MC_...'
+    #First and second generation squarks
+    slha_params[('EXTPAR', 'MSQ(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mqL1
+    slha_params[('EXTPAR', 'MSQ(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mqL2
+    slha_params[('EXTPAR', 'MSU(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # muR 
+    slha_params[('EXTPAR', 'MSU(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mcR 
+    slha_params[('EXTPAR', 'MSD(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mdR 
+    slha_params[('EXTPAR', 'MSD(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # msR          
+    #Third generation squarks
+    slha_params[('EXTPAR', 'MSU(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mtR 
+    slha_params[('EXTPAR', 'MSD(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mbR 
+    slha_params[('EXTPAR', 'MSQ(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mqL3
+    #All sleptons degenerate
+    slha_params[('EXTPAR', 'MSL(1)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  meL    
+    slha_params[('EXTPAR', 'MSL(2)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mmuL   
+    slha_params[('EXTPAR', 'MSL(3)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mtauL  
+    slha_params[('EXTPAR', 'MSE(1)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  meR    
+    slha_params[('EXTPAR', 'MSE(2)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mmuR   
+    slha_params[('EXTPAR', 'MSE(3)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mtauR  
+    #Gaugino masses: following Matts e-mail
+    slha_params[('EXTPAR', 'M1')    ]= slha_params[('EXTPAR','M1')]
+    slha_params[('EXTPAR', 'M2')    ]= 2*slha_params[('EXTPAR','M1')]
+    slha_params[('EXTPAR', 'M3')    ]= 6*slha_params[('EXTPAR','M1')]
+    #Trilinear coupling the same
+    slha_params[('EXTPAR', 'Atau')  ]= slha_params[('MC_EXTPAR','MC_A')]
+    slha_params[('EXTPAR', 'At')    ]= slha_params[('MC_EXTPAR','MC_A')]
+    slha_params[('EXTPAR', 'Ab')    ]= slha_params[('MC_EXTPAR','MC_A')]
+    return get_pmssm_input_slha(slha_params)
+
+
+
+                                        
+                                        
+def run( inputs,verbose=None):          
     model=inputs['model']
     # set inputs to default
     slha_params=default_inputs.copy()
@@ -157,6 +272,10 @@ def run( inputs,verbose=None):
         inputslha=get_cmssm_input_slha(slha_params)
     elif model=='NUHM1':
         inputslha=get_nuhm1_input_slha(slha_params)
+    elif model=='pMSSM':
+        inputslha=get_pmssm_input_slha(slha_params)
+    elif model=='pMSSM8':
+        inputslha=get_pmssm8_input_slha(slha_params)
     else:
         print("ERROR: No valid model provided")
         return "", 1

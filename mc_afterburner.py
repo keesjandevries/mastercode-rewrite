@@ -1,9 +1,9 @@
 #! /usr/bin/env python
-import os, sys, select, argparse, pprint, json
+import os, sys, select, argparse, pprint, json, pickle
 from collections import OrderedDict
 
 #from ObsCalculator import point
-from ObsCalculator import point
+from ObsCalculator import point, inputs
 from tools import  pickle_object
 
 from PointAnalyser import Analyse
@@ -13,6 +13,9 @@ from PointAnalyser import Constraints_list
 import Storage.interfaces.ROOT_ab_out as ab_root
 import Storage.interfaces.ROOT_read as rread
 from Storage import old_mc_rootstorage 
+
+#data set
+from User.data_sets import data_sets
 
 def parse_args():
     # WARNING: this code was written in a result oriented fashion
@@ -28,10 +31,15 @@ def parse_args():
             default=None, help='override all_params')
     parser.add_argument('--nstart', '-B', dest='begin', action='store', type=int,
             default=0, help='start entry')
-    parser.add_argument('--npoints', '-N', dest='end', action='store', type=int,
+    parser.add_argument('--npoints', '-N', dest='tot_points', action='store', type=int,
             default=10, help='number of entries')
     parser.add_argument('--njump', '-J', dest='njump', action='store', type=int,
             default=1, help='number of entries to jump after sampling')
+    parser.add_argument('--dataset'    , '-d', dest='data_set'  , action='store', 
+            default="mc8", help='data set for X^2 calculation')
+    parser.add_argument('--pickle-in',dest='pickle_in', action='store', 
+            default=None,  help='Name of pickled file containing entry numbers')
+    parser.add_argument('--model', default='cMSSM', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8'])
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -40,36 +48,31 @@ if __name__=="__main__" :
     rread.root_open(args.in_file)
     ab_root.root_open(args.root_file)
 
-    model = 'NUHM1' 
+    model = 'cMSSM' 
     
     begin=args.begin
     step=args.njump
-    end=args.end*step
+    end=begin+args.tot_points*step
     if end > rread.root_get_entries():
         end= rread.root_get_entries()
     # WARNING: this code was written in a result oriented fashion
-    for entry in range(begin,end,step):
-        if 'n' in args.verbose: print("Entry number: {0}, ({1} out of {2})".format( entry, int((entry-begin)/step)+1, int((end-begin)/step)))
+    entry_range=range(begin,end,step)
+
+    #allow that the entries come from a piclked file 
+    if args.pickle_in:
+        with open(args.pickle_in,'rb') as pickle_file:
+            entry_range=pickle.load(pickle_file)
+            if args.tot_points < len(entry_range):
+                entry_range=entry_range[:args.tot_points]
+    
+    number_points=len(entry_range)
+    for nth_entry, entry in enumerate(entry_range):
+        if 'n' in args.verbose: print("Entry number: {0}, ({1} out of {2})".format( entry, nth_entry+1, number_points))
         VARS=rread.root_read(entry)
-        m0, m12, A0, tanb, mh2, mt, mz, Delta_alpha_had = [VARS[i] for i in [1,2,3,4,6,8,9,11]]
-        all_params={
-                'SoftSUSY':{
-                    ('MINPAR', 'M0'):       m0,
-                    ('MINPAR', 'M12'):      m12,
-                    ('MINPAR', 'TB'):       tanb,
-                    ('MINPAR', 'A'):        A0,
-                    ('EXTPAR', 'MH2'):      mh2,
-                    ('SMINPUTS', 'Mt') :    mt,
-                    },
-                'mc_slha_update':{
-                    ('SMINPUTS','MZ')   : mz, 
-                    },
-                'SUSY-POPE':{
-                    'non_slha_inputs':{
-                        'DeltaAlfa5had' : Delta_alpha_had,
-                        }
-                    }
-                }
+        #model dependent lookup of observables
+        if args.model == 'cMSSM':
+            m0, m12, A0, tanb, mt, mz, Delta_alpha_had = [VARS[i] for i in [1,2,3,4,6,7,9]]
+            all_params=inputs.get_mc_cmssm_inputs(m0,m12,tanb,A0,mt,mz,Delta_alpha_had )
 
         #check for command line input parameters
         if args.input_pars:
@@ -79,36 +82,37 @@ if __name__=="__main__" :
         if args.verbose:
             all_params['verbose']=args.verbose
         try:
-            slha_obj, combined_obs ,stdouts = point.run_point(model=model, **all_params)
+            slha_obj, point ,stdouts = point.run_point(model=model, **all_params)
         except TypeError:
             print("ERROR: Point failed to run")
             continue
 
         all_constraints=Constraints_list.constraints
         #mc8 data set
-        data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
-                'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
-                'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
-                'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
-                'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
+        try:
+            data_set=data_sets[args.data_set]
+        except KeyError:
+            print("WARNING: \"{}\" invalid data set. No X^2 is calculated".format(args.data_set))
+            data_set=[]
         constraints={name: all_constraints[name] for name in data_set}
         #pass this constraints list to the chi2 function
-        total, breakdown = Analyse.chi2(combined_obs,constraints)
+        total, breakdown = Analyse.chi2(point,constraints)
 
         bpp = pprint.PrettyPrinter(indent=4, depth=3)
 
         # optional printing
         if args.obs:
-            bpp.pprint(combined_obs)
+            bpp.pprint(point)
         if args.breakdown:
             bpp.pprint(breakdown)
             print('Total chi2:',total)
 
         # save to root
-        combined_obs[('tot_X2','all')]=total
+        point[('tot_X2','all')]=total
         #WARNING: the following is extremetly result oriented
-        VARS=VARS[:74]+VARS[-34:]
-        old_mc_rootstorage.write_in_out_to_ab_root(VARS,combined_obs)
+        VARS=VARS[:74]+VARS[-35:]   # FIXME: This should be dealt with using old_mc_rootstorage :)
+        VARSOUT=old_mc_rootstorage.get_VARS(point,point[('m', 'in_o')])
+        ab_root.root_write(VARS,VARSOUT)
 
     # close root files after for loop
     rread.root_close()

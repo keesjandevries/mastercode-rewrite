@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os, pprint, argparse, sys,pickle ,re
+import os, pprint, argparse, sys,pickle ,re, json
 from collections import OrderedDict
 
 #FIXME: use interface from github though check performance!!!!
@@ -20,7 +20,7 @@ from User.data_sets import data_sets
 def parse_args():
     # feel free to ammend it!
     parser = argparse.ArgumentParser(
-            description='''WARNING: SOON TO BE REPLACED BY \"mc_multinest.py\". Run mcpp with multinest.
+            description='''Run mcpp with multinest.
             Note you can set using files like this: "./test_multinest.py @command_line_options.txt".
             For more info see the documentation on python's argparse function.
             ''',
@@ -35,31 +35,19 @@ def parse_args():
             nargs="+", help='verbosity, e.g. parameters, X, errors, multinest, or mcpp verbosity',default=[])
     mcpp.add_argument('--output-root' , '-o', dest='root_out', action='store', 
             default='chains/',  help='output root directory ')
-    mcpp.add_argument('--root-prefix' ,  action='store', 
-            default='cmssm-multinest-step-',  help='output root file prefix ')
+#    mcpp.add_argument('--root-prefix' ,  action='store', 
+#            default='cmssm-multinest-step-',  help='output root file prefix ')
     mcpp.add_argument('--suppress-mc-info', dest='suppress_info', action='store_true', 
             default=False,  help='suppress dumping the multinest parameters. Not recommended')
     mcpp.add_argument('--pickle-out', dest='pickle_out', action='store_true', 
             default=False,  help='This is what we want. Store points to pickled dictionaries: unique_string.pkl')
     mcpp.add_argument('--data-set'  ,  dest='data_set'  , action='store', 
-            default="mc8", help='data set for X^2 calculation')
-    mcpp.add_argument('--model', default='cMSSM', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1'])
-    mcpp.add_argument('--m0-range', action='store', nargs=2, type=float,
-            default=[0.,4000.], help='parameter range: m0')
-    mcpp.add_argument('--m12-range', action='store', nargs=2, type=float,
-            default=[0.,4000.], help='parameter range: m12')
-    mcpp.add_argument('--A0-range', action='store', nargs=2, type=float,
-            default=[-5000.,5000.], help='parameter range: A0')
-    mcpp.add_argument('--tanb-range', action='store', nargs=2, type=float,
-            default=[1.,62.], help='parameter range: tanb')
-    mcpp.add_argument('--mt-range', action='store', nargs=2, type=float,
-            default=[171.4,175], help='parameter range: mt')
-    mcpp.add_argument('--mz-range', action='store', nargs=2, type=float,
-            default=[91.1833,91.1917], help='parameter range: mz')
-    mcpp.add_argument('--delta-alpha-had-range', action='store', nargs=2, type=float,
-            default=[0.02729,0.02769], help='parameter range: delta_alpha_had')
-    mcpp.add_argument('--mh2-range', action='store', nargs=2, type=float,
-            default=[-2e7,2e7], help='parameter range: mh2 (when model=NUHM1),note: further than ever')
+            default="pmssm_with_Oh2", help='data set for X^2 calculation')
+    mcpp.add_argument('--model', default='pMSSM8', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8'])
+    mcpp.add_argument('--nuisance-parameter-ranges', default='User/nuisance_parameter_ranges.json', 
+            help='json file with parameter ranges for mt,mz,delta_alpha_had')
+    mcpp.add_argument('--pmssm8-ranges', default='User/pmssm8_ranges.json', 
+            help='json file with parameter ranges for msq12,msq3,msl,M1,A,MA,tanb,mu')
     #multinest specific arguments
     multinest.add_argument('--multinest-dir' ,     action='store', 
             default="chains", help='directory for storing mulinest parameters ')
@@ -96,25 +84,27 @@ def parse_args():
     return parser.parse_args()
 
 def get_root_file_name(output_dir):
-    root_file_step_numbers=[ int(re.search(r'\d+', f).group()) for f in os.listdir(output_dir) if args.root_prefix in f]
+    root_prefix='{}-mn-step-'.format(args.model)
+    root_file_step_numbers=[ int(re.search(r'\d+', f).group()) for f in os.listdir(output_dir) if root_prefix in f]
     if not len(root_file_step_numbers) == 0: 
         current_step=max(root_file_step_numbers)+1
     else: 
         current_step=1
-    return '{}/{}{}.root'.format(output_dir,args.root_prefix,current_step)
+    return '{}/{}{}.root'.format(output_dir,root_prefix,current_step)
 
 def get_param_ranges():
-    param_ranges= OrderedDict([
-    ('m0',  tuple(args.m0_range)),
-    ('m12', tuple(args.m12_range)),
-    ('A0',  tuple(args.A0_range)),
-    ('tanb',tuple(args.tanb_range)), # softsusy only takes tanb>=1.
-    ('mt',  tuple(args.mt_range)),
-    ('mz',  tuple(args.mz_range)),
-    ('Delta_alpha_had',tuple(args.delta_alpha_had_range))
-    ])
-    if args.model == 'NUHM1':
-        param_ranges['mh2']=tuple(args.mh2_range)
+    with open(args.nuisance_parameter_ranges,'r') as f:
+        nuisance_parameter_ranges=json.load(f)
+    if args.model == 'pMSSM8':
+        with open(args.pmssm8_ranges,'r') as f:
+            pmssm8_ranges=json.load(f)
+        pmssm8_ranges.update(nuisance_parameter_ranges)
+        #The order here should match that of inputs.get_mc_pmssm8_inputs(... )
+        #FIXME: there must be a better way of doing this
+        param_ranges= OrderedDict([(name, pmssm8_ranges[name]) for name in 
+            ['msq12','msq3','msl', 'M1', 'A','MA','tanb','mu','mt','mz','delta_alpha_had']])
+        #FIXME: may want to have mt, mz, delta_alpha_had seperate
+    # don't use cMSSM and NUHM1 for the moment
     return param_ranges
 ##################################################
 # DEFINITIONS NEEDED inside myprior, and myloglike 
@@ -140,24 +130,20 @@ def myprior(cube, ndim, nparams):
         cube[i]=(high-low)*cube[i]+low
 
 def get_obs(cube,ndim):
-    #FIXME: 
-    m0=cube[0]
-    m12=cube[1]
-    A0=cube[2]
-    tanb=cube[3]
-    mt=cube[4]
-    mz=cube[5]
-    Delta_alpha_had=cube[6]
-    if args.model == 'NUHM1':
-        mh2=cube[7]
+    #make a python list out of the cube
+    parameters=[cube[i] for i in range(ndim)]
+    # Get formatted input. See what is looks like with option "-v inputs"  
+#    if args.model == 'cMSSM':
+#        all_params= inputs.get_mc_cmssm_inputs(*parameters)
+#    if args.model == 'NUHM1':
+#        all_params= inputs.get_mc_nuhm1_inputs(*parameters)
+    if args.model == 'pMSSM8':
+        all_params= inputs.get_mc_pmssm8_inputs(*parameters)
 
-    # Get formatted input, Feel free to have a look !!!
-    if args.model == 'cMSSM':
-        all_params= inputs.get_mc_cmssm_inputs(m0,m12,tanb,A0    ,mt,mz,Delta_alpha_had)
-    if args.model == 'NUHM1':
-        all_params= inputs.get_mc_nuhm1_inputs(m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had)
+    if 'parameters' in args.verbose:
+        print(*parameters)
 
-    if 'parameters' in args.verbose : 
+    if 'inputs' in args.verbose : 
         print(all_params)
 
     if args.tmp_dir:
@@ -208,8 +194,8 @@ def myloglike(cube, ndim, nparams):
         obs=params
     # write everything to root files
     if args.root_out:
-         VARS=rootstore.get_VARS(obs, args.model)
-         root.root_write(VARS)
+        VARS=rootstore.get_VARS(obs, args.model)
+        root.root_write(VARS)
     if args.pickle_out:
         with open('{}/{}.pkl'.format(args.multinest_dir, unique_str()),'wb') as pickle_file:
             pickle.dump(obs,pickle_file)

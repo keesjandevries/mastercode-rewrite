@@ -3,11 +3,7 @@ import argparse, pprint
 import cProfile
 #import Variables
 
-from ObsCalculator.interfaces.slhalib import SLHA
-from ObsCalculator.interfaces.slhalib import SLHAData
-from ObsCalculator.interfaces.slhalib import nslhadata
-from ObsCalculator.interfaces.slhalib import invalid 
-from ObsCalculator.interfaces.slhalib import ofsetspinfo
+from ObsCalculator.interfaces.slhalib import SLHA, SLHAData, nslhadata, invalid, ofsetspinfo
 
 from tools import c_complex
 
