@@ -8,12 +8,23 @@
 parameter_array_ids={
         #parameters
         ('tot_X2', 'all')       :0,
+        #CMSSM, NUHM1, NUHM2
         ('MINPAR','in_M0')      :1,
         ('MINPAR','in_M12')     :2,
         ('MINPAR','in_A')       :3,
         ('MINPAR','in_TB')      :4,
         ('MINPAR','signMUE')    :5,
-        ('EXTPAR', 'in_MH2')    :[6,7],}
+        ('EXTPAR', 'in_MH2')    :[6,7],
+        #pMSSM8
+        ('MC_EXTPAR', 'in_MC_Msq12')    :1, 
+        ('MC_EXTPAR', 'in_MC_Msq3')     :2, 
+        ('MC_EXTPAR', 'in_MC_Msl')      :3, 
+        ('EXTPAR', 'in_M1')             :4,
+        ('MC_EXTPAR', 'in_MC_A')        :5, 
+        ('MINPAR', 'in_TB')             :6,
+        ('EXTPAR', 'in_MUE')            :7,
+        ('EXTPAR', 'in_MA0')            :8,
+        }
 nuisance_array_ids={
         ('SMINPUTS','Mt')       :0,
         ('SMINPUTS','mod_MZ')   :1,
