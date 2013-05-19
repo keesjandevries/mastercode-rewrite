@@ -85,7 +85,8 @@ def parse_args():
 
 def get_root_file_name(output_dir):
     root_prefix='{}-mn-step-'.format(args.model)
-    root_file_step_numbers=[ int(re.search(r'\d+', f).group()) for f in os.listdir(output_dir) if root_prefix in f]
+    root_file_step_numbers=[ int(re.search(r'\d+', f.replace(root_prefix,'')).group()) 
+            for f in os.listdir(output_dir) if root_prefix in f]
     if not len(root_file_step_numbers) == 0: 
         current_step=max(root_file_step_numbers)+1
     else: 
