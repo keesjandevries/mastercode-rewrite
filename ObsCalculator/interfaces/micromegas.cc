@@ -3,7 +3,7 @@
    in micrOMEGAs, to use another code define the path 
    to the corresponding package in lib/Makefile
 =====================================*/ 
-#define RGE  suspect
+//#define RGE  suspect
      /* choose 'suspect','isajet','softSusy','spheno'*/
 
 /*=========   SUSY scenario  ==========
