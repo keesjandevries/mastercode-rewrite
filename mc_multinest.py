@@ -161,17 +161,12 @@ def get_obs(cube,ndim):
     del all_params['lookup']
     del all_params['verbose']
     if ('errors' in args.verbose) : 
-        any_error=False
         if not combined_obs:
             print("ERROR: in Spectrum Calculator",file=sys.stderr)
-            any_error=True
         else:
             for name in ['FeynHiggs','Micromegas','BPhysics','SUSY-POPE']:
                 if combined_obs[(name,'error')]:
                     print('ERROR: in {}'.format(name),file=sys.stderr)
-                    any_error=True
-        if any_error:
-            print('\nParameters are: {}\n'.format(all_params),file=sys.stderr)
     return combined_obs, all_params 
 
 def get_chi2(obs):
