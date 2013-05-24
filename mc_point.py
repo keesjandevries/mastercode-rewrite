@@ -35,6 +35,7 @@ def parse_args():
             default=None, help='directory where temporary files get stored')
     parser.add_argument('--data-set'    , '-d', dest='data_set'  , action='store', 
             default="mc8", help='data set for X^2 calculation')
+    parser.add_argument('--run-spectrum', help='run spectrum file through point.py')
     parser.add_argument('--mc-cmssm-default', action='store_true', 
             help="Mastercode cmssm point: m0=271.3,m12=920.3,tanb=14.4,A0=-1193.57,mt=173.47,mz=91.18774,Delta_alpha_had=0.027482")
     parser.add_argument('--mc-cmssm', nargs=7, type=float, 
@@ -65,6 +66,9 @@ if __name__=="__main__" :
                 173.385870186, 91.1875000682, 0.0274949856504)
     if args.mc_pmssm8 :
         all_params=inputs.get_mc_pmssm8_inputs(*(args.mc_pmssm8))
+
+    if args.run_spectrum:
+        all_params={'spectrumfile':args.run_spectrum}
 
     #check for command line input parameters
     if args.input_pars:
