@@ -19,9 +19,9 @@ parameter_array_ids={
         ('MC_EXTPAR', 'in_MC_Msq12')    :1, 
         ('MC_EXTPAR', 'in_MC_Msq3')     :2, 
         ('MC_EXTPAR', 'in_MC_Msl')      :3, 
-        ('EXTPAR', 'in_M1')             :4,
+#        ('MINPAR', 'in_TB')             :4,
         ('MC_EXTPAR', 'in_MC_A')        :5, 
-        ('MINPAR', 'in_TB')             :6,
+        ('EXTPAR', 'in_M1')             :6,
         ('EXTPAR', 'in_MUE')            :7,
         ('EXTPAR', 'in_MA0')            :8,
         }
@@ -165,6 +165,7 @@ def get_VARS(point,model):
                     array_ids=[array_ids]
                 for array_id in array_ids:
                     VARS[array_id+index]=value
+                    #print('array index: {} , oid: {} , value: {}'.format(array_id+index, str(oid),value ))
                 break
     #then some functions of variables
     try:
