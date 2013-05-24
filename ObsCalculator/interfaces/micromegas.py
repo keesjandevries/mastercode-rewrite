@@ -45,7 +45,8 @@ def run(slhadata, inputs=None, update=False) :
         #if micromegas fail, it exits with non zero code. This is cought by subprocess.CalledProcessError
         std_out=e.output.decode('utf-8')
         #FIXME: maybe there is a better way of handling default error output 
-        output={'Omega':0., 'sigma_p_si':0.,'error':1}
+        #FIXME: for CMSSM sampling in boxes don't use infinite X^2 for non-neutralino lsp
+        output={'Omega':0., 'sigma_p_si':0.,'error':0}
     #rm slha file
     rm(fname)
     #handle verbosity
