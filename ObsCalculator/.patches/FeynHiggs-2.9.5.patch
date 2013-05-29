@@ -4,13 +4,13 @@ Date: Fri, 20 Jul 2012 11:28:33 +0100
 Subject: [PATCH 4/4] pos indep code flags
 
 ---
- FeynHiggs-2.9.4/makefile.in | 4 ++--
+ FeynHiggs-2.9.5/makefile.in | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/FeynHiggs-2.9.4/makefile.in b/FeynHiggs-2.9.4/makefile.in
+diff --git a/FeynHiggs-2.9.5/makefile.in b/FeynHiggs-2.9.5/makefile.in
 index 0c82fb4..c698311 100644
---- a/FeynHiggs-2.9.4/makefile.in
-+++ b/FeynHiggs-2.9.4/makefile.in
+--- a/FeynHiggs-2.9.5/makefile.in
++++ b/FeynHiggs-2.9.5/makefile.in
 @@ -13,9 +13,9 @@ ARGS = $(PARALLEL) \
    NOUNDERSCORE="$(NOUNDERSCORE)" \
    EXE="$(EXE)" \
@@ -35,10 +35,10 @@ Subject: [PATCH] read only
  src/SLHA/SLHARead.F | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/FeynHiggs-2.9.4/src/SLHA/SLHARead.F b/FeynHiggs-2.9.4/src/SLHA/SLHARead.F
+diff --git a/FeynHiggs-2.9.5/src/SLHA/SLHARead.F b/FeynHiggs-2.9.5/src/SLHA/SLHARead.F
 index de38bb9..8be0bbe 100644
---- a/FeynHiggs-2.9.4/src/SLHA/SLHARead.F
-+++ b/FeynHiggs-2.9.4/src/SLHA/SLHARead.F
+--- a/FeynHiggs-2.9.5/src/SLHA/SLHARead.F
++++ b/FeynHiggs-2.9.5/src/SLHA/SLHARead.F
 @@ -65,7 +65,7 @@ read(tok, *, err=997, end=997)
  	  unit = 5
  	  if( lineno .ne. 0 ) goto 501
@@ -50,4 +50,38 @@ index de38bb9..8be0bbe 100644
  	endif
 -- 
 1.7.11.4
-
+diff --git a/FeynHiggs-2.9.5/src/Constraints/gm2_1L_1.F b/FeynHiggs-2.9.5/src/Constraints/gm2_1L_1.F
+index cd40534..ae3ff8a 100644
+--- a/FeynHiggs-2.9.5/src/Constraints/gm2_1L_1.F
++++ b/FeynHiggs-2.9.5/src/Constraints/gm2_1L_1.F
+@@ -17,6 +17,30 @@
+ 	ComplexType tmp23, tmp24, tmp25, tmp26, tmp27, tmp28, tmp29
+ 	ComplexType tmp30, tmp31
+ 
++        if ((dabs(MNeu(1) - MSf(1,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(2) - MSf(1,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(3) - MSf(1,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(4) - MSf(1,2,2)) .le. 0.1d0)) then
++           print *, 'changing MSmu1'
++           MSf(1,2,2) = MSf(1,2,2) + 1d0
++           MSf2(1,2,2) = MSf(1,2,2)**2
++        endif
++        if ((dabs(MNeu(1) - MSf(2,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(2) - MSf(2,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(3) - MSf(2,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(4) - MSf(2,2,2)) .le. 0.1d0)) then
++           print *, 'changing MSmu2'
++           MSf(2,2,2) = MSf(2,2,2) + 1d0
++           MSf2(2,2,2) = MSf(2,2,2)**2
++        endif
++        if ((dabs(MCha(1) - MSf(1,1,2)) .le. 0.1d0) .or.
++     $       (dabs(MCha(2) - MSf(1,1,2)) .le. 0.1d0)) then
++           print *, 'changing MSneu'
++           MSf(1,1,2) = MSf(1,1,2) + 1d0
++           MSf2(1,1,2) = MSf(1,1,2)**2
++        endif
++
++
+ 	tmp1 = CW*ZNeu(1,2) + SW*ZNeu(1,1)
+ 
+ 	tmp2 = CW*ZNeu(2,2) + SW*ZNeu(2,1)
