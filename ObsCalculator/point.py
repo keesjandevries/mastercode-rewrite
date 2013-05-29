@@ -17,7 +17,6 @@ default_predictors = default_spectrum_modifiers + [micromegas, superiso, bphysic
             susypope]
 
 
-#FIXME: model should not be a neseccarry input, since also able to run on slha
 #FIXME: want to separate input parameters (like m0, m12, Delta_Alpha_had, ... ) from options (like verbose)
 def run_point( **input_pars):
     """
@@ -160,8 +159,6 @@ def run_point( **input_pars):
     # ===========================================
     for predictor in predictors:
         is_modifier = predictor in spectrum_modifiers
-        #FIXME: needs to get something like: pred_verbose=  predictor.name in input_pars['verbose']
-        # and pred_verbose as one of the options, 
         pred_verbose=(predictor.name in input_pars['verbose'])
         if pred_verbose: 
             verbose_true={'verbose': True }
@@ -172,7 +169,6 @@ def run_point( **input_pars):
         result, stdout = tools.get_ctypes_streams(
                 func=slhamodule.send_to_predictor,
                 args=[slhafile,input_pars.get(predictor.name),predictor, is_modifier])
-        #FIXME: if pred_verbose: print
         if pred_verbose:  print(stdout)
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
