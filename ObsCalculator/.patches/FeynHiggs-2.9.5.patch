@@ -1,0 +1,87 @@
+
+From: Sam Rogerson <samr@cern.ch>
+Date: Fri, 20 Jul 2012 11:28:33 +0100
+Subject: [PATCH 4/4] pos indep code flags
+
+---
+ FeynHiggs-2.9.5/makefile.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/FeynHiggs-2.9.5/makefile.in b/FeynHiggs-2.9.5/makefile.in
+index 0c82fb4..c698311 100644
+--- a/FeynHiggs-2.9.5/makefile.in
++++ b/FeynHiggs-2.9.5/makefile.in
+@@ -13,9 +13,9 @@ ARGS = $(PARALLEL) \
+   NOUNDERSCORE="$(NOUNDERSCORE)" \
+   EXE="$(EXE)" \
+   FC="$(FC)" \
+-  FFLAGS="$(FFLAGS) $(DEF)GM2FULL=$(GM2FULL) $(DEF)SLHAPARA=$(SLHAPARA) $(DEF)VT100=$(VT100)" \
++  FFLAGS="$(FFLAGS) $(DEF)GM2FULL=$(GM2FULL) $(DEF)SLHAPARA=$(SLHAPARA) $(DEF)VT100=$(VT100) -fPIC" \
+   CC="$(CC)" \
+-  CFLAGS="$(CFLAGS) -DNOUNDERSCORE=$(NOUNDERSCORE) -DVT100=$(VT100)" \
++  CFLAGS="$(CFLAGS) -DNOUNDERSCORE=$(NOUNDERSCORE) -DVT100=$(VT100) -fPIC" \
+   CXX="$(CXX)" \
+   CXXFLAGS="$(CXXFLAGS)" \
+   QUAD="$(QUAD)" \
+-- 
+1.7.11.2
+
+From bfa93a4d40fb70e0de8f9f07968a81d884bfd6c3 Mon Sep 17 00:00:00 2001
+From: Sam Rogerson <samr@cern.ch>
+Date: Sun, 5 Aug 2012 14:25:44 +0200
+Subject: [PATCH] read only
+
+---
+ src/SLHA/SLHARead.F | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/FeynHiggs-2.9.5/src/SLHA/SLHARead.F b/FeynHiggs-2.9.5/src/SLHA/SLHARead.F
+index de38bb9..8be0bbe 100644
+--- a/FeynHiggs-2.9.5/src/SLHA/SLHARead.F
++++ b/FeynHiggs-2.9.5/src/SLHA/SLHARead.F
+@@ -65,7 +65,7 @@ read(tok, *, err=997, end=997)
+ 	  unit = 5
+ 	  if( lineno .ne. 0 ) goto 501
+ 	else
+-	  open(10, file=filename, status="old", err=996)
++	  open(10, file=filename, status="old", err=996, action='read')
+ 	  unit = 10
+ 	  lineno = 0
+ 	endif
+-- 
+1.7.11.4
+diff --git a/FeynHiggs-2.9.5/src/Constraints/gm2_1L_1.F b/FeynHiggs-2.9.5/src/Constraints/gm2_1L_1.F
+index cd40534..ae3ff8a 100644
+--- a/FeynHiggs-2.9.5/src/Constraints/gm2_1L_1.F
++++ b/FeynHiggs-2.9.5/src/Constraints/gm2_1L_1.F
+@@ -17,6 +17,30 @@
+ 	ComplexType tmp23, tmp24, tmp25, tmp26, tmp27, tmp28, tmp29
+ 	ComplexType tmp30, tmp31
+ 
++        if ((dabs(MNeu(1) - MSf(1,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(2) - MSf(1,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(3) - MSf(1,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(4) - MSf(1,2,2)) .le. 0.1d0)) then
++           print *, 'changing MSmu1'
++           MSf(1,2,2) = MSf(1,2,2) + 1d0
++           MSf2(1,2,2) = MSf(1,2,2)**2
++        endif
++        if ((dabs(MNeu(1) - MSf(2,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(2) - MSf(2,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(3) - MSf(2,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(4) - MSf(2,2,2)) .le. 0.1d0)) then
++           print *, 'changing MSmu2'
++           MSf(2,2,2) = MSf(2,2,2) + 1d0
++           MSf2(2,2,2) = MSf(2,2,2)**2
++        endif
++        if ((dabs(MCha(1) - MSf(1,1,2)) .le. 0.1d0) .or.
++     $       (dabs(MCha(2) - MSf(1,1,2)) .le. 0.1d0)) then
++           print *, 'changing MSneu'
++           MSf(1,1,2) = MSf(1,1,2) + 1d0
++           MSf2(1,1,2) = MSf(1,1,2)**2
++        endif
++
++
+ 	tmp1 = CW*ZNeu(1,2) + SW*ZNeu(1,1)
+ 
+ 	tmp2 = CW*ZNeu(2,2) + SW*ZNeu(2,1)

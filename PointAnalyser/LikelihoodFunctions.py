@@ -27,6 +27,15 @@ def lowerlimit(point, mu, sigma):
         chi2 = 0
     return chi2
 
+def abs_lowerlimit(point, mu, sigma):
+    chi2 = 0
+    x = abs(point[0])
+    if x < mu:
+        chi2 = gauss(point,mu,sigma)
+    else:
+        chi2 = 0
+    return chi2
+
 def multi_lowerlimit(point, mu, sigma):
     chi2 = 0
     x = min(point)

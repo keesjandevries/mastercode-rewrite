@@ -23,6 +23,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run mastercode for cmssm point')
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
     parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdown')
+    parser.add_argument('--json-breakdown'  ,  help='provide json file for breakdown')
     parser.add_argument('--suppress-chi2-calc' , dest='suppress_chi2_calc', action='store_true', help='suppress chi2 calculation for testing')
     parser.add_argument('--observable-keys'  , dest='observable_keys', action='store_true', help='print observable keys')
     parser.add_argument('--store-pickle'     , dest='store_pickle', action='store', type=str,
@@ -124,6 +125,13 @@ if __name__=="__main__" :
         VARS=old_mc_rootstorage.get_VARS(point,point[('m','in_o')])
         root.root_write(VARS)
         root.root_close()
+    if args.json_breakdown:
+        l=[]
+        for d in data_set:
+            l.append([d,breakdown[d]])
+        with open(args.json_breakdown,'w') as f:
+            json.dump(l,f)
+        
 
     # print only observable keys
     if args.observable_keys:

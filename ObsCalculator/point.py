@@ -17,7 +17,6 @@ default_predictors = default_spectrum_modifiers + [micromegas, superiso, bphysic
             susypope]
 
 
-#FIXME: model should not be a neseccarry input, since also able to run on slha
 #FIXME: want to separate input parameters (like m0, m12, Delta_Alpha_had, ... ) from options (like verbose)
 def run_point( **input_pars):
     """
@@ -135,17 +134,18 @@ def run_point( **input_pars):
     # =====================================================
     # WARNING: here is a functionality needed by mastercode
     #          it is not generic
-    # "Manually" setting MW and MZ in the slha file object
+    # "Manually" setting values in the slha file object
     # if 'mc_slha_update' is in input_vars
+    # someone may define 'mc_slha_update : True', 
+    # or provide a dictionary 'mc_slha_update':{ ('MASS','MZ') : ... }
     # this hack should not escape from this file
     # =====================================================
     if input_pars.get('mc_slha_update'):
-        # by default, use these values
-        values={('MASS','MW') : 80.4,('SMINPUTS','MZ') : 91.1875}
-        # someone may define 'mc_slha_updata : True'
+        # by default, use set MW=80.4
+        values={('MASS','MW') : 80.4}
         try:
-            values.update([(oid,val ) for oid,val in input_pars['mc_slha_update'].items() if oid in values.keys()])
-        except AttributeError:
+            values.update( input_pars['mc_slha_update'])
+        except TypeError:
             pass
         for oid, val in values.items():
             slhafile[oid]=val
@@ -160,8 +160,6 @@ def run_point( **input_pars):
     # ===========================================
     for predictor in predictors:
         is_modifier = predictor in spectrum_modifiers
-        #FIXME: needs to get something like: pred_verbose=  predictor.name in input_pars['verbose']
-        # and pred_verbose as one of the options, 
         pred_verbose=(predictor.name in input_pars['verbose'])
         if pred_verbose: 
             verbose_true={'verbose': True }
@@ -172,7 +170,6 @@ def run_point( **input_pars):
         result, stdout = tools.get_ctypes_streams(
                 func=slhamodule.send_to_predictor,
                 args=[slhafile,input_pars.get(predictor.name),predictor, is_modifier])
-        #FIXME: if pred_verbose: print
         if pred_verbose:  print(stdout)
         predictor_output.update(result)
         stdouts.update({predictor.name: stdout})
