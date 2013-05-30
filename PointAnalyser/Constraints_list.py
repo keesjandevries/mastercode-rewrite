@@ -11,6 +11,10 @@ constraints_dict = {
             'oids': [ ('MASS', 'MNeu(1)')],
             'data': [50., 1.],
             'func': LF.lowerlimit},
+        'LEP-neutralino-abs':{
+            'oids': [ ('MASS', 'MNeu(1)')],
+            'data': [50., 1.],
+            'func': LF.abs_lowerlimit},
         'LEP-slepton':{
             'oids': [
                 ('MASS', 'MSf(1,2,1)'),#se_L
