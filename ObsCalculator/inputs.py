@@ -73,3 +73,33 @@ def get_mc_pmssm8_inputs(msq12,msq3,msl, M1, A, MA,tanb,mu,mt,mz,Delta_alpha_had
                     }
                 },
             }
+
+def get_mc_pmssm10_inputs(msq12,msq3,msl, M1, M2,M3, A, MA,tanb,mu,mt,mz,Delta_alpha_had):
+    return {
+            'SoftSUSY':{
+                'model'     :   'pMSSM10',   
+                #values that we set equal
+                ('MC_EXTPAR','MC_Msq12') :msq12, 
+                ('MC_EXTPAR','MC_Msq3')  :msq3, 
+                ('MC_EXTPAR','MC_Msl')   :msl,       
+                ('MC_EXTPAR','MC_A')     :A,
+                #Gauginos free to vary
+                ('EXTPAR','M1')          :M1,
+                ('EXTPAR','M2')          :M2,
+                ('EXTPAR','M3')          :M3,
+                #Directly set
+                ('MINPAR','TB')          :tanb,
+                ('EXTPAR', 'MUE')        :mu,
+                ('EXTPAR', 'MA0')        :MA,
+                #And the top mass
+                ('SMINPUTS', 'Mt') :    mt,
+                },
+            'mc_slha_update':{
+                ('SMINPUTS','MZ')   : mz, 
+                },
+            'SUSY-POPE':{
+                'non_slha_inputs':{
+                    'DeltaAlfa5had' : Delta_alpha_had,
+                    }
+                },
+            }

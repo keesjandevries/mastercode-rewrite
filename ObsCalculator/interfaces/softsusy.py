@@ -257,6 +257,32 @@ def get_pmssm8_input_slha(slha_params):
     slha_params[('EXTPAR', 'Ab')    ]= slha_params[('MC_EXTPAR','MC_A')]
     return get_pmssm_input_slha(slha_params)
 
+def get_pmssm10_input_slha(slha_params):
+    #NOTE: These variables are not defined in slhalib, therefor mark as 'MC_...'
+    #First and second generation squarks
+    slha_params[('EXTPAR', 'MSQ(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mqL1
+    slha_params[('EXTPAR', 'MSQ(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mqL2
+    slha_params[('EXTPAR', 'MSU(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # muR 
+    slha_params[('EXTPAR', 'MSU(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mcR 
+    slha_params[('EXTPAR', 'MSD(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mdR 
+    slha_params[('EXTPAR', 'MSD(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # msR          
+    #Third generation squarks
+    slha_params[('EXTPAR', 'MSU(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mtR 
+    slha_params[('EXTPAR', 'MSD(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mbR 
+    slha_params[('EXTPAR', 'MSQ(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mqL3
+    #All sleptons degenerate
+    slha_params[('EXTPAR', 'MSL(1)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  meL    
+    slha_params[('EXTPAR', 'MSL(2)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mmuL   
+    slha_params[('EXTPAR', 'MSL(3)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mtauL  
+    slha_params[('EXTPAR', 'MSE(1)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  meR    
+    slha_params[('EXTPAR', 'MSE(2)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mmuR   
+    slha_params[('EXTPAR', 'MSE(3)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mtauR  
+    #Trilinear coupling the same
+    slha_params[('EXTPAR', 'Atau')  ]= slha_params[('MC_EXTPAR','MC_A')]
+    slha_params[('EXTPAR', 'At')    ]= slha_params[('MC_EXTPAR','MC_A')]
+    slha_params[('EXTPAR', 'Ab')    ]= slha_params[('MC_EXTPAR','MC_A')]
+    return get_pmssm_input_slha(slha_params)
+
 
 
                                         
@@ -276,6 +302,8 @@ def run( inputs,verbose=None):
         inputslha=get_pmssm_input_slha(slha_params)
     elif model=='pMSSM8':
         inputslha=get_pmssm8_input_slha(slha_params)
+    elif model=='pMSSM10':
+        inputslha=get_pmssm10_input_slha(slha_params)
     else:
         print("ERROR: No valid model provided")
         return "", 1
