@@ -2,12 +2,12 @@
 import os, sys, select, argparse, pprint, json, pickle
 from collections import OrderedDict
 
-#from ObsCalculator import point
-from ObsCalculator import point, inputs
+#tools
 from tools import  pickle_object
-
-from PointAnalyser import Analyse
-from PointAnalyser import Constraints_list
+#point calculator
+from ObsCalculator import point, inputs
+#chi2 calculation
+from PointAnalyser import Analyse, Constraints_list
 
 #data set
 from User.data_sets import data_sets
