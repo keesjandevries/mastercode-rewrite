@@ -47,6 +47,8 @@ def parse_args():
             help="Mastercode nuhm1 point: m0=237.4,m12=968.8,tanb=15.6,A0=-1858.7,mh2=-6499529, mt=173.3,mz=91.1875,Delta_alpha_had=0.0274949")
     parser.add_argument('--mc-pmssm8', nargs=11, type=float,
             help="Mastercode 8d pmssm point specify: msq12,msq3,msl, M1, A, MA,tanb,mu,mt,mz,Delta_alpha_had")
+    parser.add_argument('--mc-pmssm10', nargs=13, type=float,
+            help="Mastercode 10d pmssm point specify: msq12,msq3,msl, M1,M2,M3, A, MA,tanb,mu,mt,mz,Delta_alpha_had")
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -67,6 +69,8 @@ if __name__=="__main__" :
                 173.385870186, 91.1875000682, 0.0274949856504)
     if args.mc_pmssm8 :
         all_params=inputs.get_mc_pmssm8_inputs(*(args.mc_pmssm8))
+    if args.mc_pmssm10 :
+        all_params=inputs.get_mc_pmssm10_inputs(*(args.mc_pmssm10))
 
     if args.run_spectrum:
         all_params={'spectrumfile':args.run_spectrum}

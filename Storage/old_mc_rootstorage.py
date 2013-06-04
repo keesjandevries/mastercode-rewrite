@@ -24,6 +24,8 @@ parameter_array_ids={
         ('EXTPAR', 'in_M1')             :6,
         ('EXTPAR', 'in_MUE')            :7,
         ('EXTPAR', 'in_MA0')            :8,
+        ('EXTPAR', 'in_M2')             :9,
+        ('EXTPAR', 'in_M3')             :10,
         }
 nuisance_array_ids={
         ('SMINPUTS','Mt')       :0,
@@ -148,6 +150,8 @@ def get_VARS(point,model):
         n_parameters=7  # including sign mu
     elif model  == 'pMSSM8':
         n_parameters=8  
+    elif model  == 'pMSSM10':
+        n_parameters=10  
     #Define some fixed indices
     nuisance_index  = 1+n_parameters
     prediction_index= nuisance_index+n_nuisance

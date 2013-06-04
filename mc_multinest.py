@@ -43,11 +43,13 @@ def parse_args():
             default=False,  help='This is what we want. Store points to pickled dictionaries: unique_string.pkl')
     mcpp.add_argument('--data-set'  ,  dest='data_set'  , action='store', 
             default="pmssm_with_Oh2", help='data set for X^2 calculation')
-    mcpp.add_argument('--model', default='pMSSM8', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8'])
+    mcpp.add_argument('--model', default='pMSSM8', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8','pMSSM10'])
     mcpp.add_argument('--nuisance-parameter-ranges', default='User/nuisance_parameter_ranges.json', 
             help='json file with parameter ranges for mt,mz,delta_alpha_had')
     mcpp.add_argument('--pmssm8-ranges', default='User/pmssm8_ranges.json', 
             help='json file with parameter ranges for msq12,msq3,msl,M1,A,MA,tanb,mu')
+    mcpp.add_argument('--pmssm10-ranges',  
+            help='json file with parameter ranges for msq12,msq3,msl,M1,M2,M3,A,MA,tanb,mu')
     #multinest specific arguments
     multinest.add_argument('--multinest-dir' ,     action='store', 
             default="chains", help='directory for storing mulinest parameters ')
@@ -94,6 +96,7 @@ def get_root_file_name(output_dir):
     return '{}/{}{}.root'.format(output_dir,root_prefix,current_step)
 
 def get_param_ranges():
+    #FIXME: re-implement cMSSM and NUHM1/2 at some point 
     with open(args.nuisance_parameter_ranges,'r') as f:
         nuisance_parameter_ranges=json.load(f)
     if args.model == 'pMSSM8':
@@ -101,11 +104,15 @@ def get_param_ranges():
             pmssm8_ranges=json.load(f)
         pmssm8_ranges.update(nuisance_parameter_ranges)
         #The order here should match that of inputs.get_mc_pmssm8_inputs(... )
-        #FIXME: there must be a better way of doing this
         param_ranges= OrderedDict([(name, pmssm8_ranges[name]) for name in 
             ['msq12','msq3','msl', 'M1', 'A','MA','tanb','mu','mt','mz','delta_alpha_had']])
-        #FIXME: may want to have mt, mz, delta_alpha_had seperate
-    # don't use cMSSM and NUHM1 for the moment
+    if args.model == 'pMSSM10':
+        with open(args.pmssm10_ranges,'r') as f:
+            pmssm10_ranges=json.load(f)
+        pmssm10_ranges.update(nuisance_parameter_ranges)
+        #The order here should match that of inputs.get_mc_pmssm10_inputs(... )
+        param_ranges= OrderedDict([(name, pmssm10_ranges[name]) for name in 
+            ['msq12','msq3','msl', 'M1','M2','M3', 'A','MA','tanb','mu','mt','mz','delta_alpha_had']])
     return param_ranges
 ##################################################
 # DEFINITIONS NEEDED inside myprior, and myloglike 
@@ -140,6 +147,8 @@ def get_obs(cube,ndim):
 #        all_params= inputs.get_mc_nuhm1_inputs(*parameters)
     if args.model == 'pMSSM8':
         all_params= inputs.get_mc_pmssm8_inputs(*parameters)
+    if args.model == 'pMSSM10':
+        all_params= inputs.get_mc_pmssm10_inputs(*parameters)
 
     if 'parameters' in args.verbose:
         print(*parameters)
@@ -181,6 +190,7 @@ def myloglike(cube, ndim, nparams):
     if obs: 
         chi2=get_chi2(obs)
         #RESULT ORIENTED: for sampling set error to default if error in one of the predictors  
+        #FIXME: consider to not set Micromegas error to infinity, since it crashes on neutralino!=lsp
         for name in ['FeynHiggs','Micromegas','BPhysics','SUSY-POPE']:
             if obs[(name,'error')]:
                 chi2=default_chi
