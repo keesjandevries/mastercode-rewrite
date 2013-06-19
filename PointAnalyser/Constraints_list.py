@@ -82,6 +82,8 @@ constraints_dict = {
                 ('MASS', 'MSf(2,4,2)'),#ss_R
                 ('MASS', 'MSf(1,4,3)'),#sb_1
                 ('MASS', 'MSf(2,4,3)'),#sb_2
+                #gluino
+                ('MASS','MGl'),
                 ],
             'data' : [],
             'func' : LF.neutralino_lsp, 
