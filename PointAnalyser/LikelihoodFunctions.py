@@ -48,7 +48,7 @@ def multi_lowerlimit(point, mu, sigma):
 # other function
 def neutralino_lsp(point): # FIXME: mu and sigma are not right
     #point[0] is the neutralino
-    return sum([ (abs(mass)-point[0])**2 for mass in point  if (abs(mass) < point[0])] )
+    return sum([ (abs(mass)-abs(point[0]))**2 for mass in point  if (abs(mass) < abs(point[0]))] )
 
 
 # contour likelihood functions
