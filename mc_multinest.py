@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os, pprint, argparse, sys,pickle ,re, json
+import os, pprint, argparse, sys,pickle ,re, json, numpy
 from collections import OrderedDict
 
 #FIXME: use interface from github though check performance!!!!
@@ -131,7 +131,7 @@ args = parse_args()
 #parameter ranges
 param_ranges=get_param_ranges()
 #default X^2 penalty in case of errors
-default_chi=1e9
+default_chi=-10*args.log_zero
 #lookup dictionary for initiating SLHA() objects
 lookup=SLHA().get_lookup()
 #constraint objects
@@ -203,6 +203,8 @@ def myloglike(cube, ndim, nparams):
         for name in ['FeynHiggs','Micromegas','BPhysics','SUSY-POPE']:
             if obs[(name,'error')]:
                 chi2=default_chi
+        if numpy.isnan(chi2):
+            chi2=default_chi
         obs[('tot_X2', 'all')]=chi2
     else:
         chi2=default_chi
