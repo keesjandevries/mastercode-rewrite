@@ -288,34 +288,39 @@ def get_pmssm10_input_slha(slha_params):
                                         
                                         
 def run( inputs,verbose=None):          
-    model=inputs['model']
-    # set inputs to default
-    slha_params=default_inputs.copy()
-    # update to get the parsed inputs
-    slha_params.update(inputs)
+    if inputs.get('file'):
+        fname=inputs['file']
+        with open(fname,'r') as softpoint_input_file:
+            my_out = subprocess.check_output(['./packages/bin/softpoint.x','leshouches'],stdin=softpoint_input_file)
+    elif inputs.get('model'):
+        model=inputs['model']
+        # set inputs to default
+        slha_params=default_inputs.copy()
+        # update to get the parsed inputs
+        slha_params.update(inputs)
 
-    if   model=='cMSSM':
-        inputslha=get_cmssm_input_slha(slha_params)
-    elif model=='NUHM1':
-        inputslha=get_nuhm1_input_slha(slha_params)
-    elif model=='pMSSM':
-        inputslha=get_pmssm_input_slha(slha_params)
-    elif model=='pMSSM8':
-        inputslha=get_pmssm8_input_slha(slha_params)
-    elif model=='pMSSM10':
-        inputslha=get_pmssm10_input_slha(slha_params)
-    else:
-        print("ERROR: No valid model provided")
-        return "", 1
-    if verbose: print(inputslha)
+        if   model=='cMSSM':
+            inputslha=get_cmssm_input_slha(slha_params)
+        elif model=='NUHM1':
+            inputslha=get_nuhm1_input_slha(slha_params)
+        elif model=='pMSSM':
+            inputslha=get_pmssm_input_slha(slha_params)
+        elif model=='pMSSM8':
+            inputslha=get_pmssm8_input_slha(slha_params)
+        elif model=='pMSSM10':
+            inputslha=get_pmssm10_input_slha(slha_params)
+        else:
+            print("ERROR: No valid model provided")
+            return "", 1
+        if verbose: print(inputslha)
 
-    # then run on the inputslha file
-    fname=unique_filename(inputs.get('tmp_dir'))
-    with open(fname,'w') as softpoint_input_file:
-        softpoint_input_file.write(inputslha)
-    with open(fname,'r') as softpoint_input_file:
-        my_out = subprocess.check_output(['./packages/bin/softpoint.x','leshouches'],stdin=softpoint_input_file)
-    rm(fname)
+        # then run on the inputslha file
+        fname=unique_filename(inputs.get('tmp_dir'))
+        with open(fname,'w') as softpoint_input_file:
+            softpoint_input_file.write(inputslha)
+        with open(fname,'r') as softpoint_input_file:
+            my_out = subprocess.check_output(['./packages/bin/softpoint.x','leshouches'],stdin=softpoint_input_file)
+        rm(fname)
     my_out=my_out.decode('utf-8')
     error =  ('invalid' in str(my_out))
     if error: print("ERROR: softsusy point is invalid")
