@@ -35,8 +35,9 @@ def parse_args():
     parser.add_argument('--tmp_dir', '-t', dest='tmp_dir', action='store', type=str,
             default=None, help='directory where temporary files get stored')
     parser.add_argument('--data-set'    , '-d', dest='data_set'  , action='store', 
-            default="mc8", help='data set for X^2 calculation')
+            default="generic", help='data set for X^2 calculation')
     parser.add_argument('--run-spectrum', help='run spectrum file through point.py')
+    parser.add_argument('--run-softsusy-input-slha', help='run softsusy input slha file through point.py')
     parser.add_argument('--mc-cmssm-default', action='store_true', 
             help="Mastercode cmssm point: m0=271.3,m12=920.3,tanb=14.4,A0=-1193.57,mt=173.47,mz=91.18774,Delta_alpha_had=0.027482")
     parser.add_argument('--mc-cmssm', nargs=7, type=float, 
@@ -49,6 +50,8 @@ def parse_args():
             help="Mastercode 8d pmssm point specify: msq12,msq3,msl, M1, A, MA,tanb,mu,mt,mz,Delta_alpha_had")
     parser.add_argument('--mc-pmssm10', nargs=13, type=float,
             help="Mastercode 10d pmssm point specify: msq12,msq3,msl, M1,M2,M3, A, MA,tanb,mu,mt,mz,Delta_alpha_had")
+    parser.add_argument('--mc-pmssm10-default',action='store_true' ,
+            help="Mastercode 10d pmssm point specify: best fit found with minuit")
     return parser.parse_args()
 
 if __name__=="__main__" :
@@ -60,23 +63,25 @@ if __name__=="__main__" :
     #this is afterburner style 
     if args.mc_cmssm :
         all_params=inputs.get_mc_cmssm_inputs(*(args.mc_cmssm))
-    if args.mc_cmssm_default:
+    elif args.mc_cmssm_default:
         all_params=inputs.get_mc_cmssm_inputs(271.378279475, 920.368119935, 14.4499538001, -1193.57068242, 173.474173, 91.1877452551, 0.0274821578423)
-    if args.mc_nuhm1 :
+    elif args.mc_nuhm1 :
         all_params=inputs.get_mc_nuhm1_inputs(*(args.mc_nuhm1))
-    if args.mc_nuhm1_default :
+    elif args.mc_nuhm1_default :
         all_params=inputs.get_mc_nuhm1_inputs(237.467776964, 968.808711245, 15.649644, -1858.78698798, -6499529.79661,
                 173.385870186, 91.1875000682, 0.0274949856504)
-    if args.mc_pmssm8 :
+    elif args.mc_pmssm8 :
         all_params=inputs.get_mc_pmssm8_inputs(*(args.mc_pmssm8))
-    if args.mc_pmssm10 :
+    elif args.mc_pmssm10 :
         all_params=inputs.get_mc_pmssm10_inputs(*(args.mc_pmssm10))
-
-    if args.run_spectrum:
-        all_params={'spectrumfile':args.run_spectrum}
+    elif args.mc_pmssm10_default :
+        all_params=inputs.get_mc_pmssm10_inputs(1663.99,1671.75,414.131,294.935,311.199,1712.73,
+                1841.21,718.489,43.4923,775.09,173.233,91.1874,0.0275018)
+    elif args.run_softsusy_input_slha:
+        all_params={'SoftSUSY':{'file':args.run_softsusy_input_slha}}
 
     #check for command line input parameters
-    if args.input_pars:
+    elif args.input_pars:
         all_params.update(eval(args.input_pars))
 
     #check for tmp_dir
