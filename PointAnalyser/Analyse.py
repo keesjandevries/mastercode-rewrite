@@ -25,7 +25,11 @@ def print_chi2_breakdown(point,constraints, data_set):
     for name in data_set: 
         oids= constraints[name].get_oids()
         chi2= constraints[name].get_chi2(point)
-        print('{:<20}: {:>13.3f} | {} '.format(name,chi2, ['{:<30} : {:.6}'.format(str(oid),point[oid]) for oid in oids[:2] ] ))
+        try:
+            print('{:<20}: {:>13.3f} | {} '.format(name,chi2, ['{:<30} : {:.6}'.format(str(oid),point[oid]) for oid in oids[:2] ] ))
+        except KeyError:
+            print('Continue building table...')
+            continue
         total+=chi2
     print('='*len(header))
     print('Total Chi2: {}'.format(total))
