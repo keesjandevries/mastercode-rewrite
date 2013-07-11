@@ -192,6 +192,10 @@ constraints_dict = {
             'oids': [('Micromegas', 'Omega')],
             'data': [0.1109, 0.0056, 0.012],
             'func': LF.gauss},
+        'Oh2_upper_limit': {   
+            'oids': [('Micromegas', 'Omega')],
+            'data': [0.1109, 0.0056, 0.012],
+            'func': LF.upperlimit},
         'Oh^2-9-years': {   
             'oids': [('Micromegas', 'Omega')],
             'data': [0.1138, 0.0056, 0.012],
