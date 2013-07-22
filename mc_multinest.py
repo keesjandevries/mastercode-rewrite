@@ -46,6 +46,8 @@ def parse_args():
     mcpp.add_argument('--model', default='pMSSM8', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8','pMSSM10'])
     mcpp.add_argument('--nuisance-parameter-ranges', default='User/nuisance_parameter_ranges.json', 
             help='json file with parameter ranges for mt,mz,delta_alpha_had')
+    mcpp.add_argument('--cmssm-ranges', default='User/cmssm_ranges.json', 
+            help='json file with parameter ranges for m0,m12,tanb,A0')
     mcpp.add_argument('--nuhm1-ranges', default='User/nuhm1_ranges.json', 
             help='json file with parameter ranges for m0,m12,tanb,A0,mh2')
     mcpp.add_argument('--pmssm8-ranges', default='User/pmssm8_ranges.json', 
@@ -101,6 +103,13 @@ def get_param_ranges():
     #FIXME: re-implement cMSSM and NUHM1/2 at some point 
     with open(args.nuisance_parameter_ranges,'r') as f:
         nuisance_parameter_ranges=json.load(f)
+    if args.model == 'cMSSM':
+        with open(args.cmssm_ranges,'r') as f:
+            cmssm_ranges=json.load(f)
+        cmssm_ranges.update(nuisance_parameter_ranges)
+        #The order here should match that of inputs.get_mc_pmssm8_inputs(... )
+        param_ranges= OrderedDict([(name, cmssm_ranges[name]) for name in 
+            ['m0','m12','tanb','A0','mt','mz','delta_alpha_had']])
     if args.model == 'NUHM1':
         with open(args.nuhm1_ranges,'r') as f:
             nuhm1_ranges=json.load(f)
@@ -150,8 +159,8 @@ def get_obs(cube,ndim):
     #make a python list out of the cube
     parameters=[cube[i] for i in range(ndim)]
     # Get formatted input. See what is looks like with option "-v inputs"  
-#    if args.model == 'cMSSM':
-#        all_params= inputs.get_mc_cmssm_inputs(*parameters)
+    if args.model == 'cMSSM':
+        all_params= inputs.get_mc_cmssm_inputs(*parameters)
     if args.model == 'NUHM1':
         all_params= inputs.get_mc_nuhm1_inputs(*parameters)
     if args.model == 'pMSSM8':
