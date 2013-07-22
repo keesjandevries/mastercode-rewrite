@@ -79,6 +79,8 @@ if __name__=="__main__" :
                 1841.21,718.489,43.4923,775.09,173.233,91.1874,0.0275018)
     elif args.run_softsusy_input_slha:
         all_params={'SoftSUSY':{'file':args.run_softsusy_input_slha}}
+    elif args.run_spectrum:
+        all_params={'spectrumfile':args.run_spectrum}
 
     #check for command line input parameters
     elif args.input_pars:
