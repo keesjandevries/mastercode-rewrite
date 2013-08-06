@@ -1,11 +1,12 @@
 #! /usr/bin/env python
-import os, sys, select, argparse, pprint, json, pickle
+import os, sys, select, argparse, pprint, json, pickle, numpy
 from collections import OrderedDict
 
 #tools
 from tools import  pickle_object
 #point calculator
-from ObsCalculator import point, inputs
+from ObsCalculator import point as POINT
+from ObsCalculator import inputs
 #chi2 calculation
 from PointAnalyser import Analyse, Constraints_list
 
@@ -24,14 +25,16 @@ def parse_args():
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
     parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdown')
     parser.add_argument('--json-breakdown'  ,  help='provide json file for breakdown')
+    parser.add_argument('--create-storage-dict'  ,  help='create the json file that keeps a list of how to store points in numpy array')
+    parser.add_argument('--storage-dict'  ,  help='provide the json file that keeps a list of how to store points in numpy array')
+    parser.add_argument('--numpy-out', help='store in numpy format')
     parser.add_argument('--suppress-chi2-calc' , dest='suppress_chi2_calc', action='store_true', help='suppress chi2 calculation for testing')
     parser.add_argument('--observable-keys'  , dest='observable_keys', action='store_true', help='print observable keys')
     parser.add_argument('--store-pickle'     , dest='store_pickle', action='store', type=str,
             default=None ,help='store obervables in pickle file')
     parser.add_argument('--root-save'  , '-r',  help='save to root file')
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , default=[], action='store', nargs="+", help='verbosity')
-    parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
-            default=None, help='override all_params')
+    parser.add_argument('--input-pars', '-p',  help='override all_params')
     parser.add_argument('--tmp_dir', '-t', dest='tmp_dir', action='store', type=str,
             default=None, help='directory where temporary files get stored')
     parser.add_argument('--data-set'    , '-d', dest='data_set'  , action='store', 
@@ -54,9 +57,8 @@ def parse_args():
             help="Mastercode 10d pmssm point specify: best fit found with minuit")
     return parser.parse_args()
 
-if __name__=="__main__" :
-    args = parse_args()
 
+def main(args):
     #Start with clean set of parameters
     all_params={} 
 
@@ -83,21 +85,22 @@ if __name__=="__main__" :
         all_params={'spectrumfile':args.run_spectrum}
 
     #check for command line input parameters
-    elif args.input_pars:
+    if args.input_pars is not None:
         all_params.update(eval(args.input_pars))
 
     #check for tmp_dir
     if args.tmp_dir:
         all_params.update({'tmp_dir':args.tmp_dir})
+
     #print inputs like  
-    if 'inputs' in args.verbose : 
+    if 'inputs' in args.verbose: 
         print(all_params)
         
     #check verbosity
     if args.verbose:
         all_params['verbose']=args.verbose
     try:
-        slha_obj, point ,stdouts = point.run_point(**all_params)
+        slha_obj, point ,stdouts = POINT.run_point(**all_params)
     except TypeError:
         print("ERROR: Point failed to run")
         exit()
@@ -153,3 +156,38 @@ if __name__=="__main__" :
         with open(args.store_pickle,'wb') as pickle_file:
             pickle.dump(point,pickle_file)
 
+    if args.create_storage_dict:
+        l=[]
+        i=0
+        for key,val in point.items():
+            oid1,oid2=key
+            l.append([oid1,oid2,i])
+            i+=1
+        with open(args.create_storage_dict,'w') as f:
+            json.dump(l,f,indent=3)
+
+    if args.numpy_out :
+        if args.storage_dict:
+            with open(args.storage_dict, 'r') as f:
+                l=json.load(f)
+            d={(oid1,oid2):array_id for oid1,oid2, array_id in l}
+            print(d[('Micromegas', 'error')])
+            #start with list of None's
+            vars=[None]*len(d)
+            #Filll with values
+            for oids, val in point.items():
+                vars[d[oids]]=val
+            dt=numpy.dtype(len(vars)*[('','f')])
+            vars=numpy.array(tuple(vars),dtype=dt)
+            try:
+                a=numpy.load(args.numpy_out)
+                print(args.numpy_out,'exists. Appending')
+                a=numpy.append(a,vars)
+            except FileNotFoundError:
+                print('creating: ', args.numpy_out)
+                a=vars
+            numpy.save(args.numpy_out,a)
+
+if __name__=="__main__" :
+    args = parse_args()
+    main(args)
