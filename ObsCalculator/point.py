@@ -6,16 +6,6 @@ import tools
 from ObsCalculator.interfaces import slhalib as slhamodule
 from ObsCalculator.interfaces.slhalib import SLHA
 
-# spectrum calculator
-from ObsCalculator.interfaces import softsusy
-from ObsCalculator.interfaces import feynhiggs, micromegas, superiso, bphysics, lspscat
-from ObsCalculator.interfaces import susypope
-
-default_spectrum_generator = softsusy
-default_spectrum_modifiers = [feynhiggs]
-default_predictors = default_spectrum_modifiers + [micromegas, superiso, bphysics, lspscat,#]
-            susypope]
-
 
 #FIXME: want to separate input parameters (like m0, m12, Delta_Alpha_had, ... ) from options (like verbose)
 def run_point( **input_pars):
@@ -26,9 +16,9 @@ def run_point( **input_pars):
     #==================
     # define predictors
     #==================
-    spectrum_generator  =default_spectrum_generator
-    spectrum_modifiers  =default_spectrum_modifiers
-    predictors          =default_predictors
+    spectrum_generator=input_pars['spectrum_generator']
+    spectrum_modifiers=input_pars['spectrum_modifiers']
+    predictors=input_pars['predictors']
     #=====================================
     # define directory for temporary files
     #=====================================
