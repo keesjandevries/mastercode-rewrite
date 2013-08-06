@@ -3,7 +3,7 @@ import os, sys, select, argparse, pprint, json, pickle, numpy
 from collections import OrderedDict
 
 #tools
-from tools import  pickle_object
+from tools import  pickle_object, import_predictor_modules
 #point calculator
 from ObsCalculator import point as POINT
 from ObsCalculator import inputs
@@ -12,9 +12,9 @@ from PointAnalyser import Analyse, Constraints_list
 
 #data set
 from User.data_sets import data_sets
+import User.predictors
 
 #storage
-import Storage.interfaces.ROOT as root
 from Storage import old_mc_rootstorage 
 
 #pretty printer
@@ -22,6 +22,8 @@ pp = pprint.PrettyPrinter(indent=4)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Run mastercode for cmssm point')
+    parser.add_argument('--predictors',default='default',choices=User.predictors.predictors.keys(),
+            help='specify key from \'predictors\' dictionary in User/predictors.py')
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
     parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdown')
     parser.add_argument('--json-breakdown'  ,  help='provide json file for breakdown')
@@ -62,27 +64,33 @@ def main(args):
     #Start with clean set of parameters
     all_params={} 
 
+    #get predictor modules
+    predictors=User.predictors.get(args.predictors)
+    predictor_modules=import_predictor_modules(predictors)
+    all_params.update(predictor_modules)
+
     #this is afterburner style 
     if args.mc_cmssm :
-        all_params=inputs.get_mc_cmssm_inputs(*(args.mc_cmssm))
+        all_params.update(inputs.get_mc_cmssm_inputs(*(args.mc_cmssm)))
     elif args.mc_cmssm_default:
-        all_params=inputs.get_mc_cmssm_inputs(271.378279475, 920.368119935, 14.4499538001, -1193.57068242, 173.474173, 91.1877452551, 0.0274821578423)
+        all_params.update(inputs.get_mc_cmssm_inputs(271.378279475, 920.368119935, 14.4499538001, 
+            -1193.57068242, 173.474173, 91.1877452551, 0.0274821578423))
     elif args.mc_nuhm1 :
-        all_params=inputs.get_mc_nuhm1_inputs(*(args.mc_nuhm1))
+        all_params.update(inputs.get_mc_nuhm1_inputs(*(args.mc_nuhm1)))
     elif args.mc_nuhm1_default :
-        all_params=inputs.get_mc_nuhm1_inputs(237.467776964, 968.808711245, 15.649644, -1858.78698798, -6499529.79661,
-                173.385870186, 91.1875000682, 0.0274949856504)
+        all_params.update(inputs.get_mc_nuhm1_inputs(237.467776964, 968.808711245, 15.649644, -1858.78698798, -6499529.79661,
+                173.385870186, 91.1875000682, 0.0274949856504))
     elif args.mc_pmssm8 :
-        all_params=inputs.get_mc_pmssm8_inputs(*(args.mc_pmssm8))
+        all_params.update(inputs.get_mc_pmssm8_inputs(*(args.mc_pmssm8)))
     elif args.mc_pmssm10 :
-        all_params=inputs.get_mc_pmssm10_inputs(*(args.mc_pmssm10))
+        all_params.update(inputs.get_mc_pmssm10_inputs(*(args.mc_pmssm10)))
     elif args.mc_pmssm10_default :
-        all_params=inputs.get_mc_pmssm10_inputs(1663.99,1671.75,414.131,294.935,311.199,1712.73,
-                1841.21,718.489,43.4923,775.09,173.233,91.1874,0.0275018)
+        all_params.update(inputs.get_mc_pmssm10_inputs(1663.99,1671.75,414.131,294.935,311.199,1712.73,
+                1841.21,718.489,43.4923,775.09,173.233,91.1874,0.0275018))
     elif args.run_softsusy_input_slha:
-        all_params={'SoftSUSY':{'file':args.run_softsusy_input_slha}}
+        all_params.update({'SoftSUSY':{'file':args.run_softsusy_input_slha}})
     elif args.run_spectrum:
-        all_params={'spectrumfile':args.run_spectrum}
+        all_params.update({'spectrumfile':args.run_spectrum})
 
     #check for command line input parameters
     if args.input_pars is not None:
