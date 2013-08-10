@@ -1,12 +1,23 @@
+from math import sqrt
 def gauss(point, mu, sigma):
     x = point[0]
     return ((x-mu)/sigma)**2
+
+def higgs_gauss(point, mu, sigma):
+    mh = point[0]
+    dmh = point[1]
+    sigma=sqrt(sigma**2 + dmh**2)
+    return ((mh-mu)/sigma)**2
 
 
 def ratio_gauss(point, mu, sigma):
     x1 = point[0]
     x2 = point[1]
     x=x1/x2
+    return ((x-mu)/sigma)**2
+
+def bsmm_ratio_gauss(point,mu,sigma):
+    x=point[0]/3.46e-9
     return ((x-mu)/sigma)**2
 
 def upperlimit(point, mu, sigma):
@@ -25,6 +36,15 @@ def lowerlimit(point, mu, sigma):
         chi2 = gauss(point,mu,sigma)
     else:
         chi2 = 0
+    return chi2
+
+def asymmetric_gauss(point,mu,sigma_plus,sigma_min):
+    chi2=0
+    x=point[0]
+    if x < mu:
+        chi2=gauss(point,mu,sigma_min)
+    elif x > mu:
+        chi2=gauss(point,mu,sigma_plus)
     return chi2
 
 def abs_lowerlimit(point, mu, sigma):
