@@ -95,7 +95,14 @@ def main(args):
 
     #check for command line input parameters
     if args.input_pars is not None:
-        all_params.update(eval(args.input_pars))
+        command_line_dict=eval(args.input_pars)
+        for key, value in command_line_dict.items():
+#            if input_pars.get(key) is None:
+#                input_pars.update
+            if isinstance(value,dict) and (all_params.get(key) is not None):
+                all_params[key].update(value)
+            else:
+                all_params[key]=value
 
     #check for tmp_dir
     if args.tmp_dir:
