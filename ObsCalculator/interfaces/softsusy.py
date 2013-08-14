@@ -6,6 +6,7 @@ from tools import  rm , unique_filename
 
 
 name = "SoftSUSY"
+default_version='3.0.13'
 
 #NOTE: the input slha observable ids (oids) follow the output of slhalib.py:
 #BLOCK MASS
@@ -288,10 +289,15 @@ def get_pmssm10_input_slha(slha_params):
                                         
                                         
 def run( inputs,verbose=None):          
+    try:
+        version=inputs['version']
+    except KeyError:
+        version=default_version
+    print(version)
     if inputs.get('file'):
         fname=inputs['file']
         with open(fname,'r') as softpoint_input_file:
-            my_out = subprocess.check_output(['./packages/bin/softpoint.x','leshouches'],stdin=softpoint_input_file)
+            my_out = subprocess.check_output(['./packages/bin/softpoint{}.x'.format(version),'leshouches'],stdin=softpoint_input_file)
     elif inputs.get('model'):
         model=inputs['model']
         # set inputs to default
@@ -319,7 +325,7 @@ def run( inputs,verbose=None):
         with open(fname,'w') as softpoint_input_file:
             softpoint_input_file.write(inputslha)
         with open(fname,'r') as softpoint_input_file:
-            my_out = subprocess.check_output(['./packages/bin/softpoint.x','leshouches'],stdin=softpoint_input_file)
+            my_out = subprocess.check_output(['./packages/bin/softpoint{}.x'.format(version),'leshouches'],stdin=softpoint_input_file)
         rm(fname)
     my_out=my_out.decode('utf-8')
     error =  ('invalid' in str(my_out))

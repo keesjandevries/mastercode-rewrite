@@ -1,6 +1,6 @@
 include $(DEF_DIR)/softsusy.mk
 
-$(lib):
+$(lib) $(executable):
 ifeq ($(wildcard $(tarfile)),)
 	wget -N -P $(TAR_DIR) $(remote)
 endif
@@ -11,6 +11,7 @@ endif
 		./configure --prefix=$(INSTALL_DIR);
 	$(MAKE) -C $(src_dir)
 	$(MAKE) -C $(src_dir) install
+	mv $(bin_dir)/softpoint.x $(executable)
 
 softsusy: $(lib)
 

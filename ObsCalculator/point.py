@@ -112,7 +112,7 @@ def run_point( **input_pars):
     in_dict={}
     if not 'spectrumfile' in input_pars:
         for key, val in input_pars[spectrum_generator.name].items():
-            if not (key=='model'):
+            if not (key=='model') and not (key=='version'):
                 in_key =(key[0],'in_{0}'.format(key[1]))
                 in_dict[in_key]=val
         predictor_output.update(in_dict)
