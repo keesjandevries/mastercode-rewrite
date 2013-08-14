@@ -44,11 +44,15 @@ def run(slhadata, inputs=None, update=False) :
             output={}
             #get Omega and sigma_p_si and possibly other variables from standard out
             lines=std_out.split('\n')
+            nanflag=False
             for line in lines:
-                if 'MastercodeTag' in line:
-                    tag, obs, val = json.loads(line)
-                    output[obs]=val
-            output['error']=0
+                if ('MastercodeTag' in line) :
+                    if not ('nan' in line):
+                        tag, obs, val = json.loads(line)
+                        output[obs]=val
+                    else :
+                        nanflag=True
+            output['error']=int(nanflag)
         except subprocess.CalledProcessError as e:
             #if micromegas fails, it exits with non zero code. This is cought by subprocess.CalledProcessError
             std_out=e.output.decode('utf-8')
