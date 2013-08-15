@@ -22,6 +22,7 @@ struct FeynHiggsPrecObs {
            //BsmumuMSSM, BsmumuSM;
     double gm2, DeltaRho, MWMSSM, MWSM, SW2MSSM, SW2SM, edmeTh, edmn, edmHg;
     double mh, mH, mA, mHpm;
+    double Dmh, DmH, DmA, DmHpm;
 };
 
 extern "C" {
@@ -56,6 +57,12 @@ extern "C" {
         std::complex<double> ZHiggs[3][3];
         FHHiggsCorr(&error, mhiggs, &SAeff, UHiggs, ZHiggs);
 
+        double Dmhiggs[4];
+        std::complex<double> DSAeff;
+        std::complex<double> DUHiggs[3][3];
+        std::complex<double> DZHiggs[3][3];
+        FHUncertainties(&error, Dmhiggs, &DSAeff, DUHiggs, DZHiggs);
+
         int ccb;
 
         FHConstraints(&error, &(out->gm2), &(out->DeltaRho),
@@ -72,6 +79,10 @@ extern "C" {
             out->mA = mhiggs[2];
             out->mHpm = mhiggs[3];
 
+            out->Dmh = Dmhiggs[0];
+            out->DmH = Dmhiggs[1];
+            out->DmA = Dmhiggs[2];
+            out->DmHpm = Dmhiggs[3];
 
             if(update) {
                 Mass_Mh0.re = mhiggs[0];
@@ -84,17 +95,6 @@ extern "C" {
                     }
                 }
                 Alpha_Alpha.re = asin(std::real(SAeff));
-                PrecObs_gminus2mu.re = out->gm2;
-                PrecObs_DeltaRho.re  = out->DeltaRho;
-                PrecObs_MWSM.re      = out->MWSM;
-                PrecObs_SW2effSM.re  = out->SW2SM;
-                PrecObs_EDMeTh.re    = out->edmeTh;
-                PrecObs_EDMn.re      = out->edmn;
-                PrecObs_EDMHg.re     = out->edmHg;
-                //PrecObs_MW.re        = out->MWMSSM;
-                //PrecObs_SW2eff.re    = out->SW2MSSM;
-                //PrecObs_bsgamma.re   = out->bsgammaMSSM;
-                //PrecObs_bsgammaSM.re = out->bsgammaSM;
             }
             return error;
         }

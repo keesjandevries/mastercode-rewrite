@@ -95,17 +95,6 @@ extern "C" {
                     }
                 }
                 Alpha_Alpha.re = asin(std::real(SAeff));
-               // PrecObs_gminus2mu.re = out->gm2;
-               // PrecObs_DeltaRho.re  = out->DeltaRho;
-               // PrecObs_MWSM.re      = out->MWSM;
-               // PrecObs_SW2effSM.re  = out->SW2SM;
-               // PrecObs_EDMeTh.re    = out->edmeTh;
-               // PrecObs_EDMn.re      = out->edmn;
-               // PrecObs_EDMHg.re     = out->edmHg;
-                //PrecObs_MW.re        = out->MWMSSM;
-                //PrecObs_SW2eff.re    = out->SW2MSSM;
-                //PrecObs_bsgamma.re   = out->bsgammaMSSM;
-                //PrecObs_bsgammaSM.re = out->bsgammaSM;
             }
             return error;
         }
