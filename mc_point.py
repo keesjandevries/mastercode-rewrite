@@ -13,6 +13,7 @@ from PointAnalyser import Analyse, Constraints_list
 #data set
 from User.data_sets import data_sets
 import User.predictors
+import User.versions
 
 #storage
 import Storage.interfaces.ROOT as root
@@ -21,10 +22,12 @@ from Storage import old_mc_rootstorage
 #pretty printer
 pp = pprint.PrettyPrinter(indent=4)
 
-def parse_args():
+def get_args_parser():
     parser = argparse.ArgumentParser(description='Run mastercode for cmssm point')
     parser.add_argument('--predictors',default='default',choices=User.predictors.predictors.keys(),
             help='specify key from \'predictors\' dictionary in User/predictors.py')
+    parser.add_argument('--versions',choices=User.versions.versions.keys(),
+            help='specify key from \'versions\' dictionary in User/versions.py')
     parser.add_argument('--observables', '-o', dest='obs'      , action='store_true', help='print observables')
     parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdown')
     parser.add_argument('--json-breakdown'  ,  help='provide json file for breakdown')
@@ -58,7 +61,7 @@ def parse_args():
             help="Mastercode 10d pmssm point specify: msq12,msq3,msl, M1,M2,M3, A, MA,tanb,mu,mt,mz,Delta_alpha_had")
     parser.add_argument('--mc-pmssm10-default',action='store_true' ,
             help="Mastercode 10d pmssm point specify: best fit found with minuit")
-    return parser.parse_args()
+    return parser
 
 
 def main(args):
@@ -69,6 +72,21 @@ def main(args):
     predictors=User.predictors.get(args.predictors)
     predictor_modules=import_predictor_modules(predictors)
     all_params.update(predictor_modules)
+
+    #FIXME: need to come up with generalised parsing of options to the predictors
+    #get versions
+    versions=User.versions.get(args.versions)
+    for predictor , versions in versions.items():
+        if predictor==predictors['spectrum_generator']:
+            try:
+                all_params[predictor]['version']=versions
+            except KeyError:
+                all_params[predictor]={'version':versions}
+        else:
+            try:
+                all_params[predictor]['versions']=versions
+            except KeyError:
+                all_params[predictor]={'versions':versions}
 
     #this is afterburner style 
     if args.mc_cmssm :
@@ -115,15 +133,18 @@ def main(args):
     #check verbosity
     if args.verbose:
         all_params['verbose']=args.verbose
+
     try:
         slha_obj, point ,stdouts = POINT.run_point(**all_params)
     except TypeError:
         print("ERROR: Point failed to run")
         exit()
 
-    if slha_obj is None:
-        print("Exiting because slha_obj is None")
-        exit()
+    #wh
+
+#    if slha_obj is None:
+#        print("Exiting because slha_obj is None")
+#        exit()
 
     if not args.suppress_chi2_calc:
         all_constraints=Constraints_list.constraints
@@ -136,6 +157,7 @@ def main(args):
     if not args.suppress_chi2_calc:
         constraints={name: all_constraints[name] for name in data_set}
 
+    #FIXME: this should become a separate file
     #pass this constraints list to the chi2 function
     if not args.suppress_chi2_calc:
         total, breakdown = Analyse.chi2(point,constraints)
@@ -172,13 +194,17 @@ def main(args):
         with open(args.store_pickle,'wb') as pickle_file:
             pickle.dump(point,pickle_file)
 
+    #create json file with [('oid1','oid2',array_id), ... ] for storage array ids
     if args.create_storage_dict:
+        point=OrderedDict([(('tot_X2', 'all'),0)]+list(point.items()))
         l=[]
         i=0
+        #make list
         for key,val in point.items():
             oid1,oid2=key
             l.append([oid1,oid2,i])
             i+=1
+        #store as json file
         with open(args.create_storage_dict,'w') as f:
             json.dump(l,f,indent=3)
 
@@ -187,10 +213,9 @@ def main(args):
             with open(args.storage_dict, 'r') as f:
                 l=json.load(f)
             d={(oid1,oid2):array_id for oid1,oid2, array_id in l}
-            print(d[('Micromegas', 'error')])
             #start with list of None's
             vars=[None]*len(d)
-            #Filll with values
+            #Fill with values
             for oids, val in point.items():
                 vars[d[oids]]=val
             dt=numpy.dtype(len(vars)*[('','f')])
@@ -203,7 +228,9 @@ def main(args):
                 print('creating: ', args.numpy_out)
                 a=vars
             numpy.save(args.numpy_out,a)
+    #FIXME: we may want a better way of doing this
+    return slha_obj, point ,stdouts
 
 if __name__=="__main__" :
-    args = parse_args()
+    args = get_args_parser().parse_args()
     main(args)
