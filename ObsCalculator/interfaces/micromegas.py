@@ -4,7 +4,7 @@ from tools import  ctypes_field_values, rm, unique_filename
 
 name = "Micromegas"
 #executable = 'packages/bin/micromegas.x'
-default_version='2.4.5'
+default_version='3.2'
 
 #NOTE: KJ 2013/05/23 
 #This module does not use a shared library object for an interface to Micromegas.

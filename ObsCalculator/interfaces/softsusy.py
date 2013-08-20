@@ -6,7 +6,7 @@ from tools import  rm , unique_filename
 
 
 name = "SoftSUSY"
-default_version='3.0.13'
+default_version='3.3.9'
 
 #NOTE: the input slha observable ids (oids) follow the output of slhalib.py:
 #BLOCK MASS
