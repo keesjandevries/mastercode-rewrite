@@ -18,8 +18,6 @@ Otherwise,
             self._data = data
         elif mode == 'contour':
             self._data = [ Contour(*arg) for arg in data ]
-            for contour in self._data:
-                assert contour.dim == len(ids)
         elif mode == 'default':
             self._data = data
 
