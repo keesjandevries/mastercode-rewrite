@@ -1,6 +1,6 @@
-version=2.8.6
+#version=2.8.6
 #version=2.8.7
-#version=2.9.5
+version=2.9.5
 #version=2.9.5.r3456v3
 name=FeynHiggs-$(version)
 src_dir=$(PREDICTOR_DIR)/$(name)

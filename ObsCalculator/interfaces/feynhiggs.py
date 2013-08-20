@@ -8,7 +8,7 @@ from tools import set_obj_inputs_and_defaults
 from ObsCalculator.interfaces.slhalib import  invalid
 
 name = "FeynHiggs"
-default_version='2.8.7'
+default_version='2.9.5.r3456v3'
 versions={
     '2.8.6': 'packages/lib/libmcfeynhiggs2.8.6.so',
     '2.8.7': 'packages/lib/libmcfeynhiggs2.8.7.so',
@@ -19,10 +19,10 @@ versions={
 #want to be able to use various libraries without everything in need of compiling
 FHlibs={}
 for version, lib in versions.items():
-#    try:
-    FHlibs[version]=cdll.LoadLibrary(lib)
-#    except OSError:
-#        print('WARNING: could not find FeynHiggs library: \"{}\"'.format(lib))
+    try:
+        FHlibs[version]=cdll.LoadLibrary(lib)
+    except OSError:
+        print('WARNING: could not find FeynHiggs library: \"{}\"'.format(lib))
 
 nslhadata ={version: lib.get_nslhadata() for version,lib in FHlibs.items()}
 
