@@ -10,7 +10,7 @@ LSPlib = cdll.LoadLibrary('packages/lib/libmclspscat.so')
 
 default_inputs={
     'SigmaPiN'      : 50. ,
-    'SigmaPiNerr'   : 14. ,
+    'SigmaPiNerr'   : 7. ,
     }
 
 class lspscatObs(Structure):
