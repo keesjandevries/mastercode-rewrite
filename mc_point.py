@@ -140,12 +140,6 @@ def main(args):
         print("ERROR: Point failed to run")
         exit()
 
-    #wh
-
-#    if slha_obj is None:
-#        print("Exiting because slha_obj is None")
-#        exit()
-
     if not args.suppress_chi2_calc:
         all_constraints=Constraints_list.constraints
         #mc8 data set
