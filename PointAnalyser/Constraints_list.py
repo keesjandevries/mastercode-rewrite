@@ -197,7 +197,7 @@ constraints_dict = {
             'func' : LF.higgs_gauss,
             'info' : 'http://gfitter.desy.de/Figures/Standard_Model/2013_05_29_ShowFullFitTable_large.gif',
             'texname': r'$M_h$',
-            'texvalue': r'$125.7\pm0.4$',
+            'texvalue': r'$125.7\pm0.4\pm\Delta(M_h)_{FH}$',
             },
         'HiggsLEP': {   
             'oids': [('FeynHiggs', 'mh')],
@@ -246,6 +246,13 @@ constraints_dict = {
             'data': [3.4946e-09, 1.0726e-09, 8.996e-10],
             'func': LF.asymmetric_gauss,
             'mode': 'default',},
+        'R_Bsmm_mc9': {   
+            'oids': [('BPhysics', 'Psll')],
+            'data': [0.94, 0.22, -0.20],
+            'func': LF.R_bsmm_chi2,
+            'mode': 'default',
+            'info': 'formula from Diego\'s slides, on 2013/08/13 first page, number from last slide'
+            },
         'mc-old-bsmm': {   
             'oids': [('BPhysics', 'Psll')],
             'data': [1.08E-8 , 0.1E-9 ,    0.2E-9],
@@ -377,6 +384,11 @@ constraints_dict = {
             'oids': [('MASS', 'MNeu(1)'),('LSP scattering','s3out')],
             'data': [('PointAnalyser/xenon100.txt','x',0.9,2,'logxy',{'min':'flat','max':'flat'})],
             'func': LF.xenon100_jul_2012, 
+            'mode': 'contour' },
+        'xenon100_SpiN_unc':{
+            'oids': [('MASS', 'MNeu(1)'),('LSP scattering','s3out'),('LSP scattering','ss3out')],
+            'data': [('PointAnalyser/xenon100.txt','x',0.9,2,'logxy',{'min':'flat','max':'flat'})],
+            'func': LF.xenon100_jul_2012_Sigma_pi_N_unc, 
             'mode': 'contour' },
         'mc8_bsmm':{
             'oids': [('BPhysics','Psll')],
