@@ -25,4 +25,24 @@ predictors={
             'spectrum_modifiers':[feynhiggs],
             'predictors':[feynhiggs,micromegas,superiso],
             },
+        'softsusy-only':{
+            'spectrum_generator':softsusy,
+            'spectrum_modifiers':[],
+            'predictors':[],
+            },
+        'micromegas':{
+            'spectrum_generator':softsusy,
+            'spectrum_modifiers':[],
+            'predictors':[micromegas],
+            },
+        'feynhiggs':{
+            'spectrum_generator':softsusy,
+            'spectrum_modifiers':[],
+            'predictors':[feynhiggs],
+            },
+        'dark-matter':{
+            'spectrum_generator':softsusy,
+            'spectrum_modifiers':[],
+            'predictors':[micromegas,lspscat],
+            },
         }
