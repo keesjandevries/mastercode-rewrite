@@ -7,6 +7,7 @@ import urllib.error
 import tarfile
 import pickle
 import hashlib
+import importlib
 
 from socket import gethostname
 from time import gmtime, strftime
@@ -27,6 +28,17 @@ def ctypes_field_values(obj, title,error=None):
         d['error']=error
     return {(title,key):val for (key,val) in d.items() }
 
+def import_predictor_modules(predictors):
+    # FIXME: secure with "try: " statements
+    predictor_modules={}
+    predictor_modules['spectrum_generator']=importlib.import_module(predictors['spectrum_generator'])
+    predictor_modules['spectrum_modifiers']=[]
+    for modifier in predictors['spectrum_modifiers']:
+        predictor_modules['spectrum_modifiers'].append(importlib.import_module(modifier))
+    predictor_modules['predictors']=[]
+    for predictor in predictors['predictors']:
+        predictor_modules['predictors'].append(importlib.import_module(predictor))
+    return predictor_modules
 
 def is_int(s):
     try:

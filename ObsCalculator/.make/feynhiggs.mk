@@ -1,10 +1,10 @@
 include $(DEF_DIR)/feynhiggs.mk
 
 $(lib):
+ifeq ($(wildcard $(src_dir)),)
 ifeq ($(wildcard $(tarfile)),)
 	wget -N -P $(TAR_DIR) $(remote)
 endif
-ifeq ($(wildcard $(src_dir)),)
 	tar -C $(PREDICTOR_DIR) -xf $(tarfile)
 endif
 	cd $(PREDICTOR_DIR);\
@@ -13,6 +13,7 @@ endif
 		./configure --prefix=$(INSTALL_DIR);
 	$(MAKE) -C $(src_dir)
 	$(MAKE) -C $(src_dir) install
+	mv $(lib_dir)/libFH.a $(lib) 
 
 fennhiggs: $(lib)
 

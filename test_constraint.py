@@ -1,6 +1,7 @@
 #! /usr/bin/env python
-from PointAnalyser.Constraints_list import constraints
 import argparse, pprint
+from PointAnalyser.Constraints_list import constraints, constraints_dict
+from User.data_sets import data_sets
 
 bpp = pprint.PrettyPrinter(indent=4, depth=3)
 
@@ -12,6 +13,7 @@ def parse_args():
             default=None, help='give constraint name from PointAnalyser/Constraints_list.py')
     parser.add_argument('--oid-sigmas',  dest='print_oid_sigmas', action='store_true',
             default=False, help='print dictionary of observable ids and corresponding sigmas')
+    parser.add_argument('--data-set-info',help='print info about all constraints in data-set')
     return parser.parse_args()
 
 
@@ -36,15 +38,6 @@ if __name__=="__main__" :
         bpp.pprint(d)
 
 
-#    data_set=['Al(SLD)', 'sintheta_eff', 'Gamma_Z',  'Rl', 'Afb(b)',  'Afb(c)',    
-#                    'sigma_had^0', 'Al(P_tau)', 'Ac', 'Rb', 'Rc', 'Ab',  'Afb_l',  'MW-mc-old', ]
-#    d={}
-#    for constraint in data_set:
-#        d[constraint]=constraints[constraint].get_sigma()
-#    print(d)
-    #constr=constraints['xenon100']
-    #xenon100_cont=constr._data[0]
-    #print(xenon100_cont.get_contour_value(423))
     if args.constraint:
         try:
             constraint=constraints[args.constraint]
@@ -58,3 +51,10 @@ if __name__=="__main__" :
                 print('Constraint: ',args.constraint, ' for values: ',args.values, ', gives chi2: ', chi2)
             else:
                 print('WARNING: you did not provide the correct number of input values: provide{}'.format(ids))
+
+    if args.data_set_info:
+        data_set=data_sets[args.data_set_info]
+        for constraint in data_set:
+            data=constraints_dict[constraint]['data']
+            function=constraints_dict[constraint]['func']
+            print('{:<20}: {:<30} {:<30}'.format(constraint,data,function )) 

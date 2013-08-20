@@ -2,12 +2,12 @@ include $(DEF_DIR)/feynhiggs.mk
 
 .PHONY: clean all
 
-feynhiggs_interface: $(interface_lib) $(interface_src)
+feynhiggs_interface: $(interface_lib) $(interface_src) 
 
 interface_obj=$(interface_src:.cc=.o)
 
-$(interface_lib): $(interface_obj)
-	$(cc) -g -shared -Wl,-soname,libmcfeynhiggs.so -o $(interface_lib) \
+$(interface_lib): $(interface_obj) $(lib)
+	$(cc) -g -shared -Wl,-soname,$(interface_lib) -o $(interface_lib) \
 		-Wl,-rpath,$(LIB_DIR) \
 		$(interface_obj) -L$(lib_dir) -l$(lib_short) -lgfortran -lm
 

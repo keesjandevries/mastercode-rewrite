@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os, pprint, argparse, sys,pickle ,re, json, numpy
+import os, pprint, argparse, sys,pickle ,re, json, numpy, signal
 from collections import OrderedDict
 
 #FIXME: use interface from github though check performance!!!!
@@ -13,9 +13,11 @@ from PointAnalyser import Constraints_list
 import Storage.interfaces.ROOT as root
 from ObsCalculator.interfaces.slhalib import SLHA
 
-from tools import unique_str
+from tools import unique_str,import_predictor_modules
 
 from User.data_sets import data_sets
+import User.predictors
+
 
 def parse_args():
     # feel free to ammend it!
@@ -29,8 +31,11 @@ def parse_args():
     mcpp = parser.add_argument_group('mcpp arguments')
     multinest = parser.add_argument_group('multinest settings','For more info see README of Multinest')
     #mastercode specific arguments
+    mcpp.add_argument('--predictors',default='default',choices=User.predictors.predictors.keys(),
+            help='specify key from \'predictors\' dictionary in User/predictors.py')
     mcpp.add_argument('--tmp-dir',  dest='tmp_dir', action='store', type=str,
             default=None, help='directory where temporary files get stored')
+    mcpp.add_argument('--storage-dict', help='specify json file containing observable id to array id map')
     mcpp.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', 
             nargs="+", help='verbosity, e.g. parameters, X, errors, multinest, or mcpp verbosity',default=[])
     mcpp.add_argument('--output-root' , '-o', dest='root_out', action='store', 
@@ -132,6 +137,12 @@ def get_param_ranges():
         param_ranges= OrderedDict([(name, pmssm10_ranges[name]) for name in 
             ['msq12','msq3','msl', 'M1','M2','M3', 'A','MA','tanb','mu','mt','mz','delta_alpha_had']])
     return param_ranges
+
+def signal_handler(signal, frame):
+    print('EXITING ON SIGNAL:'.format(signal))
+    if args.root_out:
+        root.root_close()
+    sys.exit(0)
 ##################################################
 # DEFINITIONS NEEDED inside myprior, and myloglike 
 ##################################################
@@ -149,6 +160,19 @@ all_constraints=Constraints_list.constraints
 my_pprint = pprint.PrettyPrinter(indent=4, depth=3)
 #constraints list
 data_set=data_sets[args.data_set]
+#predictors
+predictors=User.predictors.get(args.predictors)
+predictor_modules=import_predictor_modules(predictors)
+#handle signal from batch etc.
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGUSR2, signal_handler)
+signal.signal(signal.SIGXCPU, signal_handler)
+signal.signal(signal.SIGUSR1, signal_handler)
+#use storage dict
+if args.storage_dict:
+    with open(args.storage_dict, 'r') as f:
+        l=json.load(f)
+    storage_dict={(oid1,oid2):array_id for oid1,oid2, array_id in l}
 ###############################################
 
 def myprior(cube, ndim, nparams):
@@ -158,15 +182,20 @@ def myprior(cube, ndim, nparams):
 def get_obs(cube,ndim):
     #make a python list out of the cube
     parameters=[cube[i] for i in range(ndim)]
+    # start from clean directory as input for run_point
+    all_params={}
+    all_params.update(predictor_modules)
+    # add predictors
+
     # Get formatted input. See what is looks like with option "-v inputs"  
     if args.model == 'cMSSM':
-        all_params= inputs.get_mc_cmssm_inputs(*parameters)
+        all_params.update( inputs.get_mc_cmssm_inputs(*parameters))
     if args.model == 'NUHM1':
-        all_params= inputs.get_mc_nuhm1_inputs(*parameters)
+        all_params.update( inputs.get_mc_nuhm1_inputs(*parameters))
     if args.model == 'pMSSM8':
-        all_params= inputs.get_mc_pmssm8_inputs(*parameters)
+        all_params.update( inputs.get_mc_pmssm8_inputs(*parameters))
     if args.model == 'pMSSM10':
-        all_params= inputs.get_mc_pmssm10_inputs(*parameters)
+        all_params.update( inputs.get_mc_pmssm10_inputs(*parameters))
 
     if 'parameters' in args.verbose:
         print(*parameters)
@@ -205,7 +234,7 @@ def get_chi2(obs):
 def myloglike(cube, ndim, nparams):
     obs,params=get_obs(cube,ndim)
             
-    if obs: 
+    if obs is not None: 
         chi2=get_chi2(obs)
         #RESULT ORIENTED: for sampling set error to default if error in one of the predictors  
         #FIXME: consider to not set Micromegas error to infinity, since it crashes on neutralino!=lsp
@@ -216,12 +245,19 @@ def myloglike(cube, ndim, nparams):
             chi2=default_chi
         obs[('tot_X2', 'all')]=chi2
     else:
+        obs={}
         chi2=default_chi
-        obs=params
+#        obs=params
+        obs[('tot_X2', 'all')]=chi2
     # write everything to root files
     if args.root_out:
-        VARS=rootstore.get_VARS(obs, args.model)
-        root.root_write(VARS)
+        if args.storage_dict is not None:
+            vars=len(storage_dict)*[0.]
+            for oids, val in obs.items():
+                vars[storage_dict[oids]]=val
+        else:
+            vars=rootstore.get_VARS(obs, args.model)
+        root.root_write(vars)
     if args.pickle_out:
         with open('{}/{}.pkl'.format(args.multinest_dir, unique_str()),'wb') as pickle_file:
             pickle.dump(obs,pickle_file)
