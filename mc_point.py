@@ -139,6 +139,9 @@ def main(args):
     except TypeError:
         print("ERROR: Point failed to run")
         exit()
+    if __name__=="__main__" and slha_obj is None:
+        print('ERROR: Point fails\nExiting')
+        exit()
 
     if not args.suppress_chi2_calc:
         all_constraints=Constraints_list.constraints
