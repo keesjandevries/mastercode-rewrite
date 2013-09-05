@@ -227,6 +227,11 @@ constraints_dict = {
             'oids': [('Micromegas', 'Omega')],
             'data': [0.1109, 0.0056, 0.012],
             'func': LF.upperlimit},
+        'Oh2_asymmetric': {   
+            'oids': [('Micromegas', 'Omega')],
+            'data': [0.1109, 0.013, 0.029],
+            'func': LF.asymmetric_gauss,
+            'mode': 'default',},
         'Oh^2-9-years': {   
             'oids': [('Micromegas', 'Omega')],
             'data': [0.1138, 0.0056, 0.012],
