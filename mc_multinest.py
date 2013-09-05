@@ -58,7 +58,8 @@ def parse_args():
             default=False,  help='This is what we want. Store points to pickled dictionaries: unique_string.pkl')
     mcpp.add_argument('--data-set'  ,  dest='data_set'  , action='store', 
             default="pmssm_with_Oh2", help='data set for X^2 calculation')
-    mcpp.add_argument('--model', default='pMSSM8', help='Model that SoftSUSY takes', choices=['cMSSM','NUHM1','pMSSM8','pMSSM10'])
+    mcpp.add_argument('--model', default='pMSSM8', help='Model that SoftSUSY takes', 
+            choices=['cMSSM','neg-mu-cMSSM','NUHM1','neg-mu-NUHM1','pMSSM8','pMSSM10'])
     mcpp.add_argument('--nuisance-parameter-ranges', default='User/nuisance_parameter_ranges.json', 
             help='json file with parameter ranges for mt,mz,delta_alpha_had')
     mcpp.add_argument('--cmssm-ranges', default='User/cmssm_ranges.json', 
@@ -118,14 +119,14 @@ def get_param_ranges():
     #FIXME: re-implement cMSSM and NUHM1/2 at some point 
     with open(args.nuisance_parameter_ranges,'r') as f:
         nuisance_parameter_ranges=json.load(f)
-    if args.model == 'cMSSM':
+    if (args.model == 'cMSSM') or (args.model == 'neg-mu-cMSSM'):
         with open(args.cmssm_ranges,'r') as f:
             cmssm_ranges=json.load(f)
 #        cmssm_ranges.update(nuisance_parameter_ranges)
         #The order here should match that of inputs.get_mc_pmssm8_inputs(... )
         param_ranges= OrderedDict([(name, cmssm_ranges[name]) for name in 
             ['m0','m12','tanb','A0']])
-    if args.model == 'NUHM1':
+    if (args.model == 'NUHM1') or (args.model == 'neg-mu-NUHM1'):
         with open(args.nuhm1_ranges,'r') as f:
             nuhm1_ranges=json.load(f)
 #        nuhm1_ranges.update(nuisance_parameter_ranges)
@@ -208,8 +209,12 @@ def get_obs(cube,ndim):
     # Get formatted input. See what is looks like with option "-v inputs"  
     if args.model == 'cMSSM':
         all_params.update( inputs.get_mc_cmssm_inputs(*parameters))
+    if args.model == 'neg-mu-cMSSM':
+        all_params.update( inputs.get_mc_neg_mu_cmssm_inputs(*parameters))
     if args.model == 'NUHM1':
         all_params.update( inputs.get_mc_nuhm1_inputs(*parameters))
+    if args.model == 'neg-mu-NUHM1':
+        all_params.update( inputs.get_mc_neg_mu_nuhm1_inputs(*parameters))
     if args.model == 'pMSSM8':
         all_params.update( inputs.get_mc_pmssm8_inputs(*parameters))
     if args.model == 'pMSSM10':
