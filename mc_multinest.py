@@ -1,8 +1,18 @@
 #! /usr/bin/env python
-import os, pprint, argparse, sys,pickle ,re, json, numpy, signal
+# standard python library
+import os 
+import pprint 
+import argparse 
+import sys
+import pickle 
+import re 
+import json 
+import signal
 from collections import OrderedDict
-
-#FIXME: use interface from github though check performance!!!!
+# third party
+import numpy 
+from scipy.stats import norm
+# private
 from Samplers.interfaces import multinest
 from ObsCalculator import point, inputs
 from Storage import old_mc_rootstorage as rootstore
@@ -57,7 +67,7 @@ def parse_args():
             help='json file with parameter ranges for m0,m12,tanb,A0,mh2')
     mcpp.add_argument('--pmssm8-ranges', default='User/pmssm8_ranges.json', 
             help='json file with parameter ranges for msq12,msq3,msl,M1,A,MA,tanb,mu')
-    mcpp.add_argument('--pmssm10-ranges',  
+    mcpp.add_argument('--pmssm10-ranges',   default='User/pmssm10_ranges.json',
             help='json file with parameter ranges for msq12,msq3,msl,M1,M2,M3,A,MA,tanb,mu')
     #multinest specific arguments
     multinest.add_argument('--multinest-dir' ,     action='store', 
@@ -111,31 +121,31 @@ def get_param_ranges():
     if args.model == 'cMSSM':
         with open(args.cmssm_ranges,'r') as f:
             cmssm_ranges=json.load(f)
-        cmssm_ranges.update(nuisance_parameter_ranges)
+#        cmssm_ranges.update(nuisance_parameter_ranges)
         #The order here should match that of inputs.get_mc_pmssm8_inputs(... )
         param_ranges= OrderedDict([(name, cmssm_ranges[name]) for name in 
-            ['m0','m12','tanb','A0','mt','mz','delta_alpha_had']])
+            ['m0','m12','tanb','A0']])
     if args.model == 'NUHM1':
         with open(args.nuhm1_ranges,'r') as f:
             nuhm1_ranges=json.load(f)
-        nuhm1_ranges.update(nuisance_parameter_ranges)
+#        nuhm1_ranges.update(nuisance_parameter_ranges)
         #The order here should match that of inputs.get_mc_pmssm8_inputs(... )
         param_ranges= OrderedDict([(name, nuhm1_ranges[name]) for name in 
-            ['m0','m12','tanb','A0','mh2','mt','mz','delta_alpha_had']])
+            ['m0','m12','tanb','A0','mh2']])
     if args.model == 'pMSSM8':
         with open(args.pmssm8_ranges,'r') as f:
             pmssm8_ranges=json.load(f)
-        pmssm8_ranges.update(nuisance_parameter_ranges)
+#        pmssm8_ranges.update(nuisance_parameter_ranges)
         #The order here should match that of inputs.get_mc_pmssm8_inputs(... )
         param_ranges= OrderedDict([(name, pmssm8_ranges[name]) for name in 
-            ['msq12','msq3','msl', 'M1', 'A','MA','tanb','mu','mt','mz','delta_alpha_had']])
+            ['msq12','msq3','msl', 'M1', 'A','MA','tanb','mu']])
     if args.model == 'pMSSM10':
         with open(args.pmssm10_ranges,'r') as f:
             pmssm10_ranges=json.load(f)
-        pmssm10_ranges.update(nuisance_parameter_ranges)
+#        pmssm10_ranges.update(nuisance_parameter_ranges)
         #The order here should match that of inputs.get_mc_pmssm10_inputs(... )
         param_ranges= OrderedDict([(name, pmssm10_ranges[name]) for name in 
-            ['msq12','msq3','msl', 'M1','M2','M3', 'A','MA','tanb','mu','mt','mz','delta_alpha_had']])
+            ['msq12','msq3','msl', 'M1','M2','M3', 'A','MA','tanb','mu']])
     return param_ranges
 
 def signal_handler(signal, frame):
@@ -150,6 +160,8 @@ def signal_handler(signal, frame):
 args = parse_args()
 #parameter ranges
 param_ranges=get_param_ranges()
+#nuitsance central values and sigmas
+nuisance_mus_sigmas=[('mt',173.20,0.78),('mz',91.1875,0.0021),('delta_alpha_had',0.02756,0.0001)]
 #default X^2 penalty in case of errors
 default_chi=-10*args.log_zero
 #lookup dictionary for initiating SLHA() objects
@@ -176,8 +188,14 @@ if args.storage_dict:
 ###############################################
 
 def myprior(cube, ndim, nparams):
+    n_params=len(param_ranges.items())
     for i, (name,(low,high)) in enumerate(param_ranges.items()):
         cube[i]=(high-low)*cube[i]+low
+    for j,(name,mu,sigma) in enumerate(nuisance_mus_sigmas):
+        n_sigmas=norm.ppf(cube[j+n_params])
+        cube[j+n_params]=mu+sigma*n_sigmas
+
+
 
 def get_obs(cube,ndim):
     #make a python list out of the cube
@@ -254,7 +272,11 @@ def myloglike(cube, ndim, nparams):
         if args.storage_dict is not None:
             vars=len(storage_dict)*[0.]
             for oids, val in obs.items():
-                vars[storage_dict[oids]]=val
+                try:
+                    vars[storage_dict[oids]]=val
+                except KeyError:
+                    print('WARNING: not saving {}'.format(oids))
+                    continue
         else:
             vars=rootstore.get_VARS(obs, args.model)
         root.root_write(vars)
@@ -289,9 +311,9 @@ if __name__=="__main__" :
     #run multinest
     multinest.run(LogLikelihood     = myloglike,
 	        Prior                   = myprior,
-            n_dims                  = len(param_ranges),
+            n_dims                  = len(param_ranges)+len(nuisance_mus_sigmas),
 	        n_params                = None, 
-	        n_clustering_params     = None, 
+	        n_clustering_params     = len(param_ranges), 
             wrapped_params          = None, 
 	        multimodal              = args.multimodal, 
             const_efficiency_mode   = args.const_efficiency_mode, 
