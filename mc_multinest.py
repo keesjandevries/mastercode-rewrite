@@ -8,6 +8,7 @@ import pickle
 import re 
 import json 
 import signal
+import random
 from collections import OrderedDict
 # third party
 import numpy 
@@ -149,6 +150,10 @@ def get_param_ranges():
             ['msq12','msq3','msl', 'M1','M2','M3', 'A','MA','tanb','mu']])
     return param_ranges
 
+def default_chi():
+    return 1e9+random.random()
+    
+
 def signal_handler(signal, frame):
     print('EXITING ON SIGNAL:'.format(signal))
     if args.root_out:
@@ -164,7 +169,7 @@ param_ranges=get_param_ranges()
 #nuitsance central values and sigmas
 nuisance_mus_sigmas=[('mt',173.20,0.78),('mz',91.1875,0.0021),('delta_alpha_had',0.02756,0.0001)]
 #default X^2 penalty in case of errors
-default_chi=-10*args.log_zero
+#default_chi=-10*args.log_zero
 #lookup dictionary for initiating SLHA() objects
 lookup=SLHA().get_lookup()
 #constraint objects
@@ -263,13 +268,13 @@ def myloglike(cube, ndim, nparams):
         #FIXME: consider to not set Micromegas error to infinity, since it crashes on neutralino!=lsp
         for name in ['FeynHiggs','Micromegas','BPhysics','SUSY-POPE']:
             if obs[(name,'error')]:
-                chi2=default_chi
+                chi2=default_chi()
         if numpy.isnan(chi2):
-            chi2=default_chi
+            chi2=default_chi()
         obs[('tot_X2', 'all')]=chi2
     else:
         obs={}
-        chi2=default_chi
+        chi2=default_chi()
 #        obs=params
         obs[('tot_X2', 'all')]=chi2
     # write everything to root files
