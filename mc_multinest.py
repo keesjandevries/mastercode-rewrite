@@ -71,6 +71,7 @@ def parse_args():
             help='json file with parameter ranges for msq12,msq3,msl,M1,A,MA,tanb,mu')
     mcpp.add_argument('--pmssm10-ranges',   default='User/pmssm10_ranges.json',
             help='json file with parameter ranges for msq12,msq3,msl,M1,M2,M3,A,MA,tanb,mu')
+    mcpp.add_argument('--soft-flat-priors',action='store_true',help='extend flat prior with gaussian tails')
     #multinest specific arguments
     multinest.add_argument('--multinest-dir' ,     action='store', 
             default="chains", help='directory for storing mulinest parameters ')
@@ -192,10 +193,32 @@ if args.storage_dict:
         l=json.load(f)
     storage_dict={(oid1,oid2):array_id for oid1,oid2, array_id in l}
 ###############################################
+def soft_flat_prior(X):
+    #takes number between 0 and 1
+    #transforms this number to lie between 0 and 1 with probability p
+    #otherwise ends up in gaussian tails.
+    #p and sigma are imperical!!!
+    p=0.8
+    sigma=0.1
+    #two derived values
+    p_min=(1-p)/2
+    p_plus=p+p_min
+    if X < p_min:
+        #NOTE: X/(1-p)<0.5, so x should be negative
+        x=norm.ppf(X/(1-p))
+        return x*sigma
+    elif X < p_plus:
+        return (X-p_min)/p
+    else:
+        #NOTE: (X-p)/(1-p)>0.5, so x should be positive
+        x=norm.ppf((X-p)/(1-p))
+        return 1+x*sigma
 
 def myprior(cube, ndim, nparams):
     n_params=len(param_ranges.items())
     for i, (name,(low,high)) in enumerate(param_ranges.items()):
+        if args.soft_flat_priors:
+            cube[i]=soft_flat_prior(cube[i])
         cube[i]=(high-low)*cube[i]+low
     for j,(name,mu,sigma) in enumerate(nuisance_mus_sigmas):
         n_sigmas=norm.ppf(cube[j+n_params])
