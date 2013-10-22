@@ -323,7 +323,7 @@ if __name__=="__main__" :
 	        Prior                   = myprior,
             n_dims                  = len(param_ranges)+len(nuisance_mus_sigmas),
 	        n_params                = None, 
-	        n_clustering_params     = len(param_ranges), 
+	        n_clustering_params     = len(param_ranges)+len(nuisance_mus_sigmas), 
             wrapped_params          = None, 
 	        multimodal              = args.multimodal, 
             const_efficiency_mode   = args.const_efficiency_mode, 
