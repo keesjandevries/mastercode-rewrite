@@ -8,6 +8,13 @@ data_sets={
             'Rc', 'Rb',  'Rl', 'R_Bsmm_mc9', 'sintheta_eff', 'mc9_Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ,
             'LEP-chargino', 'LEP-neutralino', 'LEP-slepton', 'LEP-sneutrino', 'LEP-squark','neutralino-lsp'
             ],
+'mc9_no_lhc': [ 'Al(SLD)', 'Ab', 'Ac', 'mc9_Oh2', 'mc9_Mh',   
+            'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'mc9_R_DMBs', 'MW', 'Afb_l', 
+            'xenon100_SpiN_unc', 'mc9_DAlpha_had', 'mc9_epsilon_K',  'sigma_had^0', 'Afb(c)', 
+            'Afb(b)',  'mc9_R_B->Xsg', 'mc9_R_DMBs/DMBd', 'mc9_R_B->taunu', 
+            'Rc', 'Rb',  'Rl', 'R_Bsmm_mc9', 'sintheta_eff', 'mc9_Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ,
+            'LEP-chargino', 'LEP-neutralino', 'LEP-slepton', 'LEP-sneutrino', 'LEP-squark','neutralino-lsp'
+            ],
 'mc9_no_nuisance': [ 'Al(SLD)', 'Ab', 'Ac', 'mc9_Oh2', 'mc9_Mh',   
             'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)',  'mc9_R_DMBs', 'MW', 'Afb_l', 
             'xenon100_SpiN_unc',  'mc9_epsilon_K',  'sigma_had^0', 'Afb(c)', 
@@ -27,6 +34,13 @@ data_sets={
             'xenon100_SpiN_unc',  'mc9_epsilon_K',  'sigma_had^0', 'Afb(c)', 
             'Afb(b)',  'mc9_R_B->Xsg', 'mc9_R_DMBs/DMBd', 'mc9_R_B->taunu', 
             'Rc', 'Rb',  'Rl', 'R_Bsmm_mc9', 'sintheta_eff',  'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ,
+            'LEP-chargino', 'LEP-neutralino', 'LEP-slepton', 'LEP-sneutrino', 'LEP-squark','neutralino-lsp'
+            ],
+'mc9_Oh2_asymmetric': [ 'Al(SLD)', 'Ab', 'Ac','Oh2_asymmetric', 'mc9_Mh',   
+            'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'mc9_R_DMBs', 'MW', 'Afb_l', 
+            'xenon100_SpiN_unc', 'mc9_DAlpha_had', 'mc9_epsilon_K',  'sigma_had^0', 'Afb(c)', 
+            'Afb(b)',  'mc9_R_B->Xsg', 'mc9_R_DMBs/DMBd', 'mc9_R_B->taunu', 
+            'Rc', 'Rb',  'Rl', 'R_Bsmm_mc9', 'sintheta_eff', 'mc9_Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ,
             'LEP-chargino', 'LEP-neutralino', 'LEP-slepton', 'LEP-sneutrino', 'LEP-squark','neutralino-lsp'
             ],
 'mc8': [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
