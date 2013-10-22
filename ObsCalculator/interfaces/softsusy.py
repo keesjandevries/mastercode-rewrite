@@ -297,7 +297,13 @@ def run( inputs,verbose=None):
     if inputs.get('file'):
         fname=inputs['file']
         with open(fname,'r') as softpoint_input_file:
-            my_out = subprocess.check_output(['./packages/bin/softpoint{}.x'.format(version),'leshouches'],stdin=softpoint_input_file)
+            try:
+                my_out = subprocess.check_output(['./packages/bin/softpoint{}.x'.format(version),'leshouches'],stdin=softpoint_input_file)
+                my_out=my_out.decode('utf-8')
+                error =  ('invalid' in str(my_out)) or ('problem' in str(my_out))
+            except subprocess.CalledProcessError:
+                my_out=None
+                error = 2
     elif inputs.get('model'):
         model=inputs['model']
         # set inputs to default
@@ -325,9 +331,12 @@ def run( inputs,verbose=None):
         with open(fname,'w') as softpoint_input_file:
             softpoint_input_file.write(inputslha)
         with open(fname,'r') as softpoint_input_file:
-            my_out = subprocess.check_output(['./packages/bin/softpoint{}.x'.format(version),'leshouches'],stdin=softpoint_input_file)
+            try:
+                my_out = subprocess.check_output(['./packages/bin/softpoint{}.x'.format(version),'leshouches'],stdin=softpoint_input_file)
+                my_out=my_out.decode('utf-8')
+                error =  ('invalid' in str(my_out)) or ('problem' in str(my_out))
+            except subprocess.CalledProcessError:
+                my_out=None
+                error = 2
         rm(fname)
-    my_out=my_out.decode('utf-8')
-    error =  ('invalid' in str(my_out))
-    if error: print("ERROR: softsusy point is invalid")
     return my_out, error

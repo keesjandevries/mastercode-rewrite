@@ -50,8 +50,12 @@ def get_args_parser():
     parser.add_argument('--mc-cmssm-default', action='store_true', 
             help="Mastercode cmssm point: m0=271.3,m12=920.3,tanb=14.4,A0=-1193.57,mt=173.47,mz=91.18774,Delta_alpha_had=0.027482")
     parser.add_argument('--mc-cmssm', nargs=7, type=float, 
-            help="Run cmssm mc8 best fit point: m0,m12,tanb,A0,mt,mz,Delta_alpha_had") # FIXME: metavariable is stupid
+            help="Run cmssm point, specify: m0,m12,tanb,A0,mt,mz,Delta_alpha_had") # FIXME: metavariable is stupid
+    parser.add_argument('--mc-neg-mu-cmssm', nargs=7, type=float, 
+            help="Run cmssm point with negative mu. Specify: m0,m12,tanb,A0,mt,mz,Delta_alpha_had") # FIXME: metavariable is stupid
     parser.add_argument('--mc-nuhm1', nargs=8, type=float,
+            help="Mastercode nuhm1 point specify: m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had")
+    parser.add_argument('--mc-neg-mu-nuhm1', nargs=8, type=float,
             help="Mastercode nuhm1 point specify: m0,m12,tanb,A0,mh2,mt,mz,Delta_alpha_had")
     parser.add_argument('--mc-nuhm1-default', action='store_true', 
             help="Mastercode nuhm1 point: m0=237.4,m12=968.8,tanb=15.6,A0=-1858.7,mh2=-6499529, mt=173.3,mz=91.1875,Delta_alpha_had=0.0274949")
@@ -94,8 +98,12 @@ def main(args):
     elif args.mc_cmssm_default:
         all_params.update(inputs.get_mc_cmssm_inputs(271.378279475, 920.368119935, 14.4499538001, 
             -1193.57068242, 173.474173, 91.1877452551, 0.0274821578423))
+    elif args.mc_neg_mu_cmssm :
+        all_params.update(inputs.get_mc_neg_mu_cmssm_inputs(*(args.mc_neg_mu_cmssm)))
     elif args.mc_nuhm1 :
         all_params.update(inputs.get_mc_nuhm1_inputs(*(args.mc_nuhm1)))
+    elif args.mc_neg_mu_nuhm1 :
+        all_params.update(inputs.get_mc_neg_mu_nuhm1_inputs(*(args.mc_neg_mu_nuhm1)))
     elif args.mc_nuhm1_default :
         all_params.update(inputs.get_mc_nuhm1_inputs(237.467776964, 968.808711245, 15.649644, -1858.78698798, -6499529.79661,
                 173.385870186, 91.1875000682, 0.0274949856504))
@@ -138,6 +146,9 @@ def main(args):
         slha_obj, point ,stdouts = POINT.run_point(**all_params)
     except TypeError:
         print("ERROR: Point failed to run")
+        exit()
+    if __name__=="__main__" and slha_obj is None:
+        print('ERROR: Point fails\nExiting')
         exit()
 
     if not args.suppress_chi2_calc:
