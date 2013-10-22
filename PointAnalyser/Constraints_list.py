@@ -6,7 +6,7 @@ constraints_dict = {
         'LEP-chargino':{
             'oids': [ ('MASS', 'MCha(1)'), ('MASS', 'MCha(2)')],
             'data': [103., 1.],
-            'func': LF.multi_lowerlimit},
+            'func': LF.multi_abs_lowerlimit},
         'LEP-neutralino':{
             'oids': [ ('MASS', 'MNeu(1)')],
             'data': [50., 1.],
@@ -368,7 +368,7 @@ constraints_dict = {
             'mode': 'contour'},
         'atlas20_m0_m12': {
             'oids': [('MINPAR', 'in_M0'),('MINPAR', 'in_M12')],
-            'data': [('PointAnalyser/atlas_20_m0m12.txt', 'radial', 0.95, 2,'linear')],
+            'data': [('PointAnalyser/atlas_20_m0m12.txt', 'radial', 0.95, 2,'linear',{'min':'flat','max':'flat'})],
             'func': LF.power_4_inv_single_contour, 
             'mode': 'contour',
             'info': 'https://twiki.cern.ch/twiki/pub/AtlasPublic/CombinedSummaryPlots/ATLAS_SUSY_MSUGRA_CMSSM_lp13.pdf',
@@ -377,7 +377,7 @@ constraints_dict = {
             },
         'atlas5_m0_m12': {
             'oids': [('MINPAR', 'in_M0'),('MINPAR', 'in_M12')],
-            'data': [('PointAnalyser/atlas_5fb_m0_m12.txt', 'radial', 0.95, 2,'linear')],
+            'data': [('PointAnalyser/atlas_5fb_m0_m12.txt', 'radial', 0.95, 2,'linear',{'min':'flat','max':'flat'})],
             'func': LF.power_4_inv_single_contour, 
             'mode': 'contour'},
         'MATANB' : {
@@ -397,7 +397,7 @@ constraints_dict = {
             'mode': 'contour' },
         'mc8_bsmm':{
             'oids': [('BPhysics','Psll')],
-            'data': [('PointAnalyser/mc8_bsmm.txt','x',0.9,1,'linear',{'max':'flat'})],
+            'data': [('PointAnalyser/mc8_bsmm.txt','x',0.9,1,'linear',{'min':'flat','max':'flat'})],
             'func': LF.one_dim_chi2_lookup, 
             'mode': 'contour' },
         'bsmm':{
