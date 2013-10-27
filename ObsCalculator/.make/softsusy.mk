@@ -8,6 +8,7 @@ ifeq ($(wildcard $(src_dir)),)
 	tar -C $(PREDICTOR_DIR) -xf $(tarfile)
 endif
 	cd $(src_dir); \
+   		patch -N -p1 < $(PATCH_DIR)/$(name).patch; \
 		./configure --prefix=$(INSTALL_DIR);
 	$(MAKE) -C $(src_dir)
 	$(MAKE) -C $(src_dir) install

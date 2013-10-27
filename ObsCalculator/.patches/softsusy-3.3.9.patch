@@ -1,0 +1,19 @@
+diff --git a/softpars.cpp b/softpars.cpp
+index b54bdce..df4dd55 100644
+--- a/softpars.cpp
++++ b/softpars.cpp
+@@ -1186,11 +1186,12 @@ void SoftParsMssm::universalScalars(double m0) {
+   // scalar masses
+   DoubleMatrix ID(3, 3), mm0(3, 3);
+   int i; for (i=1; i<=3; i++) ID(i, i) = 1.0;
+-  mm0 = ID * sqr(m0);
++  mm0 = ID * (((0<m0)-(m0<0))*sqr(m0)); //131027 KJ multiplying by the sign
+   setSoftMassMatrix(mQl, mm0); setSoftMassMatrix(mUr, mm0);
+   setSoftMassMatrix(mDr, mm0); setSoftMassMatrix(mLl, mm0);
+   setSoftMassMatrix(mEr, mm0);
+-  setMh1Squared(sqr(m0)); setMh2Squared(sqr(m0));
++  //131027 KJ multiplying by the sign
++  setMh1Squared(((0<m0)-(m0<0))*sqr(m0)); setMh2Squared(((0<m0)-(m0<0))*sqr(m0));
+ }
+ 
+ void SoftParsMssm::universalGauginos(double m12) {  
