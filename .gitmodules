@@ -1,0 +1,3 @@
+[submodule "predictors/private"]
+	path = predictors/private
+	url = git@github.com:keesjandevries/mastercode-predictors
