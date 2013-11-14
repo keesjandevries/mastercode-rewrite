@@ -15,13 +15,14 @@ extern "C"{
             double&, double&, double&, double&, double&, double&, double&,
             double&, double& );
 
-    void run_bphysics(std::complex<double>* slhadata, BPhysicsObs* out){
+    int run_bphysics(std::complex<double>* slhadata, BPhysicsObs* out){
         int ERROR=0;
         const int abort(0);
 
         bphysicsinterface_( ERROR, slhadata, out->BRbsg, out->BRKpnn,
                 out->RDMb, out->RDMs, out->RDMK, out->BRXsll, out->BRbtn,
                 out->BRKl2, out->Psll, out->Pdll, out->Pllsapx );
+        return ERROR;
     }
 }
 

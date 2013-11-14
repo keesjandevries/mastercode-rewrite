@@ -12,12 +12,14 @@ Otherwise,
         """ 
         self._ids = ids
         self._func = func
-        if mode is 'simple':
+        if mode == 'simple':
             self._data = [data[0],sqrt(sum([d**2 for d in data[1:]]))]
-        else:
+        elif mode == 'neutralino-lsp':
+            self._data = data
+        elif mode == 'contour':
             self._data = [ Contour(*arg) for arg in data ]
-            for contour in self._data:
-                assert contour.dim == len(ids)
+        elif mode == 'default':
+            self._data = data
 
     def get_chi2(self, point):
         #  collect necessary ids
@@ -30,7 +32,7 @@ Otherwise,
             print('ERROR: Provided invalid input set {0}'.format(self._ids))
             print('\tSetting chi2 to 0 for this constraint')
         except TypeError:
-            print('ERROR: Please provide dictionary that can be accessed using point[id1][id2]')
+            print('ERROR: in X^2 calulation. Please provide dictionary that can be accessed using point[(\'id1\',\'id2\')]')
             print('\tSetting chi2 to 0 for this constraint')
         else:
             try:

@@ -11,20 +11,22 @@ UTIL_DIR=$(PWD)/tools
 PREDICTOR_DIR=$(PWD)/predictors
 TAR_DIR=$(PREDICTOR_DIR)/.tars
 LIB_DIR=$(INSTALL_DIR)/lib
+BIN_DIR=$(INSTALL_DIR)/bin
 INCLUDE_DIR=$(INSTALL_DIR)/include
 
 MARGS=INSTALL_DIR=$(INSTALL_DIR) TAR_DIR=$(TAR_DIR) PATCH_DIR=$(PATCH_DIR) \
 	  INCLUDE_DIR=$(INCLUDE_DIR) DEF_DIR=$(DEF_DIR) \
 	  PREDICTOR_DIR=$(PREDICTOR_DIR) UTIL_DIR=$(UTIL_DIR) \
 	  INTERFACE_DIR=$(INTERFACE_DIR) LIB_DIR=$(LIB_DIR) \
-	  SAMPLE_DIR=$(SAMPLE_DIR) STORAGE_DIR=$(STORAGE_DIR)
+	  SAMPLE_DIR=$(SAMPLE_DIR) STORAGE_DIR=$(STORAGE_DIR) BIN_DIR=$(BIN_DIR)
 
-utils=slhalib multinest ROOT
+#utils=slhalib multinest ROOT
+utils=slhalib multinest 
 predictors=feynhiggs micromegas softsusy superiso susypope lspscat bphysics
-interfaces=feynhiggs_interface softsusy_interface micromegas_interface \
+interfaces=feynhiggs_interface  micromegas_interface \
 		   superiso_interface bphysics_interface lspscat_interface \
 		   slhalib_interface susypope_interface multinest_interface \
-		   ROOT_interface
+		   ROOT_interface 
 
 targets=$(predictors) $(utils) $(interfaces)
 

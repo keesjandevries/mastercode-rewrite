@@ -1,0 +1,111 @@
+diff --git a/FeynHiggs-2.8.7/makefile.in b/FeynHiggs-2.8.7/makefile.in
+index 0071530..0aaf9ad 100644
+--- a/FeynHiggs-2.8.7/makefile.in
++++ b/FeynHiggs-2.8.7/makefile.in
+@@ -13,9 +13,9 @@ ARGS = $(PARALLEL) \
+   NOUNDERSCORE="$(NOUNDERSCORE)" \
+   EXE="$(EXE)" \
+   FC="$(FC)" \
+-  FFLAGS="$(FFLAGS) $(DEF)GM2FULL=$(GM2FULL) $(DEF)SLHAPARA=$(SLHAPARA) $(DEF)VT100=$(VT100)" \
++  FFLAGS="$(FFLAGS) $(DEF)GM2FULL=$(GM2FULL) $(DEF)SLHAPARA=$(SLHAPARA) $(DEF)VT100=$(VT100) -fPIC" \
+   CC="$(CC)" \
+-  CFLAGS="$(CFLAGS) -DNOUNDERSCORE=$(NOUNDERSCORE) -DVT100=$(VT100)" \
++  CFLAGS="$(CFLAGS) -DNOUNDERSCORE=$(NOUNDERSCORE) -DVT100=$(VT100) -fPIC" \
+   CXX="$(CXX)" \
+   CXXFLAGS="$(CXXFLAGS)" \
+   ML="$(ML)" \
+diff --git a/FeynHiggs-2.8.7/src/Constraints/gm2_1L_1.F b/FeynHiggs-2.8.7/src/Constraints/gm2_1L_1.F
+index cd40534..ae3ff8a 100644
+--- a/FeynHiggs-2.8.7/src/Constraints/gm2_1L_1.F
++++ b/FeynHiggs-2.8.7/src/Constraints/gm2_1L_1.F
+@@ -17,6 +17,30 @@
+ 	ComplexType tmp23, tmp24, tmp25, tmp26, tmp27, tmp28, tmp29
+ 	ComplexType tmp30, tmp31
+ 
++        if ((dabs(MNeu(1) - MSf(1,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(2) - MSf(1,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(3) - MSf(1,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(4) - MSf(1,2,2)) .le. 0.1d0)) then
++           print *, 'changing MSmu1'
++           MSf(1,2,2) = MSf(1,2,2) + 1d0
++           MSf2(1,2,2) = MSf(1,2,2)**2
++        endif
++        if ((dabs(MNeu(1) - MSf(2,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(2) - MSf(2,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(3) - MSf(2,2,2)) .le. 0.1d0) .or.
++     $       (dabs(MNeu(4) - MSf(2,2,2)) .le. 0.1d0)) then
++           print *, 'changing MSmu2'
++           MSf(2,2,2) = MSf(2,2,2) + 1d0
++           MSf2(2,2,2) = MSf(2,2,2)**2
++        endif
++        if ((dabs(MCha(1) - MSf(1,1,2)) .le. 0.1d0) .or.
++     $       (dabs(MCha(2) - MSf(1,1,2)) .le. 0.1d0)) then
++           print *, 'changing MSneu'
++           MSf(1,1,2) = MSf(1,1,2) + 1d0
++           MSf2(1,1,2) = MSf(1,1,2)**2
++        endif
++
++
+ 	tmp1 = CW*ZNeu(1,2) + SW*ZNeu(1,1)
+ 
+ 	tmp2 = CW*ZNeu(2,2) + SW*ZNeu(2,1)
+diff --git a/FeynHiggs-2.8.7/src/SLHA/SLHARead.F b/FeynHiggs-2.8.7/src/SLHA/SLHARead.F
+index fe2b5b6..a6d3121 100644
+--- a/FeynHiggs-2.8.7/src/SLHA/SLHARead.F
++++ b/FeynHiggs-2.8.7/src/SLHA/SLHARead.F
+@@ -64,7 +64,7 @@ read(line, *, err=997, end=997)
+ 	  unit = 5
+ 	  if( lineno .ne. 0 ) goto 501
+ 	else
+-	  open(10, file=filename, status="old", err=996)
++	  open(10, file=filename, status="old", err=996, action='read')
+ 	  unit = 10
+ 	  lineno = 0
+ 	endif
+@@ -96,8 +96,8 @@ read(line, *, err=997, end=997)
+ 	      goto 500
+ 	    endif
+ 	  enddo
+-	  print 102, "Unknown block ", line(7:n+3+2*i),
+-     &      " in input line", lineno
++cob print 102, "Unknown block ", line(7:n+3+2*i),
++cob   &      " in input line", lineno
+ 	  block = -1
+ 	  goto 500
+ 	endif
+@@ -190,6 +190,8 @@ minpa	Scan n, val
+ 	goto 500
+ 
+ extpa	Scan n, val
++COB Don't read EXPAR block for master fitter
++        goto 500
+ 	if( n .eq. 0  ) ExtPar_Q = val
+ 	if( n .eq. 1  ) ExtPar_M1 = val
+ 	if( n .eq. 2  ) ExtPar_M2 = val
+diff --git a/FeynHiggs-2.8.7/src/TwoLoop/TLps/TLShifts.F b/FeynHiggs-2.8.7/src/TwoLoop/TLps/TLShifts.F
+index 3ed1507..6088bfe 100644
+--- a/FeynHiggs-2.8.7/src/TwoLoop/TLps/TLShifts.F
++++ b/FeynHiggs-2.8.7/src/TwoLoop/TLps/TLShifts.F
+@@ -47,7 +47,7 @@
+ 	  se2R(i) = 0
+ 	enddo
+ 
+-	do i = 1, 6
++	do i = 1, 5
+ 	  axax(1,i) = 0
+ 	  axax(2,i) = 0
+ 	  axax(3,i) = 0
+diff --git a/FeynHiggs-2.8.7/src/include/CFeynHiggs.h.in b/FeynHiggs-2.8.7/src/include/CFeynHiggs.h.in
+index 6602759..7148b72 100644
+--- a/FeynHiggs-2.8.7/src/include/CFeynHiggs.h.in
++++ b/FeynHiggs-2.8.7/src/include/CFeynHiggs.h.in
+@@ -704,7 +704,8 @@ static inline void FHRetrieveRecord(int *error,
+ 
+ static inline void FHLoadTable(int *error, const char *inputfile)
+ {
+-  FORTRAN(fhloadtable)(error, inputfile, (int[]){0}, strlen(inputfile));
++  int inputunit = 5;
++  FORTRAN(fhloadtable)(error, inputfile, &inputunit, strlen(inputfile));
+ }
+ 
+ 

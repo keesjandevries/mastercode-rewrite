@@ -1,10 +1,12 @@
 #! /usr/bin/env python
+import subprocess
 
 from ctypes import cdll,  c_char_p, create_string_buffer
+from tools import  rm , unique_filename
 
 
 name = "SoftSUSY"
-SPlib = cdll.LoadLibrary('packages/lib/libmcsoftsusy.so')
+default_version='3.3.9'
 
 #NOTE: the input slha observable ids (oids) follow the output of slhalib.py:
 #BLOCK MASS
@@ -26,7 +28,7 @@ default_inputs={
     ('MINPAR','signMUE')        : 1,
     #NOTE: BLOCK SOFTSUSY is not recognised by slhalib, so have our own definitions
     ('SOFTSUSY','TOLERANCE')    : 1.0e-3,
-    ('SOFTSUSY','MIXING')       : 1.0 ,
+    ('SOFTSUSY','MIXING')       : -1.0 ,
     ('SOFTSUSY','PRINTOUT')     : 0.0 ,
     ('SOFTSUSY','QEWSB')        : 1.0 ,
     ('SOFTSUSY','2_LOOP')       : 1.0 ,
@@ -68,10 +70,8 @@ Block MINPAR		     # Input parameters
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
     1   {prec}      # Numerical precision: suggested range 10^(-3...-6)
     2   {mix}      # Quark mixing parameter: see manual
-    3   {verb}          # verbose options
-    4   {qewsb}         # electro weak symmetry breaking scale x*sqrt(m_stop1,m_stop2)
-    5   {two_loop}      # Include 2-loop scalar mass squared/trilinear RGEs
-    7   {n_higgs_loops}     # number of loops in REWSB/mh calculation""".format(
+
+    """.format(
     alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
     g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
     alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
@@ -93,11 +93,57 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
     )
     return slha
 
-
+def get_nuhm2_input_slha(slha_params):
+    return """# INSPIRED BY: Example input in SLHA format, and suitable for input to
+# SOFTSUSY (v1.8 or higher): benchmark point - see arXiv:1109.3859
+Block MODSEL		     # Select model
+    1    1		     # sugra 
+Block SMINPUTS		     # Standard Model inputs
+    1	{alpha_inv}	     # alpha^(-1) SM MSbar(MZ)
+    2   {g_fermi}  	     # G_Fermi
+    3   {alpha_s}  	     # alpha_s(MZ) SM MSbar
+    4   {mz}	   	     # MZ(pole)
+    5	{mb}	   	     # mb(mb) SM MSbar
+    6   {mtop}	   	     # mtop(pole)
+    7	{mtau}	   	     # mtau(pole)
+Block MINPAR		     # Input parameters
+    1   {m0} 	     # m0
+    2   {m12} 	     # m12
+    3   {tanb} 	     # tanb
+    4   {sign_mu} 	     # sign(mu)
+    5   {A0} 	     # A0
+Block EXTPAR          # non-universal SUSY breaking parameters
+    21  {mhd2}         # m^2_H_d
+    22  {mhu2}         # m^2_H_u
+Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
+    1   {prec}      # Numerical precision: suggested range 10^(-3...-6)
+    2   1      # Quark mixing parameter: see manual
+    """.format(
+    alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
+    g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
+    alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
+    mz          =slha_params[('SMINPUTS', 'MZ')       ],
+    mb          =slha_params[('SMINPUTS', 'Mb')       ],
+    mtop        =slha_params[('SMINPUTS', 'Mt')       ],
+    mtau        =slha_params[('SMINPUTS', 'Mtau')     ],
+    m0 	        =slha_params[('MINPAR', 'M0')         ],
+    m12 	    =slha_params[('MINPAR', 'M12')        ],
+    tanb 	    =slha_params[('MINPAR', 'TB')         ],
+    sign_mu     =slha_params[('MINPAR', 'signMUE')    ],
+    A0 	        =slha_params[('MINPAR', 'A')          ], 
+    prec        =slha_params[('SOFTSUSY','TOLERANCE') ],
+    mix         =slha_params[('SOFTSUSY','MIXING')    ],
+    verb        =slha_params[('SOFTSUSY','PRINTOUT')  ], 
+    qewsb       =slha_params[('SOFTSUSY','QEWSB')     ],
+    two_loop    =slha_params[('SOFTSUSY','2_LOOP')    ], 
+    n_higgs_loops=slha_params[('SOFTSUSY','numHiggsLoops')],      
+    mhd2        =slha_params[('EXTPAR', 'MHd2')       ], 
+    mhu2        =slha_params[('EXTPAR', 'MHu2')       ] 
+              )
 
 def get_pmssm_input_slha(slha_params):
-    slha="""# BASED ON: Example input in SLHA format, and suitable for input to
-# SOFTSUSY (v1.8 or higher): benchmark point - see arXiv:1109.3859
+    #FIXME: maybe want to plugin the BLOCK SOFTSUSY again
+    slha="""#
 Block MODSEL		     # Select model
     1    0		     # non universal
 Block SMINPUTS		     # Standard Model inputs
@@ -110,13 +156,6 @@ Block SMINPUTS		     # Standard Model inputs
     7	{mtau}	   	     # mtau(pole)
 Block MINPAR		     # Input parameters
     3   {tanb}	     # tanb
-Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    1   {prec}      # Numerical precision: suggested range 10^(-3...-6)
-    2   {mix}      # Quark mixing parameter: see manual
-    3   {verb}          # verbose options
-    4   {qewsb}         # electro weak symmetry breaking scale x*sqrt(m_stop1,m_stop2)
-    5   {two_loop}      # Include 2-loop scalar mass squared/trilinear RGEs
-    7   {n_higgs_loops}     # number of loops in REWSB/mh calculation
 Block EXTPAR          # non-universal SUSY breaking parameters
       0   -1.000000000000000e+00	 # Set MX=MSUSY 
       1  {M_1}         # M_1(MX)
@@ -182,84 +221,122 @@ Block EXTPAR          # non-universal SUSY breaking parameters
     )
     return slha
 
-def get_nuhm2_input_slha(slha_params):
-    return """# INSPIRED BY: Example input in SLHA format, and suitable for input to
-# SOFTSUSY (v1.8 or higher): benchmark point - see arXiv:1109.3859
-Block MODSEL		     # Select model
-    1    1		     # sugra 
-Block SMINPUTS		     # Standard Model inputs
-    1	{alpha_inv}	     # alpha^(-1) SM MSbar(MZ)
-    2   {g_fermi}  	     # G_Fermi
-    3   {alpha_s}  	     # alpha_s(MZ) SM MSbar
-    4   {mz}	   	     # MZ(pole)
-    5	{mb}	   	     # mb(mb) SM MSbar
-    6   {mtop}	   	     # mtop(pole)
-    7	{mtau}	   	     # mtau(pole)
-Block MINPAR		     # Input parameters
-    1   {m0} 	     # m0
-    2   {m12} 	     # m12
-    3   {tanb} 	     # tanb
-    4   {sign_mu} 	     # sign(mu)
-    5   {A0} 	     # A0
-Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    1   {prec}      # Numerical precision: suggested range 10^(-3...-6)
-    2   {mix}      # Quark mixing parameter: see manual
-    3   {verb}          # verbose options
-    4   {qewsb}         # electro weak symmetry breaking scale x*sqrt(m_stop1,m_stop2)
-    5   {two_loop}      # Include 2-loop scalar mass squared/trilinear RGEs
-    7   {n_higgs_loops}     # number of loops in REWSB/mh calculation
-Block EXTPAR          # non-universal SUSY breaking parameters
-    21  {mhd2}         # m^2_H_d
-    22  {mhu2}         # m^2_H_u""".format(
-    alpha_inv   =slha_params[('SMINPUTS', 'invAlfaMZ')],
-    g_fermi     =slha_params[('SMINPUTS', 'GF')       ],
-    alpha_s     =slha_params[('SMINPUTS', 'AlfasMZ')  ],
-    mz          =slha_params[('SMINPUTS', 'MZ')       ],
-    mb          =slha_params[('SMINPUTS', 'Mb')       ],
-    mtop        =slha_params[('SMINPUTS', 'Mt')       ],
-    mtau        =slha_params[('SMINPUTS', 'Mtau')     ],
-    m0 	        =slha_params[('MINPAR', 'M0')         ],
-    m12 	    =slha_params[('MINPAR', 'M12')        ],
-    tanb 	    =slha_params[('MINPAR', 'TB')         ],
-    sign_mu     =slha_params[('MINPAR', 'signMUE')    ],
-    A0 	        =slha_params[('MINPAR', 'A')          ], 
-    prec        =slha_params[('SOFTSUSY','TOLERANCE') ],
-    mix         =slha_params[('SOFTSUSY','MIXING')    ],
-    verb        =slha_params[('SOFTSUSY','PRINTOUT')  ], 
-    qewsb       =slha_params[('SOFTSUSY','QEWSB')     ],
-    two_loop    =slha_params[('SOFTSUSY','2_LOOP')    ], 
-    n_higgs_loops=slha_params[('SOFTSUSY','numHiggsLoops')],      
-    mhd2        =slha_params[('EXTPAR', 'MHd2')       ], 
-    mhu2        =slha_params[('EXTPAR', 'MHu2')       ] 
-              )
-    
 def get_nuhm1_input_slha(slha_params):
     #NOTE: MH2 is not defined in slhalib
+    #FIXME: for this reason maybe should also mark these 'MC_EXTPAR','MC_MH2'
     slha_params[('EXTPAR', 'MHd2')]=slha_params[('EXTPAR', 'MH2')]  
     slha_params[('EXTPAR', 'MHu2')]=slha_params[('EXTPAR', 'MH2')]
     return get_nuhm2_input_slha(slha_params)
- 
-def run(model, inputs,verbose=None):
-    # set inputs to default
-    slha_params=default_inputs.copy()
-    # update to get the parsed inputs
-    slha_params.update(inputs)
 
-    if   model=='cMSSM':
-        inputslha=get_cmssm_input_slha(slha_params)
-    elif model=='pMSSM':
-        inputslha=get_pmssm_input_slha(slha_params)
-    elif model=='NUHM2':
-        inputslha=get_nuhm2_input_slha(slha_params)
-    elif model=='NUHM1':
-        inputslha=get_nuhm1_input_slha(slha_params)
+def get_pmssm8_input_slha(slha_params):
+    #NOTE: These variables are not defined in slhalib, therefor mark as 'MC_...'
+    #First and second generation squarks
+    slha_params[('EXTPAR', 'MSQ(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mqL1
+    slha_params[('EXTPAR', 'MSQ(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mqL2
+    slha_params[('EXTPAR', 'MSU(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # muR 
+    slha_params[('EXTPAR', 'MSU(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mcR 
+    slha_params[('EXTPAR', 'MSD(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mdR 
+    slha_params[('EXTPAR', 'MSD(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # msR          
+    #Third generation squarks
+    slha_params[('EXTPAR', 'MSU(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mtR 
+    slha_params[('EXTPAR', 'MSD(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mbR 
+    slha_params[('EXTPAR', 'MSQ(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mqL3
+    #All sleptons degenerate
+    slha_params[('EXTPAR', 'MSL(1)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  meL    
+    slha_params[('EXTPAR', 'MSL(2)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mmuL   
+    slha_params[('EXTPAR', 'MSL(3)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mtauL  
+    slha_params[('EXTPAR', 'MSE(1)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  meR    
+    slha_params[('EXTPAR', 'MSE(2)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mmuR   
+    slha_params[('EXTPAR', 'MSE(3)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mtauR  
+    #Gaugino masses: following Matts e-mail
+    slha_params[('EXTPAR', 'M1')    ]= slha_params[('EXTPAR','M1')]
+    slha_params[('EXTPAR', 'M2')    ]= 2*slha_params[('EXTPAR','M1')]
+    slha_params[('EXTPAR', 'M3')    ]= 6*slha_params[('EXTPAR','M1')]
+    #Trilinear coupling the same
+    slha_params[('EXTPAR', 'Atau')  ]= slha_params[('MC_EXTPAR','MC_A')]
+    slha_params[('EXTPAR', 'At')    ]= slha_params[('MC_EXTPAR','MC_A')]
+    slha_params[('EXTPAR', 'Ab')    ]= slha_params[('MC_EXTPAR','MC_A')]
+    return get_pmssm_input_slha(slha_params)
 
-    else:
-        print("ERROR: No valid model provided")
-        return "", 1
-    if verbose: print(inputslha)
+def get_pmssm10_input_slha(slha_params):
+    #NOTE: These variables are not defined in slhalib, therefor mark as 'MC_...'
+    #First and second generation squarks
+    slha_params[('EXTPAR', 'MSQ(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mqL1
+    slha_params[('EXTPAR', 'MSQ(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mqL2
+    slha_params[('EXTPAR', 'MSU(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # muR 
+    slha_params[('EXTPAR', 'MSU(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mcR 
+    slha_params[('EXTPAR', 'MSD(1)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # mdR 
+    slha_params[('EXTPAR', 'MSD(2)')]= slha_params[('MC_EXTPAR','MC_Msq12')]      # msR          
+    #Third generation squarks
+    slha_params[('EXTPAR', 'MSU(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mtR 
+    slha_params[('EXTPAR', 'MSD(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mbR 
+    slha_params[('EXTPAR', 'MSQ(3)')]= slha_params[('MC_EXTPAR','MC_Msq3')]       # mqL3
+    #All sleptons degenerate
+    slha_params[('EXTPAR', 'MSL(1)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  meL    
+    slha_params[('EXTPAR', 'MSL(2)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mmuL   
+    slha_params[('EXTPAR', 'MSL(3)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mtauL  
+    slha_params[('EXTPAR', 'MSE(1)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  meR    
+    slha_params[('EXTPAR', 'MSE(2)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mmuR   
+    slha_params[('EXTPAR', 'MSE(3)')]= slha_params[('MC_EXTPAR','MC_Msl')]      #  mtauR  
+    #Trilinear coupling the same
+    slha_params[('EXTPAR', 'Atau')  ]= slha_params[('MC_EXTPAR','MC_A')]
+    slha_params[('EXTPAR', 'At')    ]= slha_params[('MC_EXTPAR','MC_A')]
+    slha_params[('EXTPAR', 'Ab')    ]= slha_params[('MC_EXTPAR','MC_A')]
+    return get_pmssm_input_slha(slha_params)
 
-    # then run on the inputslha file
-    c_str_buf = create_string_buffer(SLHA_MAX_SIZE)
-    error = SPlib.run(c_char_p(inputslha.encode('ascii')),c_str_buf,10000)
-    return c_str_buf.value.decode('utf-8'), error
+
+
+                                        
+                                        
+def run( inputs,verbose=None):          
+    try:
+        version=inputs['version']
+    except KeyError:
+        version=default_version
+    print(version)
+    if inputs.get('file'):
+        fname=inputs['file']
+        with open(fname,'r') as softpoint_input_file:
+            try:
+                my_out = subprocess.check_output(['./packages/bin/softpoint{}.x'.format(version),'leshouches'],stdin=softpoint_input_file)
+                my_out=my_out.decode('utf-8')
+                error =  ('invalid' in str(my_out)) or ('problem' in str(my_out))
+            except subprocess.CalledProcessError:
+                my_out=None
+                error = 2
+    elif inputs.get('model'):
+        model=inputs['model']
+        # set inputs to default
+        slha_params=default_inputs.copy()
+        # update to get the parsed inputs
+        slha_params.update(inputs)
+
+        if   model=='cMSSM':
+            inputslha=get_cmssm_input_slha(slha_params)
+        elif model=='NUHM1':
+            inputslha=get_nuhm1_input_slha(slha_params)
+        elif model=='pMSSM':
+            inputslha=get_pmssm_input_slha(slha_params)
+        elif model=='pMSSM8':
+            inputslha=get_pmssm8_input_slha(slha_params)
+        elif model=='pMSSM10':
+            inputslha=get_pmssm10_input_slha(slha_params)
+        else:
+            print("ERROR: No valid model provided")
+            return "", 1
+        if verbose: print(inputslha)
+
+        # then run on the inputslha file
+        fname=unique_filename(inputs.get('tmp_dir'))
+        with open(fname,'w') as softpoint_input_file:
+            softpoint_input_file.write(inputslha)
+        with open(fname,'r') as softpoint_input_file:
+            try:
+                my_out = subprocess.check_output(['./packages/bin/softpoint{}.x'.format(version),'leshouches'],stdin=softpoint_input_file)
+                my_out=my_out.decode('utf-8')
+                error =  ('invalid' in str(my_out)) or ('problem' in str(my_out))
+            except subprocess.CalledProcessError:
+                my_out=None
+                error = 2
+        rm(fname)
+    return my_out, error

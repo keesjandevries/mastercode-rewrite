@@ -41,7 +41,7 @@ extern "C"
             std::ostringstream varName;
             varName << "vars[" << nvars << "]/D";
             outputFile->cd();
-            tree->SetAutoSave(500000); // Save every ~1000 events
+//            tree->SetAutoSave(500000); // Save every ~1000 events
             tree->Branch("vars",vars,varName.str().c_str());
       } 
       else {

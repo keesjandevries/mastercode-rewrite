@@ -14,5 +14,6 @@ class BPhysicsPrecObs(Structure):
 
 def run(slhadata, inputs=None, update=False):
     BPout = BPhysicsPrecObs()
-    BPlib.run_bphysics(byref(slhadata.data), byref(BPout))
-    return ctypes_field_values(BPout, name)
+    error=BPlib.run_bphysics(byref(slhadata.data), byref(BPout))
+    if error: print('ERROR: Bphysics') 
+    return ctypes_field_values(BPout, name,error)

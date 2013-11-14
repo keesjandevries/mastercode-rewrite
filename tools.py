@@ -7,6 +7,7 @@ import urllib.error
 import tarfile
 import pickle
 import hashlib
+import importlib
 
 from socket import gethostname
 from time import gmtime, strftime
@@ -16,15 +17,28 @@ from collections import OrderedDict
 class c_complex(Structure):
     _fields_ = [('re', c_double), ('im', c_double)]
 
-def ctypes_field_values(obj, title):
+def ctypes_field_values(obj, title,error=None):
     d = OrderedDict([(attr, getattr(obj,attr)) for (attr, a_type) in
         obj._fields_])
     for (attr, a_type) in obj._fields_:
         if 'ctypes' in str(a_type._type_):
             c_obj = getattr(obj, attr)
             d[attr] = c_obj[:]
+    if error is not None:
+        d['error']=error
     return {(title,key):val for (key,val) in d.items() }
 
+def import_predictor_modules(predictors):
+    # FIXME: secure with "try: " statements
+    predictor_modules={}
+    predictor_modules['spectrum_generator']=importlib.import_module(predictors['spectrum_generator'])
+    predictor_modules['spectrum_modifiers']=[]
+    for modifier in predictors['spectrum_modifiers']:
+        predictor_modules['spectrum_modifiers'].append(importlib.import_module(modifier))
+    predictor_modules['predictors']=[]
+    for predictor in predictors['predictors']:
+        predictor_modules['predictors'].append(importlib.import_module(predictor))
+    return predictor_modules
 
 def is_int(s):
     try:
@@ -44,37 +58,46 @@ def show_header(header, sub=''):
     print("* {h}{s} *".format(h=header, s=(': '+sub if sub else '')))
     print(block)
 
-def unique_str():
+def unique_filename(dir_name=None):
+    unique_string=unique_str(2)
+    if not dir_name:
+        dir_name='/tmp/'
+    unq_filename= '{}/mc-{}'.format(dir_name,unique_string)
+    return unq_filename
+
+def unique_str(depth=1):
     t_now = strftime('%Y_%m_%d_%H_%M_%S', gmtime() )
-    ustr = "{host}-{pid}-{time}".format(host=gethostname(),
-            pid=os.getpid(), time=t_now)
+    function_name=os.path.splitext(os.path.split(sys._getframe(depth).f_code.co_filename)[1])[0] # to only keep the name without .py
+    ustr = "{host}-{pid}-{time}-{fname}".format(host=gethostname(),
+            pid=os.getpid(), time=t_now,fname=function_name)
     return ustr
 
-def setup_pipe(reader, writer, pipe_name=None):
-    if pipe_name is None:
-        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
-    try:
-        os.mkfifo(pipe_name)
-    except OSError as e:
-        print("Failed to create FIFO: %s" % e)
-        exit()
+#def setup_pipe(reader, writer, pipe_name=None):
+#    if pipe_name is None:
+#        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
+#    try:
+#        os.mkfifo(pipe_name)
+#    except OSError as e:
+#        print("Failed to create FIFO: %s" % e)
+#        exit()
+#
+#    child_pid = os.fork()
+#    if child_pid == 0 :
+#    # child process
+#        reader(pipe_name)
+#        os._exit(child_pid)
+#    else:
+#    # parent process
+#        output = writer(pipe_name)
+#        os.unlink(pipe_name)
+#        os.waitpid(child_pid,0)
+#        return output
 
-    child_pid = os.fork()
-    if child_pid == 0 :
-    # child process
-        reader(pipe_name)
-        os._exit(child_pid)
-    else:
-    # parent process
-        output = writer(pipe_name)
-        os.unlink(pipe_name)
-        os.waitpid(child_pid,0)
-        return output
 
-
-def pipe_object_to_function(obj, function, args=[], kwargs={}, pipe_name=None):
-    if pipe_name is None:
-        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
+def pipe_object_to_function(pipe_name,obj, function, args=[], kwargs={} ):
+    #We should not use hard coded directories
+#    if pipe_name is None:
+#        pipe_name = "/tmp/mc-{u}".format(u=unique_str())
     args.insert(0,pipe_name)
     try:
         os.mkfifo(pipe_name)

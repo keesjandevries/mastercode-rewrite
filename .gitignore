@@ -1,3 +1,7 @@
+*.pdf
+*.npy
+*.json
+*.*.swp
 *~
 *.pyc
 *.x
@@ -10,3 +14,7 @@
 *.points
 *c.txt
 *csummary.txt
+chains/*
+chains2/*
+temp*
+*.root

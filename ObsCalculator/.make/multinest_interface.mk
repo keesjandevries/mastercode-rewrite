@@ -12,7 +12,7 @@ $(interface_lib): $(interface_obj)
 		-Wl,-rpath,$(lib_dir) \
 		$(interface_obj) -L$(src_dir) -l$(lib_short) -lgfortran -llapack -lpthread
 
-$(interface_obj): $(interface_src)
+$(interface_obj): $(interface_src) $(lib)
 	$(cc) -c -I. -DMULTINEST_CALL=__nested_MOD_nestrun \
 		-O3 -std=c99 -Wall -Wextra -fPIC  -o $(interface_obj) $(interface_src) \
 		-lgfortran 

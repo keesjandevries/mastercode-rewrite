@@ -10,7 +10,7 @@ LSPlib = cdll.LoadLibrary('packages/lib/libmclspscat.so')
 
 default_inputs={
     'SigmaPiN'      : 50. ,
-    'SigmaPiNerr'   : 14. ,
+    'SigmaPiNerr'   : 7. ,
     }
 
 class lspscatObs(Structure):
@@ -26,4 +26,5 @@ def run(slhadata, inputs=None, update=False):
     LSPout = lspscatObs()
     LSPin  = lspscatInputs(default_inputs,inputs)
     LSPlib.run_lspscat(byref(slhadata.data), byref(LSPin), byref(LSPout))
+    #FIXME: lspscat has no error handling that I know of, maybe should fix this later
     return ctypes_field_values(LSPout, name)

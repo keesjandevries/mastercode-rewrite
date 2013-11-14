@@ -136,29 +136,35 @@ int set_parameters(std::complex<double>* slhadata, susypopeNoneSLHA* n_slha, boo
 
       if (verbose){
         std::cout << "=============SUSY-POPE-INPUTS============" << std::endl;
-        std::cout << "MT, MB, ML, MW, MZ" << std::setprecision(12) 
+        std::cout << " MT, MB, ML, MW, MZ" << std::setprecision(9) 
               <<"  "<< MT <<"  "<<  MB <<"  "<<  MTAU <<"  "<<  MW <<"  "<<  Zmass <<"  "<<  std::endl ;
-        std::cout <<  "DeltaAlfa5had, DeltaAlfaQED, ZWidthexp" 
+        std::cout <<  " DeltaAlfa5had, DeltaAlfaQED, ZWidthexp" 
               <<"  "<<   DeltaAlfa5had <<"  "<<  DeltaAlfaQED <<"  "<<  ZWidthexp <<"  "<<  std::endl ;
-        std::cout <<  "TB, MA0, MHp, Mh0, MHH, SA" 
-              <<"  "<< TB <<"  "<<  MA0 <<"  "<<  MHp <<"  "<<  Mh0 <<"  "<<   MHH <<"  "<<  SAeff <<"  "<<  std::endl ;
-        std::cout << "M3SL, M3SE, M3SQ, M3SU, M3SD" 
-              <<"  "<< M3SL <<"  "<<  M3SE <<"  "<<  M3SQ <<"  "<<   M3SU <<"  "<<  M3SD <<"  "<<  std::endl ;
-        std::cout <<  "M2SL, M2SE, M2SQ, M2SU, M2SD" 
-              <<"  "<< M2SL <<"  "<<  M2SE <<"  "<<  M2SQ <<"  "<<   M2SU <<"  "<<  M2SD <<"  "<<  std::endl ;
-        std::cout <<  "M1SL, M1SE, M1SQ, M1SU, M1SD" 
-              <<"  "<< M1SL <<"  "<<  M1SE <<"  "<<  M1SQ <<"  "<<   M1SU <<"  "<<  M1SD <<"  "<<  std::endl ;
-        std::cout <<  "MUE, MUEPhase" 
-              <<"  "<< MUE <<"  "<<  MUEPhase <<"  "<<  std::endl ;
-        std::cout <<   "Atau, At, Ab, Amu, Ac, As, Ae, Au, Ad"
-              <<"  "<< Atau <<"  "<<  At <<"  "<<  Ab <<"  "<<  Amu <<"  "<<  Ac <<"  "<<  As <<"  "<<  Ae <<"  "<<  Au <<"  "<<  Ad <<"  "<<  std::endl ;
-        std::cout << "Atphase, Abphase, Atauphase"
+        std::cout << " TB, MA0, MHp, Mh0, MHH, SA" 
+              <<"  "<< TB <<"  "<<  MA0 <<"  "<<  MHp <<"  "<<  Mh0 << std::endl;
+        std::cout << "  "<<   MHH <<"  "<<  SAeff <<"  "<<  std::endl ;
+        std::cout << " M3SL, M3SE, M3SQ, M3SU, M3SD" 
+              <<"  "<< M3SL <<"  "<<  M3SE <<"  "<<  M3SQ <<"  "<<   M3SU << std::endl;
+        std::cout << "  "<<  M3SD << std::endl ;
+        std::cout <<  " M2SL, M2SE, M2SQ, M2SU, M2SD" 
+              <<"  "<< M2SL <<"  "<<  M2SE <<"  "<<  M2SQ <<"  "<<   M2SU << std::endl;
+        std::cout << "  "<<  M2SD <<  std::endl ;
+        std::cout <<  " M1SL, M1SE, M1SQ, M1SU, M1SD" 
+              <<"  "<< M1SL <<"  "<<  M1SE <<"  "<<  M1SQ <<"  "<<   M1SU << std::endl;
+        std::cout << "  "<<  M1SD <<"  "<<  std::endl ;
+        std::cout <<  " MUE, MUEPhase" 
+              <<" "<< MUE <<"  "<<  MUEPhase <<"  "<<  std::endl ;
+        std::cout <<  " Atau, At, Ab, Amu, Ac, As, Ae, Au, Ad"
+              <<" "<< Atau <<"  "<<  At << std::endl; 
+        std::cout <<  " "<<  Ab <<"  "<<  Amu <<"  "<<  Ac <<"  "<<  As <<"  "<<  Ae << std::endl;
+        std::cout <<  " "<<  Au <<"  "<<  Ad <<"  "<<  std::endl ;
+        std::cout << " Atphase, Abphase, Atauphase"
               <<"  "<< Atphase <<"  "<<  Abphase <<"  "<< Atauphase <<"  "<<  std::endl ;
-        std::cout <<  "M_1, M_2, M_3" 
+        std::cout <<  " M_1, M_2, M_3" 
               <<"  "<< M_1 <<"  "<<  M_2 <<"  "<<  M_3 <<"  "<<  std::endl ;
-        std::cout <<  "M2phase, M1phase"
+        std::cout <<  " M2phase, M1phase"
               <<"  "<< M2phase <<"  "<<  M1phase <<"  "<<  std::endl ;
-        std::cout <<  "Qtau, Qt, Qb" 
+        std::cout <<  " Qtau, Qt, Qb" 
               <<"  "<< Qtau <<"  "<<  Qt <<"  "<<  Qb <<"  "<<  std::endl ;
         std::cout << "=============SUSY-POPE-INPUTS============" << std::endl;
       }
@@ -190,31 +196,25 @@ int set_flags(susypopeFlags * flags){
 
 extern "C" {
 
-    void run_susypope(std::complex<double>* slhadata, susypopeNoneSLHA* n_slha,
+    int run_susypope(std::complex<double>* slhadata, susypopeNoneSLHA* n_slha,
         susypopeFlags* flags, susypopeObs* out, bool verbose=false) {
         int error(0);
         error = set_flags(flags);
-        if (error) std::cout << "set flags failed" << std::endl;
+        if (error) {
+            std::cout << "set flags failed" << std::endl;
+            return error;
+        }
         error = set_parameters(slhadata, n_slha, verbose);
-        if (error) std::cout << "set parameters failed" << std::endl;
+        if (error) {
+            std::cout << "set parameters failed" << std::endl;
+            return error;
+        }
         calcobs_amw_(error, out->MSSMObs, out->SMObs);
-        if (error) std::cout << "calcobs failed" << std::endl;
-
-        // extract observables in more readable terms
-//        out->MW             =  out->SMObs[0 ];
-//        out->sin_theta_eff  =  out->SMObs[26];
-//        out->Gamma_z        =  out->SMObs[10];
-//        out->Rl             =  out->SMObs[21];
-//        out->Rb             =  out->SMObs[25];
-//        out->Rc             =  out->SMObs[24];
-//        out->Afb_b          =  out->SMObs[33];
-//        out->Afb_c          =  out->SMObs[34];
-//        out->Ab          =  out->SMObs[30];
-//        out->Ac          =  out->SMObs[31];
-//        out->Al             =  out->SMObs[29];
-//        out->Afb_l          =  out->SMObs[33];
-//        out->sigma_had      =  out->SMObs[20];
-
+        if (error){ 
+            std::cout << "calcobs failed" << std::endl;
+            return error;
+        }
+        return 0;
     }
 }
 

@@ -3,7 +3,7 @@ import pprint, math
 from collections import OrderedDict, Counter
 from ctypes import cdll, c_int, c_double, c_char_p, byref, Structure
 
-from tools import c_complex, pipe_object_to_function, unique_str, is_int, rm
+from tools import c_complex, pipe_object_to_function,  is_int, rm, unique_filename
 
 name = "SLHALib"
 SLlib = cdll.LoadLibrary('packages/lib/libmcslhalib.so')
@@ -30,17 +30,25 @@ class SLHAData(Structure):
         return self.carray[key-1].re
 
 class SLHA(object):
-    def __init__(self, data="",lookup=None):
-        self.lookup=lookup
+    def __init__(self, data="",lookup=None,tmp_dir=None):
+        self._tmp_dir=tmp_dir
+        if lookup:
+            self.lookup=lookup
+        else:
+            self.lookup=self.create_lookup()
         if data:
-            #cannot do produce lookup on the fly with the pipe_object_to_function
-            #therefore, do it separate
-            pipe_object_to_function(data, self.read,args=[],kwargs={'makelookup': False})
-            if not self.lookup:
-                self.initialise_lookup()
+#            #cannot do produce lookup on the fly with the pipe_object_to_function
+#            #therefore, do it separate
+            fname=unique_filename(self._tmp_dir)
+            with open(fname,'w') as softpoint_input_file:
+                softpoint_input_file.write(data)
+            self.read(fname)
+            rm(fname)
+#            error=pipe_object_to_function(pipe_file_name, data, self.read,args=[],kwargs={})
+#            if error: print("HERE SLHA LIB GIVES AN ERROR")
 
     def __str__(self):
-        tmp_name = "/tmp/mc-{u}".format(u=unique_str())
+        tmp_name=unique_filename(self._tmp_dir)
         self.write(tmp_name)
         f=open(tmp_name)
         txt=f.read()
@@ -75,11 +83,9 @@ class SLHA(object):
     def write(self, filename):
         SLlib.write_slha(filename.encode('ascii'), byref(self.data))
 
-    def read(self, filename,makelookup=True):
+    def read(self, filename):
         self.data = SLHAData()
         SLlib.read_slha(filename.encode('ascii'), byref(self.data))
-        if (not self.lookup) and makelookup:
-            self.initialise_lookup()
 
     def get_lookup(self):
         if self.lookup:
@@ -87,22 +93,22 @@ class SLHA(object):
         else:
             print("WARNING: cannot return lookup, because lookup is not initiated")
 
-    def fill_slhadata_with_slhalib_nrs(self):
-        #NOTE: in SLHADefs.h, the numerical values end with SPinfo
-        for i in range(1,ofsetspinfo+1):
-            self.data[i]=float(i)
 
-    def initialise_lookup(self):
+    def create_lookup(self):
         """
-        This function returns a dictionary
-        { slhalib_nr: ('block','comment'), ... , ('block','comment'): nr, ... }
+ This function returns a dictionary
+ { slhalib_nr: ('block','comment'), ... , ('block','comment'): slhalib_nr, ... }
         """
-        #first backup the data
-        backup_data={nr:self.data[nr] for nr in range(1,ofsetspinfo+1) if not nr == invalid }
-        #fill slhafile with slhalib numbers
-        self.fill_slhadata_with_slhalib_nrs()
+        self.data=SLHAData()
+        #fill complex array with "invalid", which is equivalent to empty slha file 
+        for i in range(1,nslhadata+1):
+            self.data[i]=invalid
+        #fill every array element that could containt a number with its array index 
+        for i in range(1,ofsetspinfo+1):
+            self.data[i]=i
         #retrieve block- and observables- names and make dict
         block_indices_comment_nr_dict=self.get_blocks_indices_comments_values()
+        #fill lookup
         lookup=OrderedDict()
         for key, val in block_indices_comment_nr_dict.items():
             # for the moment only need block and comment
@@ -115,13 +121,11 @@ class SLHA(object):
             else:
                 oid=(block,comment)
                 lookup[nr]=oid
-        # now also save reverse
+        # also save reverse
         for nr, oid in lookup.items():
             lookup[oid]=nr
-        # restore data
-        for nr, val in backup_data.items():
-            self.data[nr]=val
-        self.lookup= lookup
+        return lookup
+
                 
             
     def get_blocks_indices_comments_values(self):
@@ -144,7 +148,7 @@ class SLHA(object):
                 print("WARNING: DECAY's are ignored in SLHA.get_blocks_indices_comments_values() ")
                 block_name=None
             elif block_name and (not block_name == 'SPINFO') :
-                #FIXME: want to have the SPINFO as well at some point
+                #FIXME: possibly want to have the SPINFO as well at some point
                 items = line.split()
                 if len(items):
                     first_non_index = next(x for x in items if not is_int(x))
@@ -162,19 +166,14 @@ class SLHA(object):
 
     def process(self):
         data=OrderedDict()
-        for i in range(1,nslhadata+1):
+        for i in range(1,ofsetspinfo+1):
             val=self.data[i]
             if not val == invalid:
                 try:
                     oid=self.lookup[i]
                     data[oid]=val
                 except KeyError:
-                    continue
-#                try:
-#                    oid=('slha',self.lookup[i])
-#                except KeyError:
-#                    oid=('slha',i)
-#                data[oid]=val
+                    print("ERROR: {} not found in lookup".format(i)) 
         return data
 
 def send_to_predictor(slhadata, inputs ,predictor, update=False):

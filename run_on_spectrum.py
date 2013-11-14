@@ -19,6 +19,7 @@ def parse_args():
     parser.add_argument('--breakdown'  , '-b', dest='breakdown', action='store_true', help='print X^2 breakdonw')
     parser.add_argument('--root_save'  , '-r', dest='root_save', action='store_true', help='save to root file')
     parser.add_argument('--verbose'    , '-v', dest='verbose'  , action='store', nargs="+", help='verbosity')
+    parser.add_argument('--input_spectrum' , '-i', dest='input_spectrum', action='store', help='input spectrum file')
     parser.add_argument('--input_pars', '-p', dest='input_pars', action='store', type=str,
             default=None, help='override all_params')
     return parser.parse_args()
@@ -26,30 +27,12 @@ def parse_args():
 if __name__=="__main__" :
     args = parse_args()
 
-    model = 'NUHM2' 
+    model = 'DUMMY' 
 
-    all_params={
-            'SoftSUSY':{
-                ('MINPAR', 'M0'): 300.535,
-                ('MINPAR', 'M12'): 905.0,
-                ('MINPAR', 'TB'): 16.255472,
-                ('MINPAR', 'A'): -1323.9702,
-                ('EXTPAR', 'MHu2'): 2500.0,
-                ('EXTPAR', 'MHd2'): 360.0,
-                },
-            'mc_slha_update':{
-                ('SMINPUTS','MZ')   : 91.1876, 
-                },
-            'SUSY-POPE':{
-                'non_slha_inputs':{
-                    'DeltaAlfa5had' : 0.02759,
-                    }
-                }
-            }
-    #check for command line input parameters
+    all_params={'spectrumfile':args.input_spectrum }
     if args.input_pars:
         all_params.update(eval(args.input_pars))
-        
+
     #check verbosity
     if args.verbose:
         all_params['verbose']=args.verbose
@@ -61,11 +44,11 @@ if __name__=="__main__" :
 
 
     all_constraints=Constraints_list.constraints
-    #mc8 data set without atlas
+    #mc8 data set
     data_set= [ 'Al(SLD)', 'Ab', 'Ac', 'Oh^2_mc8', 'Higgs125', 'BR(Bd->ll)',  
             'Gamma_Z', 'GZ_in', 'R(B->Xsll)', 'Al(P_tau)', 'MZ', 'R(D_ms)', 'MW', 'Afb_l', 
             'xenon100', 'DAlpha_had', 'R(Delta_mk)',  'sigma_had^0', 'Afb(c)', 
-            'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
+            'atlas5_m0_m12', 'Afb(b)',  'R(b->sg)', 'R(Dms)/R(Dmd)', 'R(B->taunu)', 
             'Rc', 'Rb',  'Rl', 'mc8_bsmm', 'sintheta_eff', 'Mt', 'R(K->lnu)', 'R(Kp->pinn)', 'gminus2mu', 'MATANB' ]
     constraints={name: all_constraints[name] for name in data_set}
 
@@ -88,4 +71,3 @@ if __name__=="__main__" :
         root.root_open('temp/test.root')
         old_mc_rootstorage.write_point_to_root(combined_obs)
         root.root_close()
-

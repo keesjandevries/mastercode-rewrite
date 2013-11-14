@@ -10,14 +10,26 @@ def run(LogLikelihood,
 	Prior,
 	n_dims, 
 	n_params = None, 
-	n_clustering_params = None, wrapped_params = None, 
-	multimodal = True, const_efficiency_mode = False, n_live_points = 1000,
-	evidence_tolerance = 0.5, sampling_efficiency = 0.8, 
-	n_iter_before_update = 100, null_log_evidence = -1e90,
+	n_clustering_params = None, 
+    wrapped_params = None, 
+	multimodal = True, 
+    const_efficiency_mode = False, 
+    n_live_points = 1000,
+	evidence_tolerance = 0.5, 
+    sampling_efficiency = 0.8, 
+	n_iter_before_update = 100, 
+    null_log_evidence = -1e90,
 	max_modes = 100,
-	outputfiles_basename = "chains/1-", seed = -1, verbose = False,
-	resume = True, context = 0, write_output = True, log_zero = -1e100, 
-	max_iter = 0, init_MPI = True, dump_callback = None):
+	outputfiles_basename = "chains/1-", 
+    seed = -1, 
+    verbose = False,
+	resume = True, 
+    context = 0, 
+    write_output = True, 
+    log_zero = -1e100, 
+	max_iter = 0, 
+    init_MPI = True, 
+    dump_callback = None):
 	"""
 	Runs MultiNest
 	
@@ -79,7 +91,7 @@ def run(LogLikelihood,
 		desirable to have separate samples & mode statistics for modes 
 		with local log-evidence value greater than a
 		particular value in which case nullZ should be set to that 
-		value. If there isn't any particulrly interesting
+		value. If there isnt any particulrly interesting
 		nullZ value, then nullZ should be set to a very large negative 
 		number (e.g. -1.d90).
 		
@@ -140,7 +152,7 @@ def run(LogLikelihood,
 		c_int(n_live_points), c_double(evidence_tolerance), 
 		c_double(sampling_efficiency), c_int(n_dims), c_int(n_params),
 		c_int(n_clustering_params), c_int(max_modes), 
-		c_int(n_iter_before_update), c_double(evidence_tolerance), 
+		c_int(n_iter_before_update), c_double(null_log_evidence), 
 		c_char_p(outputfiles_basename.encode('ascii')), c_int(seed), wraps,
 		c_int(verbose), c_int(resume), 
 		c_int(write_output), c_int(init_MPI), 
