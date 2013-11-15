@@ -8,7 +8,7 @@ from tools import set_obj_inputs_and_defaults
 from ObsCalculator.interfaces.slhalib import  invalid
 
 name = "FeynHiggs"
-default_version='2.9.5.r3456v3'
+default_version='2.9.5'
 versions={
     '2.8.6': 'packages/lib/libmcfeynhiggs2.8.6.so',
     '2.8.7': 'packages/lib/libmcfeynhiggs2.8.7.so',
